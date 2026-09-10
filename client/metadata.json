@@ -1,0 +1,6 @@
+{
+  "name": "পানি ওয়ালা - Pani Wala",
+  "description": "বাংলাদেশে নিরাপদ ও বিশুদ্ধ খাবার পানি সরবরাহের বিশ্বস্ত সেবা। বাসা-বাড়ি, অফিস ও প্রতিষ্ঠানে দ্রুত ২০ লিটার জার ও মিনারেল পানি ডেলিভারি।",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
