@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
-import { WATER_PACKAGES, DHAKA_AREAS, HOTLINE_NUMBER, HOTLINE_TEL, toBengaliNumber } from '@/src/data/packages';
+import { WATER_PACKAGES, KHULNA_AREAS, HOTLINE_NUMBER, HOTLINE_TEL, toBengaliNumber } from '@/src/data/packages';
 import { WaterPackage, CustomerDetails, ConfirmedOrder } from '@/src/types';
 import { Button } from '@/src/components/ui/button';
 import { Input } from '@/src/components/ui/input';
@@ -39,7 +39,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
   // Customer form state
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
-  const [area, setArea] = useState(DHAKA_AREAS[0]);
+  const [area, setArea] = useState(KHULNA_AREAS[0]);
   const [address, setAddress] = useState('');
   const [deliverySlot, setDeliverySlot] = useState('আজকেই দ্রুততম ডেলিভারি (১ ঘণ্টার মধ্যে)');
   const [paymentMethod, setPaymentMethod] = useState<'cod' | 'bkash' | 'nagad'>('cod');
@@ -400,7 +400,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                   onChange={(e) => setArea(e.target.value)}
                   className="w-full h-11 px-3.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-800 focus:outline-cyan-500"
                 >
-                  {DHAKA_AREAS.map((loc, idx) => (
+                  {KHULNA_AREAS.map((loc, idx) => (
                     <option key={idx} value={loc}>
                       {loc}
                     </option>

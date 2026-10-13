@@ -38,7 +38,7 @@ export const Hero: React.FC<HeroProps> = ({
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-cyan-200/80 shadow-xs">
               <span className="flex h-2 w-2 rounded-full bg-cyan-600 animate-pulse" />
               <span className="text-xs font-semibold text-cyan-900">
-                ঢাকা ও চট্টগ্রামের বিশ্বস্ত বিশুদ্ধ পানির সরবরাহকারী
+                খুলনা শহরের বিশ্বস্ত বিশুদ্ধ পানির সরবরাহকারী
               </span>
             </div>
 

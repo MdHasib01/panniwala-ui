@@ -19,7 +19,6 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const navLinks = [
     { label: 'প্যাকেজ সমূহ', href: '#packages' },
-    { label: 'বিশুদ্ধতা প্রক্রিয়া', href: '#purity' },
     { label: 'সার্ভিস এরিয়া', href: '#areas' },
     { label: 'রিভিউ', href: '#reviews' },
     { label: 'প্রশ্নোত্তর', href: '#faq' },
@@ -32,7 +31,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="hidden sm:inline text-slate-200">
-              ঢাকা ও চট্টগ্রামে ১ ঘণ্টার মধ্যে বিশুদ্ধ পানির জার পৌঁছে দেওয়া হয়
+              খুলনা সিটিতে ১ ঘণ্টার মধ্যে বিশুদ্ধ পানির জার পৌঁছে দেওয়া হয়
             </span>
             <span className="sm:hidden text-slate-200">
               ১ ঘণ্টার মধ্যে ফ্রি হোম ডেলিভারি

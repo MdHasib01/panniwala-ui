@@ -45,11 +45,6 @@ export const Footer: React.FC<FooterProps> = ({
                 </a>
               </li>
               <li>
-                <a href="#purity" className="hover:text-cyan-400 transition-colors">
-                  ৭ স্তরের পরিশোধন পদ্ধতি
-                </a>
-              </li>
-              <li>
                 <a href="#areas" className="hover:text-cyan-400 transition-colors">
                   ডেলিভারি এরিয়া ও হাবসমূহ
                 </a>
@@ -70,10 +65,10 @@ export const Footer: React.FC<FooterProps> = ({
           {/* Service Areas */}
           <div className="space-y-3">
             <h4 className="text-sm font-bold text-white uppercase tracking-wider">
-              প্রধান ডেলিভারি হাব
+              প্রধান ডেলিভারি হাব (খুলনা)
             </h4>
             <div className="flex flex-wrap gap-1.5 text-[11px] text-slate-300">
-              {['মিরপুর', 'ধানমন্ডি', 'গুলশান', 'বনানী', 'উত্তরা', 'মোহাম্মদপুর', 'বসুন্ধরা', 'বাড্ডা', 'মতিঝিল', 'চট্টগ্রাম জিইসি'].map(
+              {['সোনাডাঙ্গা', 'বয়রা', 'খালিশপুর', 'দৌলতপুর', 'শিববাড়ি মোড়', 'নিরালা', 'ময়লাপোতা', 'রয়্যাল মোড়', 'মুজগুন্নি', 'রূপসা'].map(
                 (place, i) => (
                   <span
                     key={i}
@@ -108,7 +103,7 @@ export const Footer: React.FC<FooterProps> = ({
               </div>
               <div className="flex items-start gap-2 text-slate-400 pt-1">
                 <MapPin className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
-                <span>বাড়ি # ১২, রোড # ৪, ব্লক-এফ, বনানী, ঢাকা-১২১৩</span>
+                <span>কেডিএ এভিনিউ, শিববাড়ি মোড়, সোনাডাঙ্গা, খুলনা-৯১০০</span>
               </div>
             </div>
 
@@ -127,7 +122,7 @@ export const Footer: React.FC<FooterProps> = ({
         {/* Bottom copyright */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4 text-center sm:text-left">
           <p>
-            © {new Date().getFullYear()} পানি ওয়ালা (Pani Wala). সর্বস্বত্ব সংরক্ষিত। ট্রেড লাইসেন্স নং: TRAD/DNCC/049182
+            © {new Date().getFullYear()} পানি ওয়ালা (Pani Wala). সর্বস্বত্ব সংরক্ষিত। ট্রেড লাইসেন্স নং: TRAD/KCC/049182
           </p>
           <div className="flex items-center gap-1 text-slate-400">
             <span>বিশুদ্ধ পানির সাথে সুস্বাস্থ্য বজায় রাখুন</span>

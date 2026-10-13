@@ -3,7 +3,6 @@ import { Navbar } from '@/src/components/Navbar';
 import { Hero } from '@/src/components/Hero';
 import { QuickStats } from '@/src/components/QuickStats';
 import { Packages } from '@/src/components/Packages';
-import { PurityProcess } from '@/src/components/PurityProcess';
 import { ServiceAreaChecker } from '@/src/components/ServiceAreaChecker';
 import { Testimonials } from '@/src/components/Testimonials';
 import { Faq } from '@/src/components/Faq';
@@ -88,9 +87,6 @@ export default function App() {
 
         {/* Packages & Pricing Table */}
         <Packages onSelectPackage={(pkg) => handleOpenOrder(pkg)} />
-
-        {/* 7-Stage Purity Filtration Process */}
-        <PurityProcess />
 
         {/* Delivery Service Area Checker */}
         <ServiceAreaChecker onOpenOrder={() => handleOpenOrder()} />

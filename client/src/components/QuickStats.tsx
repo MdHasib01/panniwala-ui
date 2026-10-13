@@ -7,7 +7,7 @@ export const QuickStats: React.FC = () => {
       icon: Truck,
       value: '২৫,০০০+',
       label: 'সফল জার ডেলিভারি',
-      desc: 'ঢাকা ও চট্টগ্রামের বিভিন্ন এলাকায়',
+      desc: 'খুলনা সিটির বিভিন্ন এলাকায়',
     },
     {
       icon: Users,
