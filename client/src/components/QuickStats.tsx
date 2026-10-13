@@ -1,61 +1,53 @@
 import React from 'react';
-import { Truck, Users, ShieldCheck, Clock, CheckCircle } from 'lucide-react';
+import { Reveal, RevealItem } from '@/src/components/motion/Reveal';
+import { CountUp } from '@/src/components/motion/CountUp';
+import { CheckCircle2 } from 'lucide-react';
+
+const STATS = [
+  { to: 25000, suffix: '+', label: 'সফল জার ডেলিভারি', desc: 'খুলনা সিটির বিভিন্ন এলাকায়' },
+  { to: 12500, suffix: '+', label: 'নিয়মিত গ্রাহক পরিবার', desc: 'বাসা ও অফিসের বিশ্বস্ত পছন্দ' },
+  { to: 35, suffix: ' মিনিট', label: 'গড় ডেলিভারি সময়', desc: 'জরুরি প্রয়োজনে দ্রুততম সেবা' },
+  { to: 100, suffix: '%', label: 'BSTI অনুমোদিত মান', desc: 'প্রতি ব্যাচ ল্যাব দ্বারা পরীক্ষিত' },
+];
+
+const PROMISES = [
+  'BSTI অনুমোদিত বিশুদ্ধতার মান',
+  '১ ঘণ্টায় ফ্রি হোম ডেলিভারি',
+  'TDS ও pH সার্বক্ষণিক টেস্টেড',
+  'ক্যাশ অন ডেলিভারি ও বিকাশ',
+];
 
 export const QuickStats: React.FC = () => {
-  const stats = [
-    {
-      icon: Truck,
-      value: '২৫,০০০+',
-      label: 'সফল জার ডেলিভারি',
-      desc: 'খুলনা সিটির বিভিন্ন এলাকায়',
-    },
-    {
-      icon: Users,
-      value: '১২,৫০০+',
-      label: 'নিয়মিত গ্রাহক পরিবার',
-      desc: 'বাসা ও অফিসের বিশ্বস্ত পছন্দ',
-    },
-    {
-      icon: Clock,
-      value: '৩৫ মিনিট',
-      label: 'গড় ডেলিভারি সময়',
-      desc: 'জরুরি প্রয়োজনে দ্রুততম সেবা',
-    },
-    {
-      icon: ShieldCheck,
-      value: '১০০% বিশুদ্ধ',
-      label: 'BSTI অনুমোদিত মান',
-      desc: 'প্রতি ব্যাচ ল্যাব দ্বারা পরীক্ষিত',
-    },
-  ];
-
   return (
-    <section className="py-10 bg-white border-y border-slate-200/70">
+    // Ground continues the hero's water and settles into the page canvas.
+    <section aria-label="এক নজরে পানি ওয়ালা" className="relative bg-[linear-gradient(to_bottom,#cfeaf6,#e7f4fa_45%,#f5fafc)] pt-10 pb-16 sm:pt-14 sm:pb-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-          {stats.map((stat, idx) => {
-            const Icon = stat.icon;
-            return (
-              <div
-                key={idx}
-                className="flex flex-col items-center sm:items-start text-center sm:text-left space-y-1.5 p-3 rounded-2xl transition-all hover:bg-slate-50"
-              >
-                <div className="w-11 h-11 rounded-xl bg-cyan-50 border border-cyan-100 flex items-center justify-center text-cyan-600 mb-1">
-                  <Icon className="w-5 h-5" />
-                </div>
-                <span className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-                  {stat.value}
-                </span>
-                <span className="text-sm font-bold text-slate-800">
-                  {stat.label}
-                </span>
-                <span className="text-xs text-slate-500">
-                  {stat.desc}
-                </span>
-              </div>
-            );
-          })}
-        </div>
+        <Reveal as="ul" className="grid grid-cols-2 lg:grid-cols-4 gap-y-10 lg:divide-x divide-accent/15">
+          {STATS.map((s) => (
+            <RevealItem as="li" key={s.label} className="px-2 sm:px-6 first:pl-0">
+              <CountUp
+                to={s.to}
+                suffix={s.suffix}
+                className="block font-display text-[2.1rem] sm:text-5xl font-bold tracking-[-0.02em] text-ink leading-none"
+              />
+              <span className="mt-3 block text-sm sm:text-base font-bold text-ink">{s.label}</span>
+              <span className="mt-0.5 block text-xs sm:text-sm text-ink-soft">{s.desc}</span>
+            </RevealItem>
+          ))}
+        </Reveal>
+
+        <Reveal as="ul" className="mt-12 sm:mt-14 flex flex-wrap gap-2.5" stagger={0.05} delay={0.15}>
+          {PROMISES.map((text) => (
+            <RevealItem
+              as="li"
+              key={text}
+              className="inline-flex items-center gap-2 h-10 px-4 rounded-full bg-surface/80 ring-1 ring-hairline text-xs sm:text-sm font-medium text-ink"
+            >
+              <CheckCircle2 className="w-4 h-4 text-accent shrink-0" />
+              {text}
+            </RevealItem>
+          ))}
+        </Reveal>
       </div>
     </section>
   );

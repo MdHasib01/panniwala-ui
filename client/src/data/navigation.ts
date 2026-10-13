@@ -1,4 +1,4 @@
-import { House, Package, MapPin, Star, CircleQuestionMark, type LucideIcon } from 'lucide-react';
+import { House, Droplets, Package, MapPin, Star, CircleQuestionMark, type LucideIcon } from 'lucide-react';
 
 export interface NavItem {
   id: string;
@@ -10,9 +10,10 @@ export interface NavItem {
 
 export const HOME_NAV_ID = 'top';
 
-// Ordered by priority: items at the end move into the "More" sidebar first on narrow screens
+// In page order (active-section tracking relies on it); items at the end move into the "More" sidebar first on narrow screens
 export const NAV_ITEMS: NavItem[] = [
   { id: HOME_NAV_ID, label: 'হোম', shortLabel: 'হোম', href: '#top', icon: House },
+  { id: 'purity', label: 'বিশুদ্ধতা', shortLabel: 'বিশুদ্ধতা', href: '#purity', icon: Droplets },
   { id: 'packages', label: 'প্যাকেজ সমূহ', shortLabel: 'প্যাকেজ', href: '#packages', icon: Package },
   { id: 'areas', label: 'সার্ভিস এরিয়া', shortLabel: 'এরিয়া', href: '#areas', icon: MapPin },
   { id: 'reviews', label: 'রিভিউ', shortLabel: 'রিভিউ', href: '#reviews', icon: Star },

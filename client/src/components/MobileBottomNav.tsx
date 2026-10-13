@@ -1,6 +1,7 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { BrandLogo } from '@/src/components/BrandLogo';
+import { useScrollProgress } from '@/src/lib/motion';
 import { HOME_NAV_ID, NAV_ITEMS, NavItem } from '@/src/data/navigation';
 import { HOTLINE_NUMBER, HOTLINE_TEL, WHATSAPP_CHAT_URL } from '@/src/data/packages';
 import {
@@ -107,20 +108,20 @@ const TabButton: React.FC<TabButtonProps> = ({ id, label, icon: Icon, active, on
       {active && (
         <motion.span
           layoutId="bottom-nav-active-pill"
-          className="absolute inset-0 rounded-full bg-gradient-to-br from-cyan-100 to-sky-100 ring-1 ring-cyan-200/70"
+          className="absolute inset-0 rounded-full bg-accent-wash ring-1 ring-accent/15"
           transition={{ type: 'spring', stiffness: 520, damping: 38 }}
         />
       )}
       <Icon
         className={`relative w-[22px] h-[22px] transition-colors ${
-          active ? 'text-cyan-700' : 'text-slate-500 group-hover:text-slate-700'
+          active ? 'text-accent' : 'text-slate-500 group-hover:text-slate-700'
         }`}
         strokeWidth={active ? 2.4 : 1.9}
       />
     </span>
     <span
       className={`max-w-full truncate px-0.5 text-[11px] leading-none transition-colors ${
-        active ? 'font-bold text-cyan-800' : 'font-medium text-slate-500'
+        active ? 'font-bold text-accent' : 'font-medium text-slate-500'
       }`}
     >
       {label}
@@ -128,21 +129,37 @@ const TabButton: React.FC<TabButtonProps> = ({ id, label, icon: Icon, active, on
   </button>
 );
 
-const OrderButton: React.FC<{ onClick: () => void }> = ({ onClick }) => (
-  <div className="flex-1 min-w-0 flex flex-col items-center justify-end pb-1.5">
-    <button
-      id="bottom-nav-order-btn"
-      type="button"
-      onClick={onClick}
-      aria-label="এখনই অর্ডার করুন"
-      className="relative -mt-8 mb-1 flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-cyan-500 via-cyan-600 to-sky-700 text-white ring-[5px] ring-white shadow-lg shadow-cyan-600/40 transition-transform duration-150 active:scale-90 focus:outline-none focus-visible:ring-cyan-200"
-    >
-      <span className="absolute inset-0 rounded-full bg-gradient-to-t from-transparent to-white/25 pointer-events-none" />
-      <ShoppingBag className="relative w-6 h-6" strokeWidth={2.2} />
-    </button>
-    <span className="text-[11px] leading-none font-bold text-cyan-700">অর্ডার</span>
-  </div>
-);
+const OrderButton: React.FC<{ onClick: () => void }> = ({ onClick }) => {
+  // The page's reading progress fills the ring, the mobile half of the "jar fills as you read" move.
+  const scrollYProgress = useScrollProgress();
+  return (
+    <div className="flex-1 min-w-0 flex flex-col items-center justify-end pb-1.5">
+      <button
+        id="bottom-nav-order-btn"
+        type="button"
+        onClick={onClick}
+        aria-label="এখনই অর্ডার করুন"
+        className="relative -mt-8 mb-1 flex items-center justify-center w-14 h-14 rounded-full bg-accent text-accent-ink ring-[5px] ring-white shadow-e3 transition-transform duration-150 active:scale-90 focus:outline-none focus-visible:ring-water"
+      >
+        <svg aria-hidden="true" viewBox="0 0 66 66" className="absolute -inset-[5px] w-[66px] h-[66px] -rotate-90 pointer-events-none">
+          <motion.circle
+            cx="33"
+            cy="33"
+            r="31"
+            fill="none"
+            stroke="#5fb6e0"
+            strokeWidth="3"
+            strokeLinecap="round"
+            style={{ pathLength: scrollYProgress }}
+          />
+        </svg>
+        <span className="absolute inset-0 rounded-full bg-gradient-to-t from-transparent to-white/20 pointer-events-none" />
+        <ShoppingBag className="relative w-6 h-6" strokeWidth={2.2} />
+      </button>
+      <span className="text-[11px] leading-none font-bold text-accent">অর্ডার</span>
+    </div>
+  );
+};
 
 interface MoreSheetProps {
   open: boolean;
@@ -198,7 +215,7 @@ const MoreSheet: React.FC<MoreSheetProps> = ({ open, items, activeId, onClose, o
             transition={{ type: 'spring', stiffness: 380, damping: 38 }}
           >
             {/* Header */}
-            <div className="relative px-5 pt-6 pb-5 bg-gradient-to-br from-cyan-50 via-sky-50 to-white border-b border-slate-100">
+            <div className="relative px-5 pt-6 pb-5 bg-gradient-to-br from-accent-wash to-white border-b border-slate-100">
               <div className="flex items-start justify-between gap-3">
                 <BrandLogo size="sm" className="min-w-0" />
                 <button
@@ -206,7 +223,7 @@ const MoreSheet: React.FC<MoreSheetProps> = ({ open, items, activeId, onClose, o
                   type="button"
                   onClick={onClose}
                   aria-label="মেনু বন্ধ করুন"
-                  className="shrink-0 w-9 h-9 flex items-center justify-center rounded-full bg-white text-slate-600 ring-1 ring-slate-200 shadow-xs hover:text-slate-900 active:scale-90 transition-transform focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500"
+                  className="shrink-0 w-9 h-9 flex items-center justify-center rounded-full bg-white text-slate-600 ring-1 ring-slate-200 shadow-xs hover:text-slate-900 active:scale-90 transition-transform focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
                 >
                   <X className="w-4.5 h-4.5" />
                 </button>
@@ -233,22 +250,22 @@ const MoreSheet: React.FC<MoreSheetProps> = ({ open, items, activeId, onClose, o
                           aria-current={active ? 'page' : undefined}
                           className={`w-full flex items-center gap-3 p-2.5 rounded-2xl text-left transition-colors active:scale-[0.98] ${
                             active
-                              ? 'bg-cyan-50 ring-1 ring-cyan-200/70'
+                              ? 'bg-accent-wash ring-1 ring-accent/15'
                               : 'hover:bg-slate-50'
                           }`}
                         >
                           <span
                             className={`w-10 h-10 shrink-0 flex items-center justify-center rounded-xl ${
                               active
-                                ? 'bg-cyan-600 text-white shadow-md shadow-cyan-600/30'
-                                : 'bg-cyan-50 text-cyan-700'
+                                ? 'bg-accent text-accent-ink shadow-e2'
+                                : 'bg-accent-wash text-accent'
                             }`}
                           >
                             <Icon className="w-5 h-5" strokeWidth={2.1} />
                           </span>
                           <span
                             className={`flex-1 text-[15px] ${
-                              active ? 'font-bold text-cyan-900' : 'font-semibold text-slate-700'
+                              active ? 'font-bold text-ink' : 'font-semibold text-slate-700'
                             }`}
                           >
                             {label}
@@ -269,13 +286,13 @@ const MoreSheet: React.FC<MoreSheetProps> = ({ open, items, activeId, onClose, o
                 <div className="grid grid-cols-2 gap-2.5">
                   <a
                     href={`tel:${HOTLINE_TEL}`}
-                    className="flex flex-col gap-2 p-3 rounded-2xl bg-gradient-to-br from-cyan-600 to-sky-700 text-white shadow-md shadow-cyan-600/25 active:scale-[0.97] transition-transform"
+                    className="flex flex-col gap-2 p-3 rounded-2xl bg-accent text-accent-ink shadow-e2 active:scale-[0.97] transition-transform"
                   >
                     <span className="w-9 h-9 flex items-center justify-center rounded-xl bg-white/20">
                       <Phone className="w-4.5 h-4.5" />
                     </span>
                     <span className="leading-tight">
-                      <span className="block text-[11px] text-cyan-100">সরাসরি কল</span>
+                      <span className="block text-[11px] text-white/80">সরাসরি কল</span>
                       <span className="block text-[13px] font-bold">{HOTLINE_NUMBER}</span>
                     </span>
                   </a>

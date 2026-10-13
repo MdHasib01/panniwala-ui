@@ -32,15 +32,15 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({ size = 'md', className = '
       <div className="flex flex-col">
         <div className="flex items-center gap-1.5">
           <span
-            className={`font-bold tracking-tight text-slate-900 leading-none ${textSizes[size]}`}
+            className={`font-bold tracking-tight text-ink leading-none font-display ${textSizes[size]}`}
           >
-            পানি <span className="text-cyan-600">ওয়ালা</span>
+            পানি <span className="text-accent">ওয়ালা</span>
           </span>
-          <span className="inline-block px-1.5 py-0.5 text-[9px] font-semibold bg-cyan-100 text-cyan-800 rounded-md">
+          <span className="inline-block px-1.5 py-0.5 text-[9px] font-semibold bg-accent-wash text-accent rounded-md">
             BD
           </span>
         </div>
-        <span className="text-[11px] text-slate-500 font-medium tracking-normal mt-0.5">
+        <span className="text-[11px] text-ink-soft font-medium tracking-normal mt-0.5">
           নিরাপদ ও বিশুদ্ধ পানির বিশ্বস্ত সরবরাহ
         </span>
       </div>

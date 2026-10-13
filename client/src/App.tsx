@@ -2,11 +2,14 @@ import React, { useState } from 'react';
 import { Navbar } from '@/src/components/Navbar';
 import { Hero } from '@/src/components/Hero';
 import { QuickStats } from '@/src/components/QuickStats';
+import { PurityProcess } from '@/src/components/PurityProcess';
 import { Packages } from '@/src/components/Packages';
 import { ServiceAreaChecker } from '@/src/components/ServiceAreaChecker';
 import { Testimonials } from '@/src/components/Testimonials';
 import { Faq } from '@/src/components/Faq';
+import { FinalCta } from '@/src/components/FinalCta';
 import { Footer } from '@/src/components/Footer';
+import { JarProgress } from '@/src/components/JarProgress';
 import { MobileBottomNav } from '@/src/components/MobileBottomNav';
 import { OrderModal } from '@/src/components/OrderModal';
 import { FloatingWhatsApp } from '@/src/components/FloatingWhatsApp';
@@ -28,33 +31,40 @@ export default function App() {
   };
 
   return (
-    <div id="top" className="min-h-screen bg-slate-50 text-slate-900 flex flex-col selection:bg-cyan-500 selection:text-white font-sans antialiased">
-      {/* Top Navbar */}
+    <div id="top" className="min-h-screen bg-canvas text-ink flex flex-col font-sans antialiased">
+      {/* Fixed top bar: announcement strip slides away on scroll */}
       <Navbar onOpenOrder={() => handleOpenOrder()} />
 
-      {/* Main Content Sections */}
       <main className="flex-1">
-        {/* Hero Section with proper Call & Order CTAs */}
+        {/* Layered hero: the jar settles into rising water */}
         <Hero onOpenOrder={() => handleOpenOrder()} />
 
-        {/* Quick Trust Statistics */}
+        {/* Proof that ticks up on arrival */}
         <QuickStats />
 
-        {/* Packages & Pricing Table */}
+        {/* The peak: murky water clears through 7 filter stages */}
+        <PurityProcess />
+
+        {/* Packages on a horizontal rail */}
         <Packages onSelectPackage={(pkg) => handleOpenOrder(pkg)} />
 
-        {/* Delivery Service Area Checker */}
+        {/* Delivery service area checker */}
         <ServiceAreaChecker onOpenOrder={() => handleOpenOrder()} />
 
-        {/* Customer Reviews & Social Proof */}
+        {/* Customer reviews */}
         <Testimonials />
 
-        {/* Frequently Asked Questions */}
+        {/* Frequently asked questions */}
         <Faq />
+
+        {/* The close: the jar is full, one action */}
+        <FinalCta onOpenOrder={() => handleOpenOrder()} />
       </main>
 
-      {/* Footer */}
       <Footer />
+
+      {/* Signature move: reading progress fills a jar (wide desktop) */}
+      <JarProgress />
 
       {/* Fixed WhatsApp Support Logo (Bottom Right) */}
       <FloatingWhatsApp />
