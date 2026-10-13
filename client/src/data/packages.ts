@@ -1,7 +1,6 @@
 import { WaterPackage } from '@/src/types';
 import package1Img from '@/src/assets/package1.png';
 import package2Img from '@/src/assets/package2.png';
-import package3Img from '@/src/assets/package3.png';
 import package4Img from '@/src/assets/package4.png';
 
 export const WATER_PACKAGES: WaterPackage[] = [
@@ -44,25 +43,6 @@ export const WATER_PACKAGES: WaterPackage[] = [
     depositRequired: false,
     depositAmount: 0,
     iconName: 'zap'
-  },
-  {
-    id: 'mineral-5l-pack',
-    title: '৫ লিটার বোতল (৪টি বোতল)',
-    subtitle: 'ছোট পরিবার বা অফিসের জন্য উপযুক্ত প্যাক',
-    volume: '৫ লিটার × ৪টি বোতল',
-    price: 400,
-    regularPrice: 500,
-    unit: '৪ বোতলের প্যাক',
-    image: package3Img,
-    features: [
-      'RO ফিল্টারকৃত বিশুদ্ধ পানি',
-      'পরিবার/অফিসের দৈনিক চাহিদার জন্য পারফেক্ট',
-      'হালকা ও সহজে বহনযোগ্য',
-      'নিরাপদ, স্বাস্থ্যসম্মত ও মান নিয়ন্ত্রিত'
-    ],
-    depositRequired: false,
-    depositAmount: 0,
-    iconName: 'sparkles'
   },
   {
     id: 'corporate-monthly',

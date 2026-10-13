@@ -51,9 +51,6 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
     if (pkg.bestValue) {
       return 'border-2 border-emerald-500 ring-4 ring-emerald-100/50 shadow-md bg-white';
     }
-    if (pkg.id === 'mineral-5l-pack') {
-      return 'border-2 border-indigo-200/90 hover:border-indigo-400 shadow-sm bg-white';
-    }
     return 'border-2 border-slate-200/90 hover:border-slate-300 shadow-sm bg-white';
   };
 
@@ -85,7 +82,7 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
         </div>
 
         {/* Packages Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 pt-3 items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 pt-3 items-stretch max-w-6xl mx-auto">
           {WATER_PACKAGES.map((pkg) => {
             const isPopular = pkg.popular;
             const isBestValue = pkg.bestValue;
