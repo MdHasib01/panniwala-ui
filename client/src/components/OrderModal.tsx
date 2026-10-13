@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
-import { WATER_PACKAGES, DHAKA_AREAS, HOTLINE_NUMBER, HOTLINE_TEL } from '@/src/data/packages';
+import { WATER_PACKAGES, DHAKA_AREAS, HOTLINE_NUMBER, HOTLINE_TEL, toBengaliNumber } from '@/src/data/packages';
 import { WaterPackage, CustomerDetails, ConfirmedOrder } from '@/src/types';
 import { Button } from '@/src/components/ui/button';
 import { Input } from '@/src/components/ui/input';
@@ -216,7 +216,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
               </div>
               <div className="flex justify-between pt-2 border-t border-slate-200 text-base font-bold text-slate-900">
                 <span>সর্বমোট প্রদেয়</span>
-                <span className="text-cyan-700">৳{confirmedOrder.item.totalPrice}</span>
+                <span className="text-cyan-700">৳{toBengaliNumber(confirmedOrder.item.totalPrice)}</span>
               </div>
             </div>
 
@@ -254,23 +254,30 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                     <div
                       key={pkg.id}
                       onClick={() => setPackageId(pkg.id)}
-                      className={`cursor-pointer p-3 rounded-2xl border transition-all text-left flex flex-col justify-between ${
+                      className={`cursor-pointer p-3 rounded-2xl border transition-all text-left flex items-center gap-2.5 ${
                         isSelected
-                          ? 'border-cyan-600 bg-cyan-50/60 ring-2 ring-cyan-500/20 shadow-xs'
+                          ? 'border-cyan-600 bg-cyan-50/70 ring-2 ring-cyan-500/20 shadow-xs'
                           : 'border-slate-200 hover:border-slate-300 bg-white'
                       }`}
                     >
-                      <div className="flex items-start justify-between gap-1">
-                        <span className="text-xs font-bold text-slate-900 leading-snug">
-                          {pkg.title}
-                        </span>
-                        <span className="text-xs font-extrabold text-cyan-700 shrink-0">
-                          ৳{pkg.price}
-                        </span>
+                      <img
+                        src={pkg.image}
+                        alt={pkg.title}
+                        className="w-12 h-12 object-contain shrink-0 rounded-xl bg-slate-50 p-0.5"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between gap-1">
+                          <span className="text-xs font-bold text-slate-900 leading-snug truncate">
+                            {pkg.title}
+                          </span>
+                          <span className="text-xs font-extrabold text-cyan-700 shrink-0">
+                            ৳{toBengaliNumber(pkg.price)}
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-slate-500 mt-0.5 line-clamp-1">
+                          {pkg.volume}
+                        </p>
                       </div>
-                      <p className="text-[11px] text-slate-500 mt-1 line-clamp-1">
-                        {pkg.volume}
-                      </p>
                     </div>
                   );
                 })}
@@ -291,8 +298,8 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                   >
                     <Minus className="w-4 h-4" />
                   </button>
-                  <span className="text-lg font-bold text-slate-900 w-8 text-center font-mono">
-                    {quantity}
+                  <span className="text-lg font-bold text-slate-900 w-8 text-center">
+                    {toBengaliNumber(quantity)}
                   </span>
                   <button
                     type="button"
@@ -332,12 +339,12 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                           : 'bg-white text-slate-700 border-slate-200'
                       }`}
                     >
-                      না, নতুন (+৳২০০)
+                      না, নতুন (+৳{toBengaliNumber(currentPkg.depositAmount)})
                     </button>
                   </div>
                   {!hasEmptyJar && (
                     <p className="text-[10px] text-amber-700 mt-1">
-                      *নতুন জারের জন্য ৳২০০ জামানত (জার ফেরত দিলে এই টাকা ফেরত পাবেন)
+                      *নতুন জারের জন্য ৳{toBengaliNumber(currentPkg.depositAmount)} জামানত (জার ফেরত দিলে এই টাকা ফেরত পাবেন)
                     </p>
                   )}
                 </div>
@@ -466,13 +473,13 @@ export const OrderModal: React.FC<OrderModalProps> = ({
             {/* Price Summary Breakdown */}
             <div className="p-4 rounded-2xl bg-cyan-50/60 border border-cyan-200/80 space-y-1.5 text-xs">
               <div className="flex justify-between text-slate-600">
-                <span>পানির মূল্য ({quantity} টি × ৳{currentPkg.price})</span>
-                <span className="font-semibold text-slate-800">৳{itemsCost}</span>
+                <span>পানির মূল্য ({toBengaliNumber(quantity)} টি × ৳{toBengaliNumber(currentPkg.price)})</span>
+                <span className="font-semibold text-slate-800">৳{toBengaliNumber(itemsCost)}</span>
               </div>
               {totalDeposit > 0 && (
                 <div className="flex justify-between text-amber-800">
-                  <span>নতুন জার ডিপোজিট ({quantity} টি × ৳{currentPkg.depositAmount})</span>
-                  <span className="font-semibold">৳{totalDeposit}</span>
+                  <span>নতুন জার ডিপোজিট ({toBengaliNumber(quantity)} টি × ৳{toBengaliNumber(currentPkg.depositAmount)})</span>
+                  <span className="font-semibold">৳{toBengaliNumber(totalDeposit)}</span>
                 </div>
               )}
               <div className="flex justify-between text-emerald-700 font-medium">
@@ -481,7 +488,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
               </div>
               <div className="flex justify-between pt-2 border-t border-cyan-200 text-sm font-bold text-slate-900">
                 <span>সর্বমোট প্রদেয় বিল</span>
-                <span className="text-base text-cyan-800">৳{grandTotal}</span>
+                <span className="text-base text-cyan-800">৳{toBengaliNumber(grandTotal)}</span>
               </div>
             </div>
 
@@ -495,7 +502,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
               {isSubmitting ? (
                 <span>অর্ডার প্রসেস হচ্ছে...</span>
               ) : (
-                <span>অর্ডার নিশ্চিত করুন (৳{grandTotal})</span>
+                <span>অর্ডার নিশ্চিত করুন (৳{toBengaliNumber(grandTotal)})</span>
               )}
             </Button>
 

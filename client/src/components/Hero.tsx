@@ -86,7 +86,7 @@ export const Hero: React.FC<HeroProps> = ({
                 className="w-full sm:w-auto bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-base shadow-lg shadow-cyan-600/30 hover:shadow-cyan-600/40 px-8 py-3.5 rounded-xl transition-all"
               >
                 <ShoppingBag className="w-5 h-5 mr-1" />
-                <span>অনলাইনে অর্ডার করুন — মাত্র ৳৮০</span>
+                <span>অনলাইনে অর্ডার করুন — মাত্র ৳৪০</span>
               </Button>
 
               {/* Direct Call CTA */}

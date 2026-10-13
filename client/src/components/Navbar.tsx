@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { BrandLogo } from '@/src/components/BrandLogo';
 import { Button } from '@/src/components/ui/button';
 import { HOTLINE_NUMBER, HOTLINE_TEL } from '@/src/data/packages';
-import { Phone, ShoppingBag, Menu, X, ShieldCheck, Clock } from 'lucide-react';
+import { Phone, ShoppingBag, Menu, X } from 'lucide-react';
 
 interface NavbarProps {
   customLogoUrl: string | null;
@@ -31,9 +31,6 @@ export const Navbar: React.FC<NavbarProps> = ({
       <div className="bg-gradient-to-r from-cyan-900 via-cyan-800 to-sky-900 text-white text-[12px] font-medium py-1.5 px-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="inline-flex items-center gap-1 bg-cyan-500/30 px-2 py-0.5 rounded-full text-cyan-200 text-[11px] font-semibold border border-cyan-400/30">
-              <Clock className="w-3 h-3" /> এক্সপ্রেস ডেলিভারি
-            </span>
             <span className="hidden sm:inline text-slate-200">
               ঢাকা ও চট্টগ্রামে ১ ঘণ্টার মধ্যে বিশুদ্ধ পানির জার পৌঁছে দেওয়া হয়
             </span>

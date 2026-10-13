@@ -1,39 +1,45 @@
 import { WaterPackage } from '@/src/types';
+import package1Img from '@/src/assets/package1.png';
+import package2Img from '@/src/assets/package2.png';
+import package3Img from '@/src/assets/package3.png';
+import package4Img from '@/src/assets/package4.png';
 
 export const WATER_PACKAGES: WaterPackage[] = [
   {
     id: 'ro-20l-jar',
-    title: '২০ লিটার RO প্রিমিয়াম জার',
-    subtitle: 'বাসা-বাড়ি ও ছোট পরিবারের জন্য সবচেয়ে জনপ্রিয়',
+    title: '২০ লিটার বিশুদ্ধতার জার',
+    subtitle: 'বাসা-বাড়ি ও পরিবারের জন্য সবচেয়ে জনপ্রিয়',
     volume: '২০ লিটার',
-    price: 80,
-    regularPrice: 100,
+    price: 40,
+    regularPrice: 60,
     unit: 'প্রতি জার',
     popular: true,
+    image: package1Img,
     features: [
-      '৭ স্তরের রিভার্স অসমোসিস (RO) ফিল্টারিং',
-      'প্রাকৃতিক মিনারেল ও ব্যালেন্সড pH ৭.২',
-      'জীবাণুমুক্ত সিলগালা ও স্যানিটাইজড জার',
-      'ফ্রি দ্রুততম হোম ডেলিভারি'
+      '৭ ধাপে বিশুদ্ধকরণ (RO) ফিল্টারিং',
+      'ক্ষতিকর মিনারেল ও ব্যাক্টেরিয়া মুক্ত, pH ৭.২',
+      'নিয়মিত মান নিয়ন্ত্রণ ও ল্যাবটেস্টেড পানি',
+      'ফ্রি কলসার এবং ডেলিভারি'
     ],
     depositRequired: true,
-    depositAmount: 200,
+    depositAmount: 100,
     iconName: 'droplets'
   },
   {
     id: 'ro-20l-pump-combo',
-    title: '২০ লিটার জার + ইলেকট্রিক অটো পাম্প কম্বো',
-    subtitle: 'নতুন সংযোগের জন্য সেরা স্মার্ট কম্বো অফার',
-    volume: '২০ লিটার + পাম্প',
-    price: 380,
-    regularPrice: 480,
-    unit: 'কম্বো সেট',
+    title: '২০ লিটার জার + ওয়াটার মেশিন',
+    subtitle: 'নতুন সংযোগের জন্য নির্ভরযোগ্য সমাধান',
+    volume: '২০ লিটার + মেশিন',
+    price: 199,
+    regularPrice: 1200,
+    unit: 'প্রথম সেট',
     bestValue: true,
+    image: package2Img,
     features: [
-      '১টি সম্পূর্ণ রিচার্জেবল ইলেকট্রিক ওয়াটার ডিসপেনসার পাম্প',
-      '১টি ভর্তি ২০ লিটার বিশুদ্ধ পানির জার',
-      'এক চার্জে টানা ৪-৫টি জার ব্যবহার উপযোগী',
-      'ইউএসবি ফাস্ট চার্জিং ক্যাবল সহ ফ্রি সেটআপ'
+      'হট, নরমাল ও কোল্ড অপশন আধুনিক ওয়াটার ডিসপেনসার মেশিন',
+      'প্রথম জার ২০ লিটার বিশুদ্ধ পানি সহ',
+      'সহজ ইনস্টলেশন ও ব্যবহার',
+      '১ বছরের সার্ভিস ওয়ারেন্টি'
     ],
     depositRequired: false,
     depositAmount: 0,
@@ -41,17 +47,18 @@ export const WATER_PACKAGES: WaterPackage[] = [
   },
   {
     id: 'mineral-5l-pack',
-    title: '৫ লিটার মিনারেল বোতল (৪টির প্যাক)',
-    subtitle: 'হালকা ও সহজে বহনযোগ্য, জারের ঝামেলামুক্ত',
-    volume: '৫ লিটার × ৪টি (২০ লিটার)',
-    price: 180,
-    regularPrice: 210,
-    unit: '৪ বোতলের বান্ডেল',
+    title: '৫ লিটার বোতল (৪টি বোতল)',
+    subtitle: 'ছোট পরিবার বা অফিসের জন্য উপযুক্ত প্যাক',
+    volume: '৫ লিটার × ৪টি বোতল',
+    price: 400,
+    regularPrice: 500,
+    unit: '৪ বোতলের প্যাক',
+    image: package3Img,
     features: [
-      'কোনো খালি জার জমা দেওয়ার প্রয়োজন নেই',
-      'ফুড-গ্রেড ও ওয়ান-টাইম ভার্জিন পেট বোতল',
-      'ভ্রমণ, রোগী ও বিশেষ ব্যবহারের জন্য উপযোগী',
-      'ল্যাব টেস্টেড ১০০% বিশুদ্ধ মিনারেল ওয়াটার'
+      'RO ফিল্টারকৃত বিশুদ্ধ পানি',
+      'পরিবার/অফিসের দৈনিক চাহিদার জন্য পারফেক্ট',
+      'হালকা ও সহজে বহনযোগ্য',
+      'নিরাপদ, স্বাস্থ্যসম্মত ও মান নিয়ন্ত্রিত'
     ],
     depositRequired: false,
     depositAmount: 0,
@@ -59,20 +66,21 @@ export const WATER_PACKAGES: WaterPackage[] = [
   },
   {
     id: 'corporate-monthly',
-    title: 'অফিস ও করপোরেট সাবস্ক্রিপশন',
-    subtitle: 'অফিস, রেস্তোরাঁ ও বাণিজ্যিক প্রতিষ্ঠানের জন্য বিশেষ রেট',
-    volume: 'মাসিক চাহিদা অনুযায়ী',
-    price: 70,
-    regularPrice: 90,
+    title: 'অফিস সাবস্ক্রিপশন',
+    subtitle: 'অফিস, রেস্টুরেন্ট ও বাণিজ্যিক প্রতিষ্ঠানের জন্য বিশেষ প্যাকেজ',
+    volume: 'অফিস/প্রতিষ্ঠান',
+    price: 35,
+    regularPrice: 50,
     unit: 'প্রতি জার',
+    image: package4Img,
     features: [
-      'প্রতি জারে সর্বনিম্ন ৳৭০ ফ্ল্যাট রেট',
-      'ফ্রি হট & কোল্ড ইলেকট্রিক ডিসপেনসার (চুক্তি সাপেক্ষে)',
-      'মাসিক ভ্যাট চালানের সুবিধা ও অগ্রাধিকার ডেলিভারি',
-      'ডেডিকেটেড একাউন্ট ম্যানেজার ও ইনস্ট্যান্ট রিপ্লেসমেন্ট'
+      'প্রতি মাসে মাত্র ৩৫ টাকার বিশেষ সাবস্ক্রিপশন রেট',
+      'নিয়মিত ডেলিভারি ও তাৎক্ষণিক সরবরাহ',
+      'প্রতিষ্ঠানের জন্য কাস্টম বিলিং সুবিধা',
+      'রেগুলার সার্ভিস ও কাস্টমার সাপোর্ট'
     ],
     depositRequired: true,
-    depositAmount: 180,
+    depositAmount: 100,
     iconName: 'building'
   }
 ];
@@ -98,3 +106,11 @@ export const DHAKA_AREAS = [
 export const HOTLINE_NUMBER = '০১৭০০-১২৩৪৫৬';
 export const HOTLINE_TEL = '+8801700123456';
 export const WHATSAPP_NUMBER = '8801700123456';
+
+/**
+ * Converts English digits to Bengali numerals for clean Bangla typography.
+ */
+export const toBengaliNumber = (num: number | string): string => {
+  const bengaliDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+  return String(num).replace(/[0-9]/g, (digit) => bengaliDigits[parseInt(digit, 10)]);
+};

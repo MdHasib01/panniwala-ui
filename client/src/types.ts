@@ -12,6 +12,7 @@ export interface WaterPackage {
   depositRequired: boolean;
   depositAmount: number;
   iconName: 'droplets' | 'sparkles' | 'zap' | 'building';
+  image: string;
 }
 
 export interface OrderItem {

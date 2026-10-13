@@ -1,10 +1,17 @@
 import React from 'react';
-import { WATER_PACKAGES } from '@/src/data/packages';
+import { WATER_PACKAGES, toBengaliNumber } from '@/src/data/packages';
 import { WaterPackage } from '@/src/types';
 import { Button } from '@/src/components/ui/button';
 import { Badge } from '@/src/components/ui/badge';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/src/components/ui/card';
-import { Check, Droplets, Zap, Sparkles, Building2, ShoppingBag, ArrowRight } from 'lucide-react';
+import {
+  Check,
+  Droplets,
+  Zap,
+  Sparkles,
+  Building2,
+  CalendarCheck,
+  ArrowRight
+} from 'lucide-react';
 
 interface PackagesProps {
   onSelectPackage: (pkg: WaterPackage) => void;
@@ -14,14 +21,50 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
   const getIcon = (iconName: string) => {
     switch (iconName) {
       case 'zap':
-        return <Zap className="w-5 h-5 text-amber-500" />;
+        return <Zap className="w-4 h-4 text-amber-500 fill-amber-500" />;
       case 'sparkles':
-        return <Sparkles className="w-5 h-5 text-indigo-500" />;
+        return <Sparkles className="w-4 h-4 text-indigo-500" />;
       case 'building':
-        return <Building2 className="w-5 h-5 text-emerald-600" />;
+        return <Building2 className="w-4 h-4 text-emerald-600" />;
       default:
-        return <Droplets className="w-5 h-5 text-cyan-600" />;
+        return <Droplets className="w-4 h-4 text-cyan-600 fill-cyan-500/30" />;
     }
+  };
+
+  const getIconContainerStyle = (iconName: string) => {
+    switch (iconName) {
+      case 'zap':
+        return 'bg-amber-50 text-amber-500 border border-amber-200';
+      case 'sparkles':
+        return 'bg-indigo-50 text-indigo-500 border border-indigo-200';
+      case 'building':
+        return 'bg-emerald-50 text-emerald-600 border border-emerald-200';
+      default:
+        return 'bg-sky-50 text-sky-600 border border-sky-200';
+    }
+  };
+
+  const getCardBorderClass = (pkg: WaterPackage) => {
+    if (pkg.popular) {
+      return 'border-2 border-sky-400 ring-4 ring-sky-100/50 shadow-md bg-white';
+    }
+    if (pkg.bestValue) {
+      return 'border-2 border-emerald-500 ring-4 ring-emerald-100/50 shadow-md bg-white';
+    }
+    if (pkg.id === 'mineral-5l-pack') {
+      return 'border-2 border-indigo-200/90 hover:border-indigo-400 shadow-sm bg-white';
+    }
+    return 'border-2 border-slate-200/90 hover:border-slate-300 shadow-sm bg-white';
+  };
+
+  const getButtonClass = (pkg: WaterPackage) => {
+    if (pkg.popular) {
+      return 'bg-[#0284c7] hover:bg-sky-600 text-white shadow-md shadow-sky-500/25';
+    }
+    if (pkg.bestValue) {
+      return 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-600/25';
+    }
+    return 'bg-[#0f172a] hover:bg-slate-800 text-white shadow-sm';
   };
 
   return (
@@ -30,7 +73,7 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
         
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16 space-y-3">
-          <Badge variant="cyan" className="px-3 py-1 text-xs">
+          <Badge variant="cyan" className="px-3 py-1 text-xs font-semibold">
             পানির প্যাকেজ ও মূল্যতালিকা
           </Badge>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight">
@@ -48,111 +91,120 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
             const isBestValue = pkg.bestValue;
 
             return (
-              <Card
+              <div
                 key={pkg.id}
-                className={`relative flex flex-col justify-between transition-all duration-200 hover:shadow-xl hover:-translate-y-1 ${
-                  isPopular
-                    ? 'border-2 border-cyan-500 ring-4 ring-cyan-100/50 shadow-md bg-white'
-                    : isBestValue
-                    ? 'border-2 border-emerald-500 ring-4 ring-emerald-100/50 shadow-md bg-white'
-                    : 'border-slate-200/90 bg-white'
-                }`}
+                className={`relative flex flex-col justify-between rounded-[26px] transition-all duration-300 hover:shadow-2xl hover:-translate-y-1.5 overflow-hidden group ${getCardBorderClass(pkg)}`}
               >
                 {/* Popular / Best Value Ribbon */}
                 {isPopular && (
-                  <div className="absolute -top-3.5 inset-x-0 flex justify-center">
-                    <span className="bg-cyan-600 text-white text-[11px] font-bold px-3 py-0.5 rounded-full shadow-sm tracking-wide">
-                      ★ সবচেয়ে জনপ্রিয়
+                  <div className="absolute top-0 inset-x-0 flex justify-center -translate-y-1/2 z-20">
+                    <span className="bg-[#0284c7] text-white text-[11px] font-bold px-3.5 py-0.5 rounded-full shadow-sm tracking-wide">
+                      ★ সবচেয়ে জনপ্রিয়
                     </span>
                   </div>
                 )}
                 {isBestValue && (
-                  <div className="absolute -top-3.5 inset-x-0 flex justify-center">
-                    <span className="bg-emerald-600 text-white text-[11px] font-bold px-3 py-0.5 rounded-full shadow-sm tracking-wide">
-                      ⚡ সেরা ভ্যালু কম্বো
+                  <div className="absolute top-0 inset-x-0 flex justify-center -translate-y-1/2 z-20">
+                    <span className="bg-emerald-600 text-white text-[11px] font-bold px-3.5 py-0.5 rounded-full shadow-sm tracking-wide">
+                      ⚡ সেরা ভ্যালু প্যাক
                     </span>
                   </div>
                 )}
 
-                <div>
-                  <CardHeader className="p-6 pb-4 space-y-2">
+                {/* Top Half: Product Image Area */}
+                <div className="relative pt-7 pb-2 px-4 flex items-center justify-center min-h-[210px] bg-gradient-to-b from-sky-50/40 via-cyan-50/20 to-transparent">
+                  <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_50%,rgba(14,165,233,0.08),transparent)] pointer-events-none" />
+                  <img
+                    src={pkg.image}
+                    alt={pkg.title}
+                    className="max-h-[195px] w-auto object-contain drop-shadow-md transition-transform duration-500 group-hover:scale-105 select-none relative z-10"
+                    loading="lazy"
+                  />
+                </div>
+
+                {/* Bottom Half: Details & Ordering */}
+                <div className="p-5 pt-3 flex flex-col flex-1 justify-between space-y-4">
+                  
+                  {/* Upper details */}
+                  <div className="space-y-3">
+                    {/* Meta Row: Icon + Volume Badge */}
                     <div className="flex items-center justify-between">
-                      <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${getIconContainerStyle(pkg.iconName)}`}>
                         {getIcon(pkg.iconName)}
                       </div>
-                      <span className="text-xs font-semibold px-2.5 py-1 bg-slate-100 text-slate-700 rounded-lg">
+                      <span className="text-xs font-bold px-3 py-1 bg-slate-100 text-slate-700 rounded-lg">
                         {pkg.volume}
                       </span>
                     </div>
 
-                    <CardTitle className="text-lg font-bold text-slate-900 pt-2 leading-snug">
-                      {pkg.title}
-                    </CardTitle>
-                    <CardDescription className="text-xs text-slate-500">
-                      {pkg.subtitle}
-                    </CardDescription>
+                    {/* Title and Subtitle */}
+                    <div>
+                      <h3 className="text-base sm:text-lg font-bold text-slate-900 leading-snug">
+                        {pkg.title}
+                      </h3>
+                      <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
+                        {pkg.subtitle}
+                      </p>
+                    </div>
 
-                    {/* Price section */}
-                    <div className="pt-3 pb-1 border-b border-slate-100">
+                    {/* Price and Free Delivery row */}
+                    <div className="pt-1 pb-1">
                       <div className="flex items-baseline gap-2">
-                        <span className="text-3xl font-extrabold text-slate-900">
-                          ৳{pkg.price}
+                        <span className="text-3xl font-black text-slate-900 tracking-tight font-sans">
+                          ৳{toBengaliNumber(pkg.price)}
                         </span>
                         {pkg.regularPrice && (
                           <span className="text-sm text-slate-400 line-through">
-                            ৳{pkg.regularPrice}
+                            ৳{toBengaliNumber(pkg.regularPrice)}
                           </span>
                         )}
                         <span className="text-xs text-slate-500 font-medium">
                           / {pkg.unit}
                         </span>
                       </div>
-                      <p className="text-[11px] text-emerald-600 font-semibold mt-1">
-                        ✓ ফ্রি ডোরস্টেপ ডেলিভারি অন্তর্ভুক্ত
-                      </p>
+                      <div className="flex items-center gap-1.5 text-xs font-semibold text-emerald-600 mt-1">
+                        <Check className="w-3.5 h-3.5 stroke-[3] text-emerald-600" />
+                        <span>ফ্রি ডেলিভারি (নির্দিষ্ট এলাকায়)</span>
+                      </div>
                     </div>
-                  </CardHeader>
 
-                  <CardContent className="p-6 pt-2">
-                    <ul className="space-y-2.5">
+                    {/* Features List */}
+                    <ul className="space-y-2 text-xs text-slate-600 pt-2 border-t border-slate-100">
                       {pkg.features.map((feat, fIdx) => (
-                        <li key={fIdx} className="flex items-start gap-2 text-xs text-slate-600">
-                          <Check className="w-4 h-4 text-cyan-600 shrink-0 mt-0.5" />
-                          <span>{feat}</span>
+                        <li key={fIdx} className="flex items-start gap-2">
+                          <Check className="w-3.5 h-3.5 text-cyan-600 shrink-0 mt-0.5" />
+                          <span className="leading-snug">{feat}</span>
                         </li>
                       ))}
                     </ul>
 
+                    {/* Amber Deposit Box */}
                     {pkg.depositRequired && (
-                      <div className="mt-4 p-2.5 rounded-xl bg-amber-50/80 border border-amber-200/70 text-[11px] text-amber-900">
-                        খালি জার না থাকলে প্রথমবার ৳{pkg.depositAmount} সিকিউরিটি ডিপোজিট প্রযোজ্য (ফেরতযোগ্য)।
+                      <div className="p-2.5 rounded-xl bg-amber-50/90 border border-amber-200/80 text-[11px] text-amber-900 leading-snug">
+                        খালি জার বা নতুন জার নিতে হবে ১০০ ডিপোজিট/ রিফান্ডেবল প্রয়োজন (প্রযোজ্য ক্ষেত্রে)।
                       </div>
                     )}
-                  </CardContent>
-                </div>
+                  </div>
 
-                <CardFooter className="p-6 pt-0">
-                  <Button
-                    id={`order-package-${pkg.id}`}
-                    onClick={() => onSelectPackage(pkg)}
-                    className={`w-full font-bold text-sm h-11 rounded-xl transition-all ${
-                      isPopular
-                        ? 'bg-cyan-600 hover:bg-cyan-700 text-white shadow-md shadow-cyan-600/20'
-                        : isBestValue
-                        ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-600/20'
-                        : 'bg-slate-900 hover:bg-slate-800 text-white'
-                    }`}
-                  >
-                    <ShoppingBag className="w-4 h-4 mr-1" />
-                    <span>অর্ডার নির্বাচন করুন</span>
-                  </Button>
-                </CardFooter>
-              </Card>
+                  {/* Order Button */}
+                  <div className="pt-2">
+                    <Button
+                      id={`order-package-${pkg.id}`}
+                      onClick={() => onSelectPackage(pkg)}
+                      className={`w-full font-bold text-sm h-11 rounded-xl transition-all flex items-center justify-center gap-1.5 ${getButtonClass(pkg)}`}
+                    >
+                      <CalendarCheck className="w-4 h-4" />
+                      <span>অর্ডার নিশ্চিত করুন</span>
+                    </Button>
+                  </div>
+
+                </div>
+              </div>
             );
           })}
         </div>
 
-        {/* Note banner */}
+        {/* Corporate Note banner */}
         <div className="mt-12 p-4 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3 text-center sm:text-left">
             <div className="w-10 h-10 rounded-full bg-cyan-100 flex items-center justify-center text-cyan-700 shrink-0">
