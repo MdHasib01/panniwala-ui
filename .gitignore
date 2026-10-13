@@ -1,3 +1,9 @@
-node_modules
-client/.next
+node_modules/
+build/
+dist/
+coverage/
+.DS_Store
+*.log
+.env*
+!.env.example
 scrollcraft
