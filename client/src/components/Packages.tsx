@@ -85,7 +85,7 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
         </div>
 
         {/* Packages Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 pt-3 items-stretch">
           {WATER_PACKAGES.map((pkg) => {
             const isPopular = pkg.popular;
             const isBestValue = pkg.bestValue;
@@ -93,26 +93,26 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
             return (
               <div
                 key={pkg.id}
-                className={`relative flex flex-col justify-between rounded-[26px] transition-all duration-300 hover:shadow-2xl hover:-translate-y-1.5 overflow-hidden group ${getCardBorderClass(pkg)}`}
+                className={`relative flex flex-col justify-between rounded-[26px] transition-all duration-300 hover:shadow-2xl hover:-translate-y-1.5 group ${getCardBorderClass(pkg)}`}
               >
                 {/* Popular / Best Value Ribbon */}
                 {isPopular && (
-                  <div className="absolute top-0 inset-x-0 flex justify-center -translate-y-1/2 z-20">
-                    <span className="bg-[#0284c7] text-white text-[11px] font-bold px-3.5 py-0.5 rounded-full shadow-sm tracking-wide">
+                  <div className="absolute -top-3.5 inset-x-0 flex justify-center z-30 pointer-events-none">
+                    <span className="inline-flex items-center gap-1 bg-[#0284c7] text-white text-[11px] sm:text-xs font-bold px-3.5 py-1 rounded-full shadow-md shadow-sky-500/30 border border-white/90 tracking-wide">
                       ★ সবচেয়ে জনপ্রিয়
                     </span>
                   </div>
                 )}
                 {isBestValue && (
-                  <div className="absolute top-0 inset-x-0 flex justify-center -translate-y-1/2 z-20">
-                    <span className="bg-emerald-600 text-white text-[11px] font-bold px-3.5 py-0.5 rounded-full shadow-sm tracking-wide">
+                  <div className="absolute -top-3.5 inset-x-0 flex justify-center z-30 pointer-events-none">
+                    <span className="inline-flex items-center gap-1 bg-emerald-600 text-white text-[11px] sm:text-xs font-bold px-3.5 py-1 rounded-full shadow-md shadow-emerald-600/30 border border-white/90 tracking-wide">
                       ⚡ সেরা ভ্যালু প্যাক
                     </span>
                   </div>
                 )}
 
                 {/* Top Half: Product Image Area */}
-                <div className="relative pt-7 pb-2 px-4 flex items-center justify-center min-h-[210px] bg-gradient-to-b from-sky-50/40 via-cyan-50/20 to-transparent">
+                <div className="relative pt-7 pb-2 px-4 flex items-center justify-center min-h-[210px] bg-gradient-to-b from-sky-50/40 via-cyan-50/20 to-transparent rounded-t-[24px] overflow-hidden">
                   <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_50%,rgba(14,165,233,0.08),transparent)] pointer-events-none" />
                   <img
                     src={pkg.image}
