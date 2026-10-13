@@ -1,6 +1,7 @@
 import React from 'react';
 import { Badge } from '@/src/components/ui/badge';
 import { Card, CardContent } from '@/src/components/ui/card';
+import { boldNumbers } from '@/src/lib/utils';
 import {
   ShieldCheck,
   CheckCircle2,
@@ -96,7 +97,7 @@ export const PurityProcess: React.FC = () => {
                   {step.title}
                 </h3>
                 <p className="text-xs text-slate-600 leading-relaxed">
-                  {step.desc}
+                  {boldNumbers(step.desc, 'font-bold text-slate-800')}
                 </p>
               </div>
             );
@@ -117,7 +118,7 @@ export const PurityProcess: React.FC = () => {
             </div>
 
             <div className="pt-4 mt-4 border-t border-white/20 flex items-center justify-between text-xs font-semibold">
-              <span>স্ট্যান্ডার্ড BDS-1414</span>
+              <span>স্ট্যান্ডার্ড <strong className="font-bold text-white">BDS-1414</strong></span>
               <span className="bg-white text-cyan-900 px-2 py-0.5 rounded-md text-[10px]">
                 PASS
               </span>
@@ -144,7 +145,7 @@ export const PurityProcess: React.FC = () => {
             <div className="bg-white p-3.5 rounded-xl border border-slate-200">
               <span className="text-xs text-slate-500">কলিফর্ম ও ই-কোলাই</span>
               <p className="text-lg font-bold text-emerald-600 mt-1">০ (শূন্য)</p>
-              <span className="text-[10px] text-emerald-600 font-semibold">১০০% ব্যাকটেরিয়ামুক্ত</span>
+              <span className="text-[10px] text-emerald-600 font-semibold"><strong className="font-bold">১০০%</strong> ব্যাকটেরিয়ামুক্ত</span>
             </div>
             <div className="bg-white p-3.5 rounded-xl border border-slate-200">
               <span className="text-xs text-slate-500">ক্লোরিন ও আর্সেনিক</span>

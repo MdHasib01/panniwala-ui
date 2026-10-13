@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Badge } from '@/src/components/ui/badge';
 import { ChevronDown } from 'lucide-react';
+import { boldNumbers } from '@/src/lib/utils';
 
 export const Faq: React.FC = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
@@ -28,7 +29,7 @@ export const Faq: React.FC = () => {
     },
     {
       q: 'কর্পোরেট অফিস ও নিয়মিত গ্রাহকদের জন্য কী সুবিধা রয়েছে?',
-      a: 'কর্পোরেট অফিস, রেস্টুরেন্ট বা নিয়মিত মাসিক গ্রাহকদের জন্য আমরা পাইকারি বিশেষ রেট (জার প্রতি মাত্র ৳৩৫), ফ্রি অটোমেটিক ওয়াটার ডিসপেনসার এবং নির্দিষ্ট শিডিউলে অটো-ডেলিভারি সুবিধা দিয়ে থাকি।',
+      a: 'কর্পোরেট অফিস, রেস্টুরেন্ট বা নিয়মিত মাসিক গ্রাহকদের জন্য আমরা পাইকারি বিশেষ কাস্টম রেট, ফ্রি অটোমেটিক ওয়াটার ডিসপেনসার এবং নির্দিষ্ট শিডিউলে অটো-ডেলিভারি সুবিধা দিয়ে থাকি। হটলাইনে কল করে সরাসরি কাস্টম কোটেশন নেওয়া যাবে।',
     },
     {
       q: 'পেমেন্ট পদ্ধতি কী কী?',
@@ -73,7 +74,7 @@ export const Faq: React.FC = () => {
                 </button>
                 {isOpen && (
                   <div className="px-5 pb-5 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-100 pt-3 bg-cyan-50/30">
-                    {faq.a}
+                    {boldNumbers(faq.a, 'font-bold text-slate-800')}
                   </div>
                 )}
               </div>

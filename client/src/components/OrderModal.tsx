@@ -199,7 +199,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
               <div className="flex justify-between text-slate-600">
                 <span>নির্বাচিত প্যাকেজ</span>
                 <span className="font-medium text-slate-900">
-                  {confirmedOrder.item.packageTitle} ({confirmedOrder.item.quantity} টি)
+                  {confirmedOrder.item.packageTitle} (<strong className="font-bold text-slate-900">{confirmedOrder.item.quantity}</strong> টি)
                 </span>
               </div>
               <div className="flex justify-between text-slate-600">
@@ -216,7 +216,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
               </div>
               <div className="flex justify-between pt-2 border-t border-slate-200 text-base font-bold text-slate-900">
                 <span>সর্বমোট প্রদেয়</span>
-                <span className="text-cyan-700">৳{toBengaliNumber(confirmedOrder.item.totalPrice)}</span>
+                <span className="text-cyan-700 font-bold">৳{toBengaliNumber(confirmedOrder.item.totalPrice)}</span>
               </div>
             </div>
 
@@ -227,7 +227,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                 className="w-full py-3.5 px-5 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-md shadow-cyan-600/20 transition-colors"
               >
                 <Phone className="w-4 h-4 text-white" />
-                <span>হটলাইনে যোগাযোগ করুন: {HOTLINE_NUMBER}</span>
+                <span>হটলাইনে যোগাযোগ করুন: <strong className="font-bold text-white">{HOTLINE_NUMBER}</strong></span>
               </a>
             </div>
 
@@ -271,7 +271,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                             {pkg.title}
                           </span>
                           <span className="text-xs font-extrabold text-cyan-700 shrink-0">
-                            ৳{toBengaliNumber(pkg.price)}
+                            {pkg.isCustomPricing ? 'কাস্টম' : `৳${toBengaliNumber(pkg.price)}`}
                           </span>
                         </div>
                         <p className="text-[11px] text-slate-500 mt-0.5 line-clamp-1">
@@ -328,7 +328,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                           : 'bg-white text-slate-700 border-slate-200'
                       }`}
                     >
-                      হ্যাঁ, আছে (৳০)
+                      হ্যাঁ, আছে (৳<strong className="font-bold">০</strong>)
                     </button>
                     <button
                       type="button"
@@ -339,12 +339,12 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                           : 'bg-white text-slate-700 border-slate-200'
                       }`}
                     >
-                      না, নতুন (+৳{toBengaliNumber(currentPkg.depositAmount)})
+                      না, নতুন (+৳<strong className="font-bold">{toBengaliNumber(currentPkg.depositAmount)}</strong>)
                     </button>
                   </div>
                   {!hasEmptyJar && (
                     <p className="text-[10px] text-amber-700 mt-1">
-                      *নতুন জারের জন্য ৳{toBengaliNumber(currentPkg.depositAmount)} জামানত (জার ফেরত দিলে এই টাকা ফেরত পাবেন)
+                      *নতুন জারের জন্য ৳<strong className="font-bold text-amber-950">{toBengaliNumber(currentPkg.depositAmount)}</strong> জামানত (জার ফেরত দিলে এই টাকা ফেরত পাবেন)
                     </p>
                   )}
                 </div>
@@ -472,23 +472,32 @@ export const OrderModal: React.FC<OrderModalProps> = ({
 
             {/* Price Summary Breakdown */}
             <div className="p-4 rounded-2xl bg-cyan-50/60 border border-cyan-200/80 space-y-1.5 text-xs">
-              <div className="flex justify-between text-slate-600">
-                <span>পানির মূল্য ({toBengaliNumber(quantity)} টি × ৳{toBengaliNumber(currentPkg.price)})</span>
-                <span className="font-semibold text-slate-800">৳{toBengaliNumber(itemsCost)}</span>
-              </div>
+              {currentPkg.isCustomPricing ? (
+                <div className="flex justify-between text-slate-600">
+                  <span>পানির মূল্য</span>
+                  <span className="font-bold text-slate-800">কাস্টম (আলোচনা সাপেক্ষে)</span>
+                </div>
+              ) : (
+                <div className="flex justify-between text-slate-600">
+                  <span>পানির মূল্য (<strong className="font-bold text-slate-800">{toBengaliNumber(quantity)}</strong> টি × ৳<strong className="font-bold text-slate-800">{toBengaliNumber(currentPkg.price)}</strong>)</span>
+                  <span className="font-bold text-slate-800">৳{toBengaliNumber(itemsCost)}</span>
+                </div>
+              )}
               {totalDeposit > 0 && (
                 <div className="flex justify-between text-amber-800">
-                  <span>নতুন জার ডিপোজিট ({toBengaliNumber(quantity)} টি × ৳{toBengaliNumber(currentPkg.depositAmount)})</span>
-                  <span className="font-semibold">৳{toBengaliNumber(totalDeposit)}</span>
+                  <span>নতুন জার ডিপোজিট (<strong className="font-bold text-amber-950">{toBengaliNumber(quantity)}</strong> টি × ৳<strong className="font-bold text-amber-950">{toBengaliNumber(currentPkg.depositAmount)}</strong>)</span>
+                  <span className="font-bold">৳{toBengaliNumber(totalDeposit)}</span>
                 </div>
               )}
               <div className="flex justify-between text-emerald-700 font-medium">
                 <span>হোম ডেলিভারি চার্জ</span>
-                <span className="font-bold">ফ্রি (৳০)</span>
+                <span className="font-bold">ফ্রি (৳<strong className="font-bold">০</strong>)</span>
               </div>
               <div className="flex justify-between pt-2 border-t border-cyan-200 text-sm font-bold text-slate-900">
                 <span>সর্বমোট প্রদেয় বিল</span>
-                <span className="text-base text-cyan-800">৳{toBengaliNumber(grandTotal)}</span>
+                <span className="text-base text-cyan-800 font-extrabold">
+                  {currentPkg.isCustomPricing ? 'কাস্টম রেট' : `৳${toBengaliNumber(grandTotal)}`}
+                </span>
               </div>
             </div>
 
@@ -502,7 +511,11 @@ export const OrderModal: React.FC<OrderModalProps> = ({
               {isSubmitting ? (
                 <span>অর্ডার প্রসেস হচ্ছে...</span>
               ) : (
-                <span>অর্ডার নিশ্চিত করুন (৳{toBengaliNumber(grandTotal)})</span>
+                <span>
+                  {currentPkg.isCustomPricing
+                    ? 'কাস্টম অর্ডার অনুসন্ধান পাঠান'
+                    : `অর্ডার নিশ্চিত করুন (৳${toBengaliNumber(grandTotal)})`}
+                </span>
               )}
             </Button>
 

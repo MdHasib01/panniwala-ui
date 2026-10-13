@@ -2,17 +2,12 @@ import React from 'react';
 import defaultLogo from '@/src/assets/logo.png';
 
 interface BrandLogoProps {
-  customLogoUrl?: string | null;
   size?: 'sm' | 'md' | 'lg';
   className?: string;
 }
 
-export const BrandLogo: React.FC<BrandLogoProps> = ({
-  customLogoUrl,
-  size = 'md',
-  className = '',
-}) => {
-  const logoSrc = customLogoUrl || defaultLogo;
+export const BrandLogo: React.FC<BrandLogoProps> = ({ size = 'md', className = '' }) => {
+  const logoSrc = defaultLogo;
 
   const imageSizes = {
     sm: 'h-8 min-w-8 w-auto max-w-[120px]',

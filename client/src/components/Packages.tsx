@@ -1,6 +1,7 @@
 import React from 'react';
-import { WATER_PACKAGES, toBengaliNumber } from '@/src/data/packages';
+import { WATER_PACKAGES, toBengaliNumber, HOTLINE_NUMBER, HOTLINE_TEL } from '@/src/data/packages';
 import { WaterPackage } from '@/src/types';
+import { boldNumbers } from '@/src/lib/utils';
 import { Button } from '@/src/components/ui/button';
 import { Badge } from '@/src/components/ui/badge';
 import {
@@ -10,7 +11,8 @@ import {
   Sparkles,
   Building2,
   CalendarCheck,
-  ArrowRight
+  ArrowRight,
+  Phone
 } from 'lucide-react';
 
 interface PackagesProps {
@@ -77,7 +79,7 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
             আপনার প্রয়োজন অনুযায়ী সেরা প্যাকেজটি বেছে নিন
           </h2>
           <p className="text-sm sm:text-base text-slate-600">
-            বাসা-বাড়ি, অফিস বা বাণিজ্যিক প্রতিষ্ঠানের জন্য সাশ্রয়ী মূল্যে ১০০% বিশুদ্ধ পানি। কোনো লুকানো চার্জ নেই, সম্পূর্ণ ফ্রি হোম ডেলিভারি!
+            বাসা-বাড়ি, অফিস বা বাণিজ্যিক প্রতিষ্ঠানের জন্য সাশ্রয়ী মূল্যে <strong className="font-bold text-slate-900">১০০%</strong> বিশুদ্ধ পানি। কোনো লুকানো চার্জ নেই, সম্পূর্ণ ফ্রি হোম ডেলিভারি!
           </p>
         </div>
 
@@ -146,19 +148,32 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
 
                     {/* Price and Free Delivery row */}
                     <div className="pt-1 pb-1">
-                      <div className="flex items-baseline gap-2">
-                        <span className="text-3xl font-black text-slate-900 tracking-tight font-sans">
-                          ৳{toBengaliNumber(pkg.price)}
-                        </span>
-                        {pkg.regularPrice && (
-                          <span className="text-sm text-slate-400 line-through">
-                            ৳{toBengaliNumber(pkg.regularPrice)}
+                      {pkg.isCustomPricing ? (
+                        <div className="flex items-baseline gap-2">
+                          <span className="text-3xl font-black text-slate-900 tracking-tight font-sans">
+                            কাস্টম
                           </span>
-                        )}
-                        <span className="text-xs text-slate-500 font-medium">
-                          / {pkg.unit}
-                        </span>
-                      </div>
+                          {pkg.unit && (
+                            <span className="text-xs text-slate-500 font-medium">
+                              / {pkg.unit}
+                            </span>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="flex items-baseline gap-2">
+                          <span className="text-3xl font-black text-slate-900 tracking-tight font-sans">
+                            ৳{toBengaliNumber(pkg.price)}
+                          </span>
+                          {pkg.regularPrice && (
+                            <span className="text-sm font-bold text-slate-400 line-through">
+                              ৳{toBengaliNumber(pkg.regularPrice)}
+                            </span>
+                          )}
+                          <span className="text-xs text-slate-500 font-medium">
+                            / {pkg.unit}
+                          </span>
+                        </div>
+                      )}
                       <div className="flex items-center gap-1.5 text-xs font-semibold text-emerald-600 mt-1">
                         <Check className="w-3.5 h-3.5 stroke-[3] text-emerald-600" />
                         <span>ফ্রি ডেলিভারি (নির্দিষ্ট এলাকায়)</span>
@@ -170,7 +185,7 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
                       {pkg.features.map((feat, fIdx) => (
                         <li key={fIdx} className="flex items-start gap-2">
                           <Check className="w-3.5 h-3.5 text-cyan-600 shrink-0 mt-0.5" />
-                          <span className="leading-snug">{feat}</span>
+                          <span className="leading-snug">{boldNumbers(feat, 'font-bold text-slate-900')}</span>
                         </li>
                       ))}
                     </ul>
@@ -178,21 +193,32 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
                     {/* Amber Deposit Box */}
                     {pkg.depositRequired && (
                       <div className="p-2.5 rounded-xl bg-amber-50/90 border border-amber-200/80 text-[11px] text-amber-900 leading-snug">
-                        খালি জার বা নতুন জার নিতে হবে ১০০ ডিপোজিট/ রিফান্ডেবল প্রয়োজন (প্রযোজ্য ক্ষেত্রে)।
+                        খালি জার বা নতুন জার নিতে হলে <strong className="font-bold text-amber-950">৳১০০</strong> ডিপোজিট/ রিফান্ডেবল জামানত প্রয়োজন (প্রযোজ্য ক্ষেত্রে)।
                       </div>
                     )}
                   </div>
 
-                  {/* Order Button */}
+                  {/* Order or Call CTA Button */}
                   <div className="pt-2">
-                    <Button
-                      id={`order-package-${pkg.id}`}
-                      onClick={() => onSelectPackage(pkg)}
-                      className={`w-full font-bold text-sm h-11 rounded-xl transition-all flex items-center justify-center gap-1.5 ${getButtonClass(pkg)}`}
-                    >
-                      <CalendarCheck className="w-4 h-4" />
-                      <span>অর্ডার নিশ্চিত করুন</span>
-                    </Button>
+                    {pkg.callOnly ? (
+                      <a
+                        id={`call-package-${pkg.id}`}
+                        href={`tel:${HOTLINE_TEL}`}
+                        className="w-full font-bold text-sm h-11 rounded-xl transition-all flex items-center justify-center gap-2 bg-[#0f172a] hover:bg-slate-800 text-white shadow-sm hover:shadow-md active:scale-[0.99]"
+                      >
+                        <Phone className="w-4 h-4 text-cyan-400" />
+                        <span>কল করুন: <strong className="font-bold">{HOTLINE_NUMBER}</strong></span>
+                      </a>
+                    ) : (
+                      <Button
+                        id={`order-package-${pkg.id}`}
+                        onClick={() => onSelectPackage(pkg)}
+                        className={`w-full font-bold text-sm h-11 rounded-xl transition-all flex items-center justify-center gap-1.5 ${getButtonClass(pkg)}`}
+                      >
+                        <CalendarCheck className="w-4 h-4" />
+                        <span>অর্ডার নিশ্চিত করুন</span>
+                      </Button>
+                    )}
                   </div>
 
                 </div>

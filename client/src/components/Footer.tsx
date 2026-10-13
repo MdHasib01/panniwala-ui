@@ -3,33 +3,23 @@ import { BrandLogo } from '@/src/components/BrandLogo';
 import { HOTLINE_NUMBER, HOTLINE_TEL } from '@/src/data/packages';
 import { Phone, Mail, MapPin, ShieldCheck, Heart } from 'lucide-react';
 
-interface FooterProps {
-  customLogoUrl: string | null;
-  onOpenOrder: () => void;
-  onOpenCustomizer: () => void;
-}
-
-export const Footer: React.FC<FooterProps> = ({
-  customLogoUrl,
-  onOpenOrder,
-  onOpenCustomizer,
-}) => {
+export const Footer: React.FC = () => {
   return (
-    <footer className="bg-slate-900 text-slate-300 pt-16 pb-28 md:pb-16 border-t border-slate-800">
+    <footer className="bg-slate-900 text-slate-300 pt-16 pb-32 md:pb-16 border-t border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-slate-800">
           
           {/* Brand Col */}
           <div className="space-y-4">
             <div className="bg-white/95 p-2 rounded-2xl inline-block">
-              <BrandLogo customLogoUrl={customLogoUrl} size="md" />
+              <BrandLogo size="md" />
             </div>
             <p className="text-xs text-slate-400 leading-relaxed">
               <strong className="text-white">পানি ওয়ালা</strong> বাংলাদেশে শতভাগ নিরাপদ, সুপেয় ও ল্যাব-পরীক্ষিত মিনারেল খাবার পানি সরবরাহের একটি শীর্ষস্থানীয় প্ল্যাটফর্ম। আমরা পরিবার ও প্রতিষ্ঠানের স্বাস্থ্য সুরক্ষায় প্রতিশ্রুতিবদ্ধ।
             </p>
             <div className="flex items-center gap-2 text-xs text-emerald-400 font-semibold bg-emerald-950/50 p-2.5 rounded-xl border border-emerald-800/50">
               <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
-              <span>BSTI সার্টিফাইড BDS-1414 কমপ্লায়েন্ট</span>
+              <span>BSTI সার্টিফাইড <strong className="font-bold text-emerald-300">BDS-1414</strong> কমপ্লায়েন্ট</span>
             </div>
           </div>
 
@@ -80,7 +70,7 @@ export const Footer: React.FC<FooterProps> = ({
               )}
             </div>
             <p className="text-[11px] text-slate-400 pt-2">
-              প্রতিদিন সকাল ৭টা থেকে রাত ১০টা পর্যন্ত নিরবচ্ছিন্ন ডেলিভারি।
+              প্রতিদিন সকাল <strong className="font-bold text-slate-200">৭টা</strong> থেকে রাত <strong className="font-bold text-slate-200">১০টা</strong> পর্যন্ত নিরবচ্ছিন্ন ডেলিভারি।
             </p>
           </div>
 
@@ -103,17 +93,8 @@ export const Footer: React.FC<FooterProps> = ({
               </div>
               <div className="flex items-start gap-2 text-slate-400 pt-1">
                 <MapPin className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
-                <span>কেডিএ এভিনিউ, শিববাড়ি মোড়, সোনাডাঙ্গা, খুলনা-৯১০০</span>
+                <span>কেডিএ এভিনিউ, শিববাড়ি মোড়, সোনাডাঙ্গা, খুলনা-<strong className="font-bold text-slate-200">৯১০০</strong></span>
               </div>
-            </div>
-
-            <div className="pt-2">
-              <button
-                onClick={onOpenCustomizer}
-                className="text-[11px] text-cyan-400 hover:text-cyan-300 underline underline-offset-4"
-              >
-                ⚙️ লোগো ও ব্যানার ছবি আপলোড/পরিবর্তন করুন
-              </button>
             </div>
           </div>
 
@@ -122,7 +103,7 @@ export const Footer: React.FC<FooterProps> = ({
         {/* Bottom copyright */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4 text-center sm:text-left">
           <p>
-            © {new Date().getFullYear()} পানি ওয়ালা (Pani Wala). সর্বস্বত্ব সংরক্ষিত। ট্রেড লাইসেন্স নং: TRAD/KCC/049182
+            © <strong className="font-bold text-slate-400">{new Date().getFullYear()}</strong> পানি ওয়ালা (Pani Wala). সর্বস্বত্ব সংরক্ষিত। ট্রেড লাইসেন্স নং: TRAD/KCC/<strong className="font-bold text-slate-400">049182</strong>
           </p>
           <div className="flex items-center gap-1 text-slate-400">
             <span>বিশুদ্ধ পানির সাথে সুস্বাস্থ্য বজায় রাখুন</span>

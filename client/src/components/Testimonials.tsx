@@ -1,6 +1,7 @@
 import React from 'react';
 import { Badge } from '@/src/components/ui/badge';
 import { Star, Quote, CheckCircle } from 'lucide-react';
+import { boldNumbers } from '@/src/lib/utils';
 
 export const Testimonials: React.FC = () => {
   const reviews = [
@@ -72,7 +73,7 @@ export const Testimonials: React.FC = () => {
                 </div>
 
                 <p className="text-xs sm:text-sm text-slate-700 leading-relaxed italic">
-                  &quot;{rev.text}&quot;
+                  &quot;{boldNumbers(rev.text, 'font-bold text-slate-900')}&quot;
                 </p>
               </div>
 

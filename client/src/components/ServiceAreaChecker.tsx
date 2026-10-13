@@ -3,6 +3,7 @@ import { Badge } from '@/src/components/ui/badge';
 import { Button } from '@/src/components/ui/button';
 import { MapPin, Search, CheckCircle2, Phone, Clock } from 'lucide-react';
 import { HOTLINE_NUMBER, HOTLINE_TEL } from '@/src/data/packages';
+import { boldNumbers } from '@/src/lib/utils';
 
 export const ServiceAreaChecker: React.FC<{ onOpenOrder: () => void }> = ({ onOpenOrder }) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -101,12 +102,12 @@ export const ServiceAreaChecker: React.FC<{ onOpenOrder: () => void }> = ({ onOp
                   <MapPin className="w-4 h-4 text-cyan-600" />
                   {zone.name}
                 </h3>
-                <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-cyan-700 bg-cyan-50 px-2.5 py-1 rounded-md">
-                  <Clock className="w-3 h-3" /> {zone.time}
+                <span className="inline-flex items-center gap-1 text-[11px] font-bold text-cyan-800 bg-cyan-50 px-2.5 py-1 rounded-md">
+                  <Clock className="w-3 h-3" /> <strong className="font-bold">{zone.time}</strong>
                 </span>
               </div>
               <p className="text-xs text-slate-600 leading-relaxed">
-                {zone.coverage}
+                {boldNumbers(zone.coverage, 'font-bold text-slate-800')}
               </p>
               <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
                 <span className="text-emerald-600 font-semibold">● সক্রিয় ডেলিভারি হাব</span>

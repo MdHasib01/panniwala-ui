@@ -8,6 +8,8 @@ export interface WaterPackage {
   unit: string;
   popular?: boolean;
   bestValue?: boolean;
+  isCustomPricing?: boolean;
+  callOnly?: boolean;
   features: string[];
   depositRequired: boolean;
   depositAmount: number;

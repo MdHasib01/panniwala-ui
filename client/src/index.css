@@ -11,6 +11,11 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Keep section headings clear of the sticky header when jumping to anchors */
+section[id] {
+  scroll-margin-top: 4.5rem;
+}
+
 /* Water wave animation utilities */
 @keyframes waveSlow {
   0% {

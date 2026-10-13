@@ -11,17 +11,11 @@ import {
 } from 'lucide-react';
 
 interface HeroProps {
-  customHeroUrl?: string | null;
   onOpenOrder: () => void;
-  onOpenCustomizer?: () => void;
 }
 
-export const Hero: React.FC<HeroProps> = ({
-  customHeroUrl,
-  onOpenOrder,
-  onOpenCustomizer,
-}) => {
-  const heroSrc = customHeroUrl || heroImage;
+export const Hero: React.FC<HeroProps> = ({ onOpenOrder }) => {
+  const heroSrc = heroImage;
 
   return (
     <section className="relative overflow-hidden pt-6 pb-14 lg:py-20 bg-gradient-to-b from-cyan-50/60 via-sky-50/30 to-white">
@@ -53,7 +47,7 @@ export const Hero: React.FC<HeroProps> = ({
 
             {/* Subtitle */}
             <p className="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-              <strong className="text-slate-800 font-semibold">পানি ওয়ালা</strong> নিয়ে এসেছে ৭ স্তরের রিভার্স অসমোসিস (RO) ও আল্ট্রাভায়োলেট (UV) ফিল্টারকৃত ল্যাব-পরীক্ষিত মিনারেল পানি। লিফট ছাড়া ৪/৫ তলায়ও হাসিমুখে ফ্রি হোম ডেলিভারি!
+              <strong className="text-slate-800 font-bold">পানি ওয়ালা</strong> নিয়ে এসেছে <strong className="font-bold text-slate-800">৭</strong> স্তরের রিভার্স অসমোসিস (RO) ও আল্ট্রাভায়োলেট (UV) ফিল্টারকৃত ল্যাব-পরীক্ষিত মিনারেল পানি। লিফট ছাড়া <strong className="font-bold text-slate-800">৪/৫</strong> তলায়ও হাসিমুখে ফ্রি হোম ডেলিভারি!
             </p>
 
             {/* Value checklist */}
@@ -64,7 +58,7 @@ export const Hero: React.FC<HeroProps> = ({
               </div>
               <div className="flex items-center gap-2 text-xs sm:text-sm text-slate-700 font-medium bg-white/70 backdrop-blur-xs p-2 rounded-xl border border-slate-100">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>১ ঘণ্টার দ্রুত ফ্রি হোম ডেলিভারি</span>
+                <span><strong className="font-bold text-slate-900">১</strong> ঘণ্টার দ্রুত ফ্রি হোম ডেলিভারি</span>
               </div>
               <div className="flex items-center gap-2 text-xs sm:text-sm text-slate-700 font-medium bg-white/70 backdrop-blur-xs p-2 rounded-xl border border-slate-100">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
@@ -86,7 +80,7 @@ export const Hero: React.FC<HeroProps> = ({
                 className="w-full sm:w-auto bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-base shadow-lg shadow-cyan-600/30 hover:shadow-cyan-600/40 px-8 py-3.5 rounded-xl transition-all"
               >
                 <ShoppingBag className="w-5 h-5 mr-1" />
-                <span>অনলাইনে অর্ডার করুন — মাত্র ৳৪০</span>
+                <span>অনলাইনে অর্ডার করুন — মাত্র <strong className="font-extrabold">৳৪০</strong></span>
               </Button>
 
               {/* Direct Call CTA */}
@@ -96,7 +90,7 @@ export const Hero: React.FC<HeroProps> = ({
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl border-2 border-slate-300 hover:border-cyan-600 bg-white text-slate-800 hover:text-cyan-700 font-bold text-sm shadow-xs transition-all"
               >
                 <Phone className="w-4 h-4 text-cyan-600" />
-                <span>কল করুন: {HOTLINE_NUMBER}</span>
+                <span>কল করুন: <strong className="font-bold">{HOTLINE_NUMBER}</strong></span>
               </a>
 
             </div>
@@ -110,7 +104,7 @@ export const Hero: React.FC<HeroProps> = ({
               <span className="text-slate-300">•</span>
               <div className="flex items-center gap-1">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                <span>১০০% রিফান্ড গ্যারান্টি</span>
+                <span><strong className="font-bold text-slate-700">১০০%</strong> রিফান্ড গ্যারান্টি</span>
               </div>
             </div>
           </div>

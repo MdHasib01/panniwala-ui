@@ -49,18 +49,18 @@ export const WATER_PACKAGES: WaterPackage[] = [
     title: 'অফিস সাবস্ক্রিপশন',
     subtitle: 'অফিস, রেস্টুরেন্ট ও বাণিজ্যিক প্রতিষ্ঠানের জন্য বিশেষ প্যাকেজ',
     volume: 'অফিস/প্রতিষ্ঠান',
-    price: 35,
-    regularPrice: 50,
-    unit: 'প্রতি জার',
+    price: 0,
+    unit: 'আলোচনা সাপেক্ষে',
+    isCustomPricing: true,
+    callOnly: true,
     image: package4Img,
     features: [
-      'প্রতি মাসে মাত্র ৩৫ টাকার বিশেষ সাবস্ক্রিপশন রেট',
       'নিয়মিত ডেলিভারি ও তাৎক্ষণিক সরবরাহ',
       'প্রতিষ্ঠানের জন্য কাস্টম বিলিং সুবিধা',
       'রেগুলার সার্ভিস ও কাস্টমার সাপোর্ট'
     ],
-    depositRequired: true,
-    depositAmount: 100,
+    depositRequired: false,
+    depositAmount: 0,
     iconName: 'building'
   }
 ];
@@ -86,6 +86,9 @@ export const KHULNA_AREAS = [
 export const HOTLINE_NUMBER = '০১৭০০-১২৩৪৫৬';
 export const HOTLINE_TEL = '+8801700123456';
 export const WHATSAPP_NUMBER = '8801700123456';
+export const WHATSAPP_CHAT_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+  'আসসালামু আলাইকুম, আমি পানি ওয়ালা থেকে খাবার পানির জার অর্ডার করতে চাই।'
+)}`;
 
 /**
  * Converts English digits to Bengali numerals for clean Bangla typography.

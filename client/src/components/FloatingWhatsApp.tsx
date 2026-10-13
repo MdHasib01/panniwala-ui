@@ -1,15 +1,13 @@
 import React from 'react';
-import { WHATSAPP_NUMBER } from '@/src/data/packages';
+import { WHATSAPP_CHAT_URL } from '@/src/data/packages';
 
 export const FloatingWhatsApp: React.FC = () => {
-  const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-    'আসসালামু আলাইকুম, আমি পানি ওয়ালা থেকে খাবার পানির জার অর্ডার করতে চাই।'
-  )}`;
+  const whatsappUrl = WHATSAPP_CHAT_URL;
 
   return (
     <aside
       aria-label="WhatsApp Support"
-      className="fixed bottom-20 right-4 sm:right-5 md:bottom-6 md:right-6 z-40 group"
+      className="fixed bottom-28 right-4 sm:right-5 md:bottom-6 md:right-6 z-40 group"
     >
       <a
         id="floating-whatsapp-btn"
