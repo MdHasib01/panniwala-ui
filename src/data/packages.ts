@@ -84,6 +84,13 @@ export const HOTLINE_NUMBER = '০১৭০০-১২৩৪৫৬';
 export const HOTLINE_TEL = '+8801700123456';
 export const WHATSAPP_NUMBER = '8801700123456';
 
+// TODO: replace with the real social media page URLs
+export const SOCIAL_LINKS = {
+  facebook: 'https://facebook.com/paniwala',
+  instagram: 'https://instagram.com/paniwala',
+  youtube: 'https://youtube.com/@paniwala',
+};
+
 /**
  * Converts English digits to Bengali numerals for clean Bangla typography.
  */
