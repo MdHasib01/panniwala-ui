@@ -68,20 +68,17 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
   };
 
   return (
-    <section id="packages" className="py-16 sm:py-24 bg-slate-50/70 relative">
+    <section id="packages" className="py-10 sm:py-14 bg-slate-50/70 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16 space-y-3">
+        <div className="text-center max-w-3xl mx-auto mb-3 sm:mb-5 space-y-2">
           <Badge variant="cyan" className="px-3 py-1 text-xs font-semibold">
             পানির প্যাকেজ ও মূল্যতালিকা
           </Badge>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight">
             আপনার প্রয়োজন অনুযায়ী সেরা প্যাকেজটি বেছে নিন
           </h2>
-          <p className="text-sm sm:text-base text-slate-600">
-            বাসা-বাড়ি, অফিস বা বাণিজ্যিক প্রতিষ্ঠানের জন্য সাশ্রয়ী মূল্যে ১০০% বিশুদ্ধ পানি। কোনো লুকানো চার্জ নেই, সম্পূর্ণ ফ্রি হোম ডেলিভারি!
-          </p>
         </div>
 
         {/* Packages Grid */}
@@ -219,7 +216,7 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
         </div>
 
         {/* Corporate Note banner */}
-        <div className="mt-8 md:mt-12p-4 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="mt-6 md:mt-8 p-4 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3 text-center sm:text-left">
             <div className="w-10 h-10 rounded-full bg-cyan-100 flex items-center justify-center text-cyan-700 shrink-0">
               <Building2 className="w-5 h-5" />
