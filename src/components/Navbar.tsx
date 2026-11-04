@@ -5,16 +5,10 @@ import { HOTLINE_NUMBER, HOTLINE_TEL } from '@/src/data/packages';
 import { Phone, ShoppingBag, Menu, X } from 'lucide-react';
 
 interface NavbarProps {
-  customLogoUrl: string | null;
   onOpenOrder: () => void;
-  onOpenCustomizer: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({
-  customLogoUrl,
-  onOpenOrder,
-  onOpenCustomizer,
-}) => {
+export const Navbar: React.FC<NavbarProps> = ({ onOpenOrder }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navLinks = [
@@ -54,7 +48,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
         <div className="flex items-center gap-6">
           <a href="#" className="flex items-center gap-2 focus:outline-none">
-            <BrandLogo customLogoUrl={customLogoUrl} size="md" />
+            <BrandLogo size="md" />
           </a>
 
           {/* Desktop Links */}
@@ -131,16 +125,6 @@ export const Navbar: React.FC<NavbarProps> = ({
               কল দিন: {HOTLINE_NUMBER}
             </a>
           </div>
-
-          <button
-            onClick={() => {
-              setMobileMenuOpen(false);
-              onOpenCustomizer();
-            }}
-            className="w-full text-center text-xs text-cyan-600 py-2 hover:underline"
-          >
-            📸 আপনার লোগো ও ছবি আপলোড করুন
-          </button>
         </div>
       )}
     </header>

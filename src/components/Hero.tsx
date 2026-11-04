@@ -11,17 +11,11 @@ import {
 } from 'lucide-react';
 
 interface HeroProps {
-  customHeroUrl?: string | null;
   onOpenOrder: () => void;
-  onOpenCustomizer?: () => void;
 }
 
-export const Hero: React.FC<HeroProps> = ({
-  customHeroUrl,
-  onOpenOrder,
-  onOpenCustomizer,
-}) => {
-  const heroSrc = customHeroUrl || heroImage;
+export const Hero: React.FC<HeroProps> = ({ onOpenOrder }) => {
+  const heroSrc = heroImage;
 
   return (
     <section className="relative overflow-hidden pt-6 pb-14 lg:py-20 bg-gradient-to-b from-cyan-50/60 via-sky-50/30 to-white">
