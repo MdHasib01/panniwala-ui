@@ -1,8 +1,39 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { Badge } from '@/src/components/ui/badge';
-import { Star, Quote, CheckCircle } from 'lucide-react';
+import { Star, CheckCircle, ChevronLeft, ChevronRight } from 'lucide-react';
+import { toBengaliNumber } from '@/src/data/packages';
 
 export const Testimonials: React.FC = () => {
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const handleScroll = () => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    const cards = Array.from(el.children) as HTMLElement[];
+    const center = el.scrollLeft + el.clientWidth / 2;
+    let closest = 0;
+    let minDist = Infinity;
+    cards.forEach((card, i) => {
+      const dist = Math.abs(card.offsetLeft + card.offsetWidth / 2 - center);
+      if (dist < minDist) {
+        minDist = dist;
+        closest = i;
+      }
+    });
+    setActiveIndex(closest);
+  };
+
+  const scrollToCard = (index: number) => {
+    const el = scrollerRef.current;
+    const card = el?.children[index] as HTMLElement | undefined;
+    if (!el || !card) return;
+    el.scrollTo({
+      left: card.offsetLeft - (el.clientWidth - card.offsetWidth) / 2,
+      behavior: 'smooth',
+    });
+  };
+
   const reviews = [
     {
       name: 'তানভীর আহমেদ',
@@ -58,11 +89,37 @@ export const Testimonials: React.FC = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Mobile: horizontal snap carousel · md+: grid */}
+        <div className="relative">
+        {activeIndex > 0 && (
+          <button
+            type="button"
+            aria-label="আগের রিভিউ"
+            onClick={() => scrollToCard(activeIndex - 1)}
+            className="md:hidden absolute -left-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/95 border border-slate-200 shadow-lg flex items-center justify-center text-slate-700 active:bg-sky-50 active:text-sky-700"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+        )}
+        {activeIndex < reviews.length - 1 && (
+          <button
+            type="button"
+            aria-label="পরের রিভিউ"
+            onClick={() => scrollToCard(activeIndex + 1)}
+            className="md:hidden absolute -right-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/95 border border-slate-200 shadow-lg flex items-center justify-center text-slate-700 active:bg-sky-50 active:text-sky-700"
+          >
+            <ChevronRight className="w-5 h-5" />
+          </button>
+        )}
+        <div
+          ref={scrollerRef}
+          onScroll={handleScroll}
+          className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 items-stretch -mx-4 px-4 pb-4 md:mx-0 md:px-0 md:pb-0 overflow-x-auto md:overflow-visible snap-x snap-mandatory scroll-px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        >
           {reviews.map((rev, idx) => (
             <div
               key={idx}
-              className="bg-slate-50/90 rounded-2xl p-6 border border-slate-200/80 flex flex-col justify-between hover:shadow-lg transition-all"
+              className="bg-slate-50/90 rounded-2xl p-6 border border-slate-200/80 flex flex-col justify-between hover:shadow-lg transition-all w-[84%] max-w-[340px] shrink-0 snap-center md:w-auto md:max-w-none md:shrink"
             >
               <div className="space-y-3">
                 <div className="flex items-center gap-1 text-amber-400">
@@ -93,6 +150,22 @@ export const Testimonials: React.FC = () => {
                 </div>
               </div>
             </div>
+          ))}
+        </div>
+        </div>
+
+        {/* Mobile carousel indicators */}
+        <div className="flex md:hidden justify-center gap-2 mt-2">
+          {reviews.map((_, i) => (
+            <button
+              key={i}
+              type="button"
+              aria-label={`রিভিউ ${toBengaliNumber(i + 1)}`}
+              onClick={() => scrollToCard(i)}
+              className={`h-2 rounded-full transition-all duration-300 ${
+                activeIndex === i ? 'w-6 bg-sky-600' : 'w-2 bg-slate-300'
+              }`}
+            />
           ))}
         </div>
 
