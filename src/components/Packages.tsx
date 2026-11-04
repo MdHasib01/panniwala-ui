@@ -5,9 +5,6 @@ import { Button } from '@/src/components/ui/button';
 import { Badge } from '@/src/components/ui/badge';
 import {
   Check,
-  Droplets,
-  Zap,
-  Sparkles,
   Building2,
   CalendarCheck,
   ArrowRight,
@@ -48,32 +45,6 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
       left: card.offsetLeft - (el.clientWidth - card.offsetWidth) / 2,
       behavior: 'smooth',
     });
-  };
-
-  const getIcon = (iconName: string) => {
-    switch (iconName) {
-      case 'zap':
-        return <Zap className="w-4 h-4 text-amber-500 fill-amber-500" />;
-      case 'sparkles':
-        return <Sparkles className="w-4 h-4 text-indigo-500" />;
-      case 'building':
-        return <Building2 className="w-4 h-4 text-emerald-600" />;
-      default:
-        return <Droplets className="w-4 h-4 text-cyan-600 fill-cyan-500/30" />;
-    }
-  };
-
-  const getIconContainerStyle = (iconName: string) => {
-    switch (iconName) {
-      case 'zap':
-        return 'bg-amber-50 text-amber-500 border border-amber-200';
-      case 'sparkles':
-        return 'bg-indigo-50 text-indigo-500 border border-indigo-200';
-      case 'building':
-        return 'bg-emerald-50 text-emerald-600 border border-emerald-200';
-      default:
-        return 'bg-sky-50 text-sky-600 border border-sky-200';
-    }
   };
 
   const getCardBorderClass = (pkg: WaterPackage) => {
@@ -167,44 +138,27 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
                 )}
 
                 {/* Top Half: Product Image Area */}
-                <div className="relative pt-6 md:pt-7 pb-1 md:pb-2 px-4 flex items-center justify-center min-h-[130px] md:min-h-[210px] bg-gradient-to-b from-sky-50/40 via-cyan-50/20 to-transparent rounded-t-[24px] overflow-hidden">
+                <div className="relative pt-5 md:pt-6 px-4 flex items-center justify-center h-[100px] md:h-[140px] bg-gradient-to-b from-sky-50/40 via-cyan-50/20 to-transparent rounded-t-[24px] overflow-hidden">
                   <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_50%,rgba(14,165,233,0.08),transparent)] pointer-events-none" />
                   <img
                     src={pkg.image}
                     alt={pkg.title}
-                    className="max-h-[110px] md:max-h-[195px] w-auto object-contain drop-shadow-md transition-transform duration-500 group-hover:scale-105 select-none relative z-10"
+                    className="max-h-[85px] md:max-h-[125px] w-auto object-contain drop-shadow-md transition-transform duration-500 group-hover:scale-105 select-none relative z-10"
                     loading="lazy"
                   />
                 </div>
 
                 {/* Bottom Half: Details & Ordering */}
-                <div className="p-4 pt-2 md:p-5 md:pt-3 flex flex-col flex-1 justify-between space-y-3 md:space-y-4">
+                <div className="p-4 pt-2 flex flex-col flex-1 justify-between gap-3">
 
                   {/* Upper details */}
-                  <div className="space-y-2 md:space-y-3">
-                    {/* Meta Row: Icon + Volume Badge */}
-                    <div className="flex items-center justify-between">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${getIconContainerStyle(pkg.iconName)}`}>
-                        {getIcon(pkg.iconName)}
-                      </div>
-                      <span className="text-xs font-bold px-3 py-1 bg-slate-100 text-slate-700 rounded-lg">
-                        {pkg.volume}
-                      </span>
-                    </div>
-
-                    {/* Title and Subtitle */}
+                  <div className="space-y-2">
+                    {/* Title and Price */}
                     <div>
                       <h3 className="text-base sm:text-lg font-bold text-slate-900 leading-snug">
                         {pkg.title}
                       </h3>
-                      <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
-                        {pkg.subtitle}
-                      </p>
-                    </div>
-
-                    {/* Price and Free Delivery row */}
-                    <div className="md:pt-1 md:pb-1">
-                      <div className="flex items-baseline gap-2">
+                      <div className="flex items-baseline gap-2 mt-1">
                         <span className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight font-sans">
                           ৳{toBengaliNumber(pkg.price)}
                         </span>
@@ -217,15 +171,11 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
                           / {pkg.unit}
                         </span>
                       </div>
-                      <div className="flex items-center gap-1.5 text-xs font-semibold text-emerald-600 mt-1">
-                        <Check className="w-3.5 h-3.5 stroke-[3] text-emerald-600" />
-                        <span>ফ্রি ডেলিভারি (নির্দিষ্ট এলাকায়)</span>
-                      </div>
                     </div>
 
-                    {/* Features List */}
-                    <ul className="space-y-1.5 md:space-y-2 text-xs text-slate-600 pt-2 border-t border-slate-100">
-                      {pkg.features.map((feat, fIdx) => (
+                    {/* Features List (3 points) */}
+                    <ul className="space-y-1.5 text-xs text-slate-600 pt-2 border-t border-slate-100">
+                      {pkg.features.slice(0, 3).map((feat, fIdx) => (
                         <li key={fIdx} className="flex items-start gap-2">
                           <Check className="w-3.5 h-3.5 text-cyan-600 shrink-0 mt-0.5" />
                           <span className="leading-snug">{feat}</span>
@@ -235,7 +185,7 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
                   </div>
 
                   {/* Order Button */}
-                  <div className="md:pt-2">
+                  <div>
                     <Button
                       id={`order-package-${pkg.id}`}
                       onClick={() => onSelectPackage(pkg)}
