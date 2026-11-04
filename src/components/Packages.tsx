@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { WATER_PACKAGES, toBengaliNumber } from '@/src/data/packages';
 import { WaterPackage } from '@/src/types';
 import { Button } from '@/src/components/ui/button';
@@ -10,7 +10,9 @@ import {
   Sparkles,
   Building2,
   CalendarCheck,
-  ArrowRight
+  ArrowRight,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 
 interface PackagesProps {
@@ -18,6 +20,36 @@ interface PackagesProps {
 }
 
 export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const handleScroll = () => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    const cards = Array.from(el.children) as HTMLElement[];
+    const center = el.scrollLeft + el.clientWidth / 2;
+    let closest = 0;
+    let minDist = Infinity;
+    cards.forEach((card, i) => {
+      const dist = Math.abs(card.offsetLeft + card.offsetWidth / 2 - center);
+      if (dist < minDist) {
+        minDist = dist;
+        closest = i;
+      }
+    });
+    setActiveIndex(closest);
+  };
+
+  const scrollToCard = (index: number) => {
+    const el = scrollerRef.current;
+    const card = el?.children[index] as HTMLElement | undefined;
+    if (!el || !card) return;
+    el.scrollTo({
+      left: card.offsetLeft - (el.clientWidth - card.offsetWidth) / 2,
+      behavior: 'smooth',
+    });
+  };
+
   const getIcon = (iconName: string) => {
     switch (iconName) {
       case 'zap':
@@ -82,7 +114,33 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
         </div>
 
         {/* Packages Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 pt-3 items-stretch max-w-6xl mx-auto">
+        {/* Mobile: horizontal snap carousel · md+: 3-column grid */}
+        <div className="relative">
+        {activeIndex > 0 && (
+          <button
+            type="button"
+            aria-label="আগের প্যাকেজ"
+            onClick={() => scrollToCard(activeIndex - 1)}
+            className="md:hidden absolute -left-2 top-1/2 -translate-y-1/2 z-40 w-10 h-10 rounded-full bg-white/95 border border-slate-200 shadow-lg flex items-center justify-center text-slate-700 active:bg-sky-50 active:text-sky-700"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+        )}
+        {activeIndex < WATER_PACKAGES.length - 1 && (
+          <button
+            type="button"
+            aria-label="পরের প্যাকেজ"
+            onClick={() => scrollToCard(activeIndex + 1)}
+            className="md:hidden absolute -right-2 top-1/2 -translate-y-1/2 z-40 w-10 h-10 rounded-full bg-white/95 border border-slate-200 shadow-lg flex items-center justify-center text-slate-700 active:bg-sky-50 active:text-sky-700"
+          >
+            <ChevronRight className="w-5 h-5" />
+          </button>
+        )}
+        <div
+          ref={scrollerRef}
+          onScroll={handleScroll}
+          className="relative flex md:grid md:grid-cols-3 gap-4 md:gap-6 lg:gap-8 pt-5 pb-4 md:pb-0 md:pt-3 items-stretch max-w-6xl -mx-4 px-4 md:mx-auto md:px-0 overflow-x-auto md:overflow-visible snap-x snap-mandatory scroll-px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        >
           {WATER_PACKAGES.map((pkg) => {
             const isPopular = pkg.popular;
             const isBestValue = pkg.bestValue;
@@ -90,7 +148,7 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
             return (
               <div
                 key={pkg.id}
-                className={`relative flex flex-col justify-between rounded-[26px] transition-all duration-300 hover:shadow-2xl hover:-translate-y-1.5 group ${getCardBorderClass(pkg)}`}
+                className={`relative flex flex-col justify-between rounded-[26px] transition-all duration-300 md:hover:shadow-2xl md:hover:-translate-y-1.5 group w-[84%] max-w-[340px] shrink-0 snap-center md:w-auto md:max-w-none md:shrink ${getCardBorderClass(pkg)}`}
               >
                 {/* Popular / Best Value Ribbon */}
                 {isPopular && (
@@ -109,21 +167,21 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
                 )}
 
                 {/* Top Half: Product Image Area */}
-                <div className="relative pt-7 pb-2 px-4 flex items-center justify-center min-h-[210px] bg-gradient-to-b from-sky-50/40 via-cyan-50/20 to-transparent rounded-t-[24px] overflow-hidden">
+                <div className="relative pt-6 md:pt-7 pb-1 md:pb-2 px-4 flex items-center justify-center min-h-[130px] md:min-h-[210px] bg-gradient-to-b from-sky-50/40 via-cyan-50/20 to-transparent rounded-t-[24px] overflow-hidden">
                   <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_50%,rgba(14,165,233,0.08),transparent)] pointer-events-none" />
                   <img
                     src={pkg.image}
                     alt={pkg.title}
-                    className="max-h-[195px] w-auto object-contain drop-shadow-md transition-transform duration-500 group-hover:scale-105 select-none relative z-10"
+                    className="max-h-[110px] md:max-h-[195px] w-auto object-contain drop-shadow-md transition-transform duration-500 group-hover:scale-105 select-none relative z-10"
                     loading="lazy"
                   />
                 </div>
 
                 {/* Bottom Half: Details & Ordering */}
-                <div className="p-5 pt-3 flex flex-col flex-1 justify-between space-y-4">
-                  
+                <div className="p-4 pt-2 md:p-5 md:pt-3 flex flex-col flex-1 justify-between space-y-3 md:space-y-4">
+
                   {/* Upper details */}
-                  <div className="space-y-3">
+                  <div className="space-y-2 md:space-y-3">
                     {/* Meta Row: Icon + Volume Badge */}
                     <div className="flex items-center justify-between">
                       <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${getIconContainerStyle(pkg.iconName)}`}>
@@ -145,9 +203,9 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
                     </div>
 
                     {/* Price and Free Delivery row */}
-                    <div className="pt-1 pb-1">
+                    <div className="md:pt-1 md:pb-1">
                       <div className="flex items-baseline gap-2">
-                        <span className="text-3xl font-black text-slate-900 tracking-tight font-sans">
+                        <span className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight font-sans">
                           ৳{toBengaliNumber(pkg.price)}
                         </span>
                         {pkg.regularPrice && (
@@ -166,7 +224,7 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
                     </div>
 
                     {/* Features List */}
-                    <ul className="space-y-2 text-xs text-slate-600 pt-2 border-t border-slate-100">
+                    <ul className="space-y-1.5 md:space-y-2 text-xs text-slate-600 pt-2 border-t border-slate-100">
                       {pkg.features.map((feat, fIdx) => (
                         <li key={fIdx} className="flex items-start gap-2">
                           <Check className="w-3.5 h-3.5 text-cyan-600 shrink-0 mt-0.5" />
@@ -174,21 +232,14 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
                         </li>
                       ))}
                     </ul>
-
-                    {/* Amber Deposit Box */}
-                    {pkg.depositRequired && (
-                      <div className="p-2.5 rounded-xl bg-amber-50/90 border border-amber-200/80 text-[11px] text-amber-900 leading-snug">
-                        খালি জার বা নতুন জার নিতে হবে ১০০ ডিপোজিট/ রিফান্ডেবল প্রয়োজন (প্রযোজ্য ক্ষেত্রে)।
-                      </div>
-                    )}
                   </div>
 
                   {/* Order Button */}
-                  <div className="pt-2">
+                  <div className="md:pt-2">
                     <Button
                       id={`order-package-${pkg.id}`}
                       onClick={() => onSelectPackage(pkg)}
-                      className={`w-full font-bold text-sm h-11 rounded-xl transition-all flex items-center justify-center gap-1.5 ${getButtonClass(pkg)}`}
+                      className={`w-full font-bold text-sm h-10 md:h-11 rounded-xl transition-all flex items-center justify-center gap-1.5 ${getButtonClass(pkg)}`}
                     >
                       <CalendarCheck className="w-4 h-4" />
                       <span>অর্ডার নিশ্চিত করুন</span>
@@ -200,9 +251,25 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
             );
           })}
         </div>
+        </div>
+
+        {/* Mobile carousel indicators */}
+        <div className="flex md:hidden justify-center gap-2 mt-2">
+          {WATER_PACKAGES.map((pkg, i) => (
+            <button
+              key={pkg.id}
+              type="button"
+              aria-label={`প্যাকেজ ${toBengaliNumber(i + 1)}`}
+              onClick={() => scrollToCard(i)}
+              className={`h-2 rounded-full transition-all duration-300 ${
+                activeIndex === i ? 'w-6 bg-sky-600' : 'w-2 bg-slate-300'
+              }`}
+            />
+          ))}
+        </div>
 
         {/* Corporate Note banner */}
-        <div className="mt-12 p-4 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="mt-8 md:mt-12p-4 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3 text-center sm:text-left">
             <div className="w-10 h-10 rounded-full bg-cyan-100 flex items-center justify-center text-cyan-700 shrink-0">
               <Building2 className="w-5 h-5" />

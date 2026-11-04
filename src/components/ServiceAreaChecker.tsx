@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Badge } from '@/src/components/ui/badge';
 import { Button } from '@/src/components/ui/button';
-import { MapPin, Search, CheckCircle2, Phone, Clock } from 'lucide-react';
+import { MapPin, Search, CheckCircle2, Phone, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
 import { HOTLINE_NUMBER, HOTLINE_TEL } from '@/src/data/packages';
 
 export const ServiceAreaChecker: React.FC<{ onOpenOrder: () => void }> = ({ onOpenOrder }) => {
@@ -25,6 +25,31 @@ export const ServiceAreaChecker: React.FC<{ onOpenOrder: () => void }> = ({ onOp
       time: '২৫-৩৫ মিনিট',
     },
   ];
+
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+
+  const updateScrollState = useCallback(() => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 4);
+    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
+  }, []);
+
+  useEffect(() => {
+    updateScrollState();
+    window.addEventListener('resize', updateScrollState);
+    return () => window.removeEventListener('resize', updateScrollState);
+  }, [updateScrollState]);
+
+  const scrollByCard = (direction: 1 | -1) => {
+    const el = scrollerRef.current;
+    const card = el?.firstElementChild as HTMLElement | null;
+    if (!el || !card) return;
+    const gap = parseFloat(getComputedStyle(el).columnGap) || 0;
+    el.scrollBy({ left: direction * (card.offsetWidth + gap), behavior: 'smooth' });
+  };
 
   const handleCheck = (e: React.FormEvent) => {
     e.preventDefault();
@@ -89,12 +114,38 @@ export const ServiceAreaChecker: React.FC<{ onOpenOrder: () => void }> = ({ onOp
           )}
         </div>
 
-        {/* Zones Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Zones Scroller */}
+        <div className="relative">
+          {canScrollLeft && (
+            <button
+              type="button"
+              aria-label="আগের জোন"
+              onClick={() => scrollByCard(-1)}
+              className="absolute left-0 sm:-left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white border border-slate-200 shadow-md flex items-center justify-center text-slate-700 hover:bg-cyan-50 hover:text-cyan-700 hover:border-cyan-200 transition-colors"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+          )}
+          {canScrollRight && (
+            <button
+              type="button"
+              aria-label="পরের জোন"
+              onClick={() => scrollByCard(1)}
+              className="absolute right-0 sm:-right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white border border-slate-200 shadow-md flex items-center justify-center text-slate-700 hover:bg-cyan-50 hover:text-cyan-700 hover:border-cyan-200 transition-colors"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          )}
+
+          <div
+            ref={scrollerRef}
+            onScroll={updateScrollState}
+            className="flex gap-4 sm:gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-2 -mx-4 px-4 scroll-px-4 sm:mx-0 sm:px-0 sm:scroll-px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          >
           {zones.map((zone, idx) => (
             <div
               key={idx}
-              className="bg-white rounded-2xl p-6 border border-slate-200/90 shadow-sm space-y-3"
+              className="bg-white rounded-2xl p-6 border border-slate-200/90 shadow-sm space-y-3 shrink-0 snap-start w-[85%] sm:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-3rem)/3)]"
             >
               <div className="flex items-center justify-between">
                 <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
@@ -114,6 +165,7 @@ export const ServiceAreaChecker: React.FC<{ onOpenOrder: () => void }> = ({ onOp
               </div>
             </div>
           ))}
+          </div>
         </div>
 
         <div className="mt-8 text-center">
