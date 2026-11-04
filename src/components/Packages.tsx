@@ -6,7 +6,6 @@ import { Badge } from '@/src/components/ui/badge';
 import {
   Check,
   Building2,
-  CalendarCheck,
   ArrowRight,
   ChevronLeft,
   ChevronRight
@@ -47,24 +46,32 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
     });
   };
 
-  const getCardBorderClass = (pkg: WaterPackage) => {
+  const getTheme = (pkg: WaterPackage) => {
     if (pkg.popular) {
-      return 'border-2 border-sky-400 ring-4 ring-sky-100/50 shadow-md bg-white';
+      return {
+        card: 'border-sky-200 shadow-lg shadow-sky-500/10 ring-1 ring-sky-300/50',
+        panel: 'from-sky-100 via-cyan-50 to-white',
+        badge: 'bg-sky-600 text-white',
+        check: 'bg-sky-100 text-sky-700',
+        button: 'bg-sky-600 hover:bg-sky-700 text-white shadow-md shadow-sky-500/25',
+      };
     }
     if (pkg.bestValue) {
-      return 'border-2 border-emerald-500 ring-4 ring-emerald-100/50 shadow-md bg-white';
+      return {
+        card: 'border-emerald-200 shadow-lg shadow-emerald-500/10 ring-1 ring-emerald-300/50',
+        panel: 'from-emerald-100 via-teal-50 to-white',
+        badge: 'bg-emerald-600 text-white',
+        check: 'bg-emerald-100 text-emerald-700',
+        button: 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-600/25',
+      };
     }
-    return 'border-2 border-slate-200/90 hover:border-slate-300 shadow-sm bg-white';
-  };
-
-  const getButtonClass = (pkg: WaterPackage) => {
-    if (pkg.popular) {
-      return 'bg-[#0284c7] hover:bg-sky-600 text-white shadow-md shadow-sky-500/25';
-    }
-    if (pkg.bestValue) {
-      return 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-600/25';
-    }
-    return 'bg-[#0f172a] hover:bg-slate-800 text-white shadow-sm';
+    return {
+      card: 'border-slate-200 shadow-sm hover:border-slate-300',
+      panel: 'from-slate-100 via-slate-50 to-white',
+      badge: 'bg-slate-900 text-white',
+      check: 'bg-slate-100 text-slate-700',
+      button: 'bg-slate-900 hover:bg-slate-800 text-white shadow-sm',
+    };
   };
 
   return (
@@ -107,92 +114,71 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
         <div
           ref={scrollerRef}
           onScroll={handleScroll}
-          className="relative flex md:grid md:grid-cols-3 gap-4 md:gap-6 lg:gap-8 pt-5 pb-4 md:pb-0 md:pt-3 items-stretch max-w-6xl -mx-4 px-4 md:mx-auto md:px-0 overflow-x-auto md:overflow-visible snap-x snap-mandatory scroll-px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="relative flex md:grid md:grid-cols-3 gap-4 md:gap-6 lg:gap-8 pt-2 pb-4 md:pb-2 md:pt-2 items-stretch max-w-6xl -mx-4 px-4 md:mx-auto md:px-0 overflow-x-auto md:overflow-visible snap-x snap-mandatory scroll-px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
           {WATER_PACKAGES.map((pkg) => {
-            const isPopular = pkg.popular;
-            const isBestValue = pkg.bestValue;
+            const theme = getTheme(pkg);
+            const ribbon = pkg.popular ? '★ সবচেয়ে জনপ্রিয়' : pkg.bestValue ? '⚡ সেরা ভ্যালু' : null;
 
             return (
               <div
                 key={pkg.id}
-                className={`relative flex flex-col justify-between rounded-[26px] transition-all duration-300 md:hover:shadow-2xl md:hover:-translate-y-1.5 group w-[84%] max-w-[340px] shrink-0 snap-center md:w-auto md:max-w-none md:shrink ${getCardBorderClass(pkg)}`}
+                className={`relative flex flex-col rounded-3xl bg-white border p-2.5 transition-all duration-300 md:hover:-translate-y-1 md:hover:shadow-xl group w-[84%] max-w-[340px] shrink-0 snap-center md:w-auto md:max-w-none md:shrink ${theme.card}`}
               >
-                {/* Popular / Best Value Ribbon */}
-                {isPopular && (
-                  <div className="absolute -top-3.5 inset-x-0 flex justify-center z-30 pointer-events-none">
-                    <span className="inline-flex items-center gap-1 bg-[#0284c7] text-white text-[11px] sm:text-xs font-bold px-3.5 py-1 rounded-full shadow-md shadow-sky-500/30 border border-white/90 tracking-wide">
-                      ★ সবচেয়ে জনপ্রিয়
-                    </span>
-                  </div>
-                )}
-                {isBestValue && (
-                  <div className="absolute -top-3.5 inset-x-0 flex justify-center z-30 pointer-events-none">
-                    <span className="inline-flex items-center gap-1 bg-emerald-600 text-white text-[11px] sm:text-xs font-bold px-3.5 py-1 rounded-full shadow-md shadow-emerald-600/30 border border-white/90 tracking-wide">
-                      ⚡ সেরা ভ্যালু প্যাক
-                    </span>
-                  </div>
-                )}
+                {/* Image panel */}
+                <div className={`relative rounded-[20px] bg-gradient-to-br ${theme.panel} h-[150px] md:h-[180px] flex items-center justify-center overflow-hidden`}>
+                  <div className="absolute -bottom-12 -right-12 w-44 h-44 rounded-full bg-white/70 blur-2xl pointer-events-none" />
+                  <div className="absolute -top-10 -left-10 w-32 h-32 rounded-full bg-white/50 blur-2xl pointer-events-none" />
 
-                {/* Top Half: Product Image Area */}
-                <div className="relative pt-5 md:pt-6 px-4 flex items-center justify-center h-[100px] md:h-[140px] bg-gradient-to-b from-sky-50/40 via-cyan-50/20 to-transparent rounded-t-[24px] overflow-hidden">
-                  <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_50%,rgba(14,165,233,0.08),transparent)] pointer-events-none" />
+                  {ribbon && (
+                    <span className={`absolute top-3 left-3 z-20 inline-flex items-center text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm ${theme.badge}`}>
+                      {ribbon}
+                    </span>
+                  )}
+
                   <img
                     src={pkg.image}
                     alt={pkg.title}
-                    className="max-h-[85px] md:max-h-[125px] w-auto object-contain drop-shadow-md transition-transform duration-500 group-hover:scale-105 select-none relative z-10"
+                    className="max-h-[120px] md:max-h-[150px] w-auto object-contain drop-shadow-xl transition-transform duration-500 group-hover:scale-105 select-none relative z-10 mt-4"
                     loading="lazy"
                   />
                 </div>
 
-                {/* Bottom Half: Details & Ordering */}
-                <div className="p-4 pt-2 flex flex-col flex-1 justify-between gap-3">
-
-                  {/* Upper details */}
-                  <div className="space-y-2">
-                    {/* Title and Price */}
-                    <div>
-                      <h3 className="text-base sm:text-lg font-bold text-slate-900 leading-snug">
-                        {pkg.title}
-                      </h3>
-                      <div className="flex items-baseline gap-2 mt-1">
-                        <span className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight font-sans">
-                          ৳{toBengaliNumber(pkg.price)}
-                        </span>
-                        {pkg.regularPrice && (
-                          <span className="text-sm text-slate-400 line-through">
-                            ৳{toBengaliNumber(pkg.regularPrice)}
-                          </span>
-                        )}
-                        <span className="text-xs text-slate-500 font-medium">
-                          / {pkg.unit}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Features List (3 points) */}
-                    <ul className="space-y-1.5 text-xs text-slate-600 pt-2 border-t border-slate-100">
-                      {pkg.features.slice(0, 3).map((feat, fIdx) => (
-                        <li key={fIdx} className="flex items-start gap-2">
-                          <Check className="w-3.5 h-3.5 text-cyan-600 shrink-0 mt-0.5" />
-                          <span className="leading-snug">{feat}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  {/* Order Button */}
+                {/* Details */}
+                <div className="px-2.5 pt-4 pb-1.5 flex flex-col flex-1 gap-4">
                   <div>
-                    <Button
-                      id={`order-package-${pkg.id}`}
-                      onClick={() => onSelectPackage(pkg)}
-                      className={`w-full font-bold text-sm h-10 md:h-11 rounded-xl transition-all flex items-center justify-center gap-1.5 ${getButtonClass(pkg)}`}
-                    >
-                      <CalendarCheck className="w-4 h-4" />
-                      <span>অর্ডার নিশ্চিত করুন</span>
-                    </Button>
+                    <h3 className="text-base sm:text-lg font-bold text-slate-900 leading-snug">
+                      {pkg.title}
+                    </h3>
+                    <div className="flex items-baseline gap-1.5 mt-1.5">
+                      <span className="text-3xl font-black text-slate-900 tracking-tight font-sans">
+                        ৳{toBengaliNumber(pkg.price)}
+                      </span>
+                      <span className="text-xs text-slate-500 font-medium">/ {pkg.unit}</span>
+                    </div>
                   </div>
 
+                  <ul className="space-y-2.5 text-[13px] text-slate-600">
+                    {pkg.features.slice(0, 3).map((feat, fIdx) => (
+                      <li key={fIdx} className="flex items-center gap-2.5">
+                        <span className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${theme.check}`}>
+                          <Check className="w-3 h-3 stroke-[3]" />
+                        </span>
+                        <span className="leading-snug">{feat}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <Button
+                    id={`order-package-${pkg.id}`}
+                    onClick={() => onSelectPackage(pkg)}
+                    className={`mt-auto w-full h-12 rounded-2xl font-bold text-sm transition-all flex items-center justify-between pl-5 pr-1.5 ${theme.button}`}
+                  >
+                    <span>অর্ডার নিশ্চিত করুন</span>
+                    <span className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center transition-transform duration-300 group-hover:translate-x-0.5">
+                      <ArrowRight className="w-4 h-4" />
+                    </span>
+                  </Button>
                 </div>
               </div>
             );
