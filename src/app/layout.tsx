@@ -17,8 +17,14 @@ const inter = Inter({
   display: 'swap',
 });
 
-// Public site origin — share images/URLs must be absolute. Netlify sets URL at build time.
-const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || process.env.URL || 'https://pani-wala.netlify.app').replace(/\/$/, '');
+// Public site origin — og:image / canonical URLs must be absolute and point at the live site.
+// Override with NEXT_PUBLIC_SITE_URL (e.g. when a custom domain is added); otherwise use
+// Vercel's production domain (set automatically at build time, hostname only).
+const SITE_URL = (
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL && `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`) ||
+  'https://panniwala.vercel.app'
+).replace(/\/$/, '');
 const SITE_NAME = 'পানি ওয়ালা';
 const TITLE = 'পানি ওয়ালা | ১০০% বিশুদ্ধ ও নিরাপদ খাবার পানি — খুলনায় হোম ডেলিভারি';
 const DESCRIPTION =
