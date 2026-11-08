@@ -1,66 +1,16 @@
-import { WaterPackage } from '@/src/types';
 import package1Img from '@/src/assets/package1.png';
 import package2Img from '@/src/assets/package2.png';
 import package4Img from '@/src/assets/package4.png';
 
-export const WATER_PACKAGES: WaterPackage[] = [
-  {
-    id: 'ro-20l-jar',
-    title: '২০ লিটার বিশুদ্ধতার জার',
-    subtitle: 'বাসা-বাড়ি ও পরিবারের জন্য সবচেয়ে জনপ্রিয়',
-    volume: '২০ লিটার',
-    price: 40,
-    regularPrice: 60,
-    unit: 'প্রতি জার',
-    popular: true,
-    image: package1Img,
-    features: [
-      '৭ ধাপে RO বিশুদ্ধকরণ',
-      'ল্যাবটেস্টেড, ব্যাক্টেরিয়া মুক্ত পানি',
-      'ফ্রি হোম ডেলিভারি'
-    ],
-    depositRequired: true,
-    depositAmount: 100,
-    iconName: 'droplets'
-  },
-  {
-    id: 'ro-20l-pump-combo',
-    title: '২০ লিটার জার + ওয়াটার মেশিন',
-    subtitle: 'নতুন সংযোগের জন্য নির্ভরযোগ্য সমাধান',
-    volume: '২০ লিটার + মেশিন',
-    price: 199,
-    regularPrice: 1200,
-    unit: 'প্রথম সেট',
-    bestValue: true,
-    image: package2Img,
-    features: [
-      'হট, নরমাল ও কোল্ড ডিসপেনসার',
-      'প্রথম ২০ লিটার জার সহ',
-      '১ বছরের সার্ভিস ওয়ারেন্টি'
-    ],
-    depositRequired: false,
-    depositAmount: 0,
-    iconName: 'zap'
-  },
-  {
-    id: 'corporate-monthly',
-    title: 'অফিস সাবস্ক্রিপশন',
-    subtitle: 'অফিস, রেস্টুরেন্ট ও বাণিজ্যিক প্রতিষ্ঠানের জন্য বিশেষ প্যাকেজ',
-    volume: 'অফিস/প্রতিষ্ঠান',
-    price: 35,
-    regularPrice: 50,
-    unit: 'প্রতি জার',
-    image: package4Img,
-    features: [
-      'বিশেষ সাবস্ক্রিপশন রেট',
-      'নিয়মিত ও দ্রুত ডেলিভারি',
-      'কাস্টম মাসিক বিলিং'
-    ],
-    depositRequired: true,
-    depositAmount: 100,
-    iconName: 'building'
-  }
-];
+/**
+ * Bundled artwork for the default packages, keyed by slug. The package data itself
+ * lives in packages.snapshot.json (a snapshot of the database used as a fallback).
+ */
+export const PACKAGE_IMAGES: Record<string, string> = {
+  'ro-20l-jar': package1Img,
+  'ro-20l-pump-combo': package2Img,
+  'corporate-monthly': package4Img,
+};
 
 export const KHULNA_AREAS = [
   'সোনাডাঙ্গা আবাসিক (১ম ও ২য় ফেজ)',

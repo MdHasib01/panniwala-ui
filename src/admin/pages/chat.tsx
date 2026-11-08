@@ -55,15 +55,15 @@ function ConversationList({
           <Input placeholder="Search conversations" value={search} onChange={(e) => onSearch(e.target.value)} className="pl-9" />
         </div>
       </div>
-      <div className="min-h-0 flex-1 overflow-y-auto">
+      <div className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto">
         {loading && !items.length ? (
           <div className="grid gap-2 p-3">{Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-14" />)}</div>
         ) : !items.length ? (
           <EmptyState icon={MessagesSquare} title="No conversations" description="When customers or suppliers message support, they'll appear here. Start one from Users." />
         ) : (
-          <ul className="grid gap-0.5 p-2">
+          <ul className="grid grid-cols-1 gap-0.5 p-2">
             {items.map((c) => (
-              <li key={c._id}>
+              <li key={c._id} className="min-w-0">
                 <button
                   onClick={() => onSelect(c._id)}
                   className={cn(
@@ -78,7 +78,7 @@ function ConversationList({
                       <span className="text-muted-foreground shrink-0 text-[11px]">{c.lastMessage ? timeAgo(c.lastMessageAt) : ''}</span>
                     </div>
                     <div className="flex items-center justify-between gap-2">
-                      <span className={cn('truncate text-xs', c.unreadForAdmin ? 'text-foreground' : 'text-muted-foreground')}>
+                      <span className={cn('min-w-0 flex-1 truncate text-xs', c.unreadForAdmin ? 'text-foreground' : 'text-muted-foreground')}>
                         {typing[c._id] ? <span className="text-primary">typing…</span> : c.lastMessage || 'No messages yet'}
                       </span>
                       {c.unreadForAdmin > 0 && (
@@ -312,7 +312,7 @@ export function ChatPage() {
   return (
     <Card className="h-[calc(100svh-7.5rem)] min-h-[30rem] gap-0 overflow-hidden py-0 md:h-[calc(100svh-9rem)]">
       <div className="flex h-full min-h-0 md:grid md:grid-cols-[18rem_1fr] lg:grid-cols-[20rem_1fr]">
-        <div className={cn('min-h-0 w-full flex-col border-r md:flex', selected ? 'hidden' : 'flex')}>
+        <div className={cn('min-h-0 min-w-0 w-full flex-col border-r md:flex', selected ? 'hidden' : 'flex')}>
           <ConversationList
             items={items}
             loading={loading}

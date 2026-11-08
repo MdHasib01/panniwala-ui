@@ -12,10 +12,13 @@ import type { Order, OrderStatus, Paginated, StatsOverview } from '@/src/lib/mod
 import { AccountHeader, AccountPage, EmptyCard, Spinner, StatusPill } from './ui';
 
 type Tab = 'active' | 'done';
+// pending/confirmed orders only reach a supplier when they're attached to them,
+// so they count as assigned here (the server widens "assigned" the same way).
 const TAB_STATUS: Record<Tab, OrderStatus[]> = {
-  active: ['assigned', 'out_for_delivery'],
+  active: ['pending', 'confirmed', 'assigned', 'out_for_delivery'],
   done: ['delivered'],
 };
+const READY_TO_START: OrderStatus[] = ['pending', 'confirmed', 'assigned'];
 
 function DeliveryCard({ order, onChange, canAct }: { order: Order; onChange: (o: Order) => void; canAct: boolean }) {
   const [busy, setBusy] = useState(false);
@@ -44,7 +47,7 @@ function DeliveryCard({ order, onChange, canAct }: { order: Order; onChange: (o:
           <p className="font-mono text-sm font-bold text-cyan-700">#{order.orderNumber}</p>
           <p className="text-xs text-slate-500">{bnDate(order.createdAt)}</p>
         </div>
-        <StatusPill status={order.status} />
+        <StatusPill status={READY_TO_START.includes(order.status) ? 'assigned' : order.status} />
       </div>
 
       {/* Customer */}
@@ -94,7 +97,7 @@ function DeliveryCard({ order, onChange, canAct }: { order: Order; onChange: (o:
       )}
 
       {/* Actions */}
-      {canAct && order.status === 'assigned' && (
+      {canAct && READY_TO_START.includes(order.status) && (
         <button onClick={() => move('out_for_delivery')} disabled={busy} className="btn-shine mt-4 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-cyan-600 font-bold text-white shadow-md shadow-cyan-600/25 disabled:opacity-60">
           {busy ? <Loader2 className="h-5 w-5 animate-spin" /> : <Truck className="h-5 w-5" />} ডেলিভারি শুরু করুন
         </button>

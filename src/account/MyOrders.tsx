@@ -3,7 +3,7 @@ import { Link, Navigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { Package, PackageSearch, Plus, Phone, Truck, Loader2, MapPin, Search, LogIn, XCircle } from 'lucide-react';
 import { cn } from '@/src/lib/utils';
-import { api } from '@/src/lib/api';
+import { api, ApiError } from '@/src/lib/api';
 import { useAuth } from '@/src/lib/auth';
 import { useSocketEvent } from '@/src/lib/socket';
 import { toBengaliNumber } from '@/src/data/packages';
@@ -25,7 +25,8 @@ const matches = (f: Filter, s: OrderStatus) => f === 'all' || (f === 'active' ? 
 function OrderCard({ order, onChange }: { order: Order; onChange: (o: Order) => void }) {
   const [confirming, setConfirming] = useState(false);
   const [busy, setBusy] = useState(false);
-  const canCancel = order.status === 'pending' || order.status === 'confirmed';
+  // Must match the server rule: customers can cancel only before the order is confirmed.
+  const canCancel = order.status === 'pending';
   const supplier = order.supplier;
 
   const cancel = async () => {
@@ -35,7 +36,13 @@ function OrderCard({ order, onChange }: { order: Order; onChange: (o: Order) => 
       onChange(updated);
       toast.success('অর্ডার বাতিল করা হয়েছে');
     } catch (err) {
-      toast.error((err as Error).message);
+      // 400/409: the order was confirmed (or otherwise changed) before our cancel reached the server.
+      if (err instanceof ApiError && (err.status === 400 || err.status === 409)) {
+        toast.error('অর্ডারটি ইতিমধ্যে কনফার্ম হয়ে গেছে, এখন আর বাতিল করা যাবে না');
+        api.get<{ order: Order }>(`/orders/${order._id}`).then(({ order: fresh }) => onChange(fresh)).catch(() => {});
+      } else {
+        toast.error((err as Error).message);
+      }
     } finally {
       setBusy(false);
       setConfirming(false);

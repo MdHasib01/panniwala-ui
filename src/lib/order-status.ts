@@ -1,3 +1,4 @@
+import { ClipboardList, House, ThumbsUp, Truck, UserRound, type LucideIcon } from 'lucide-react';
 import type { OrderStatus } from './models';
 import { toBengaliNumber } from '@/src/data/packages';
 
@@ -12,12 +13,12 @@ export const ORDER_STATUS_BN: Record<OrderStatus, { label: string; pill: string;
 };
 
 /** The happy-path steps shown in the order progress tracker. */
-export const ORDER_STEPS: { status: OrderStatus; label: string }[] = [
-  { status: 'pending', label: 'অর্ডার গৃহীত' },
-  { status: 'confirmed', label: 'নিশ্চিত' },
-  { status: 'assigned', label: 'সাপ্লায়ার' },
-  { status: 'out_for_delivery', label: 'পথে আছে' },
-  { status: 'delivered', label: 'পৌঁছেছে' },
+export const ORDER_STEPS: { status: OrderStatus; label: string; icon: LucideIcon }[] = [
+  { status: 'pending', label: 'অর্ডার গৃহীত', icon: ClipboardList },
+  { status: 'confirmed', label: 'নিশ্চিত', icon: ThumbsUp },
+  { status: 'assigned', label: 'সাপ্লায়ার', icon: UserRound },
+  { status: 'out_for_delivery', label: 'পথে আছে', icon: Truck },
+  { status: 'delivered', label: 'পৌঁছেছে', icon: House },
 ];
 
 export const taka = (n: number) => `৳${toBengaliNumber(Math.round(n || 0))}`;

@@ -72,29 +72,49 @@ export function StatusPill({ status }: { status: OrderStatus }) {
   );
 }
 
-/** Horizontal step tracker: pending → confirmed → assigned → on the way → delivered. */
+/**
+ * Horizontal step tracker: pending → confirmed → assigned → on the way → delivered.
+ * Completed steps turn green with a check; the current step shows its icon highlighted;
+ * upcoming steps show their icon greyed out. Once delivered, every step is complete.
+ */
 export function OrderProgress({ status }: { status: OrderStatus }) {
   if (status === 'cancelled') return null;
   const current = ORDER_STEPS.findIndex((s) => s.status === status);
+  const delivered = status === 'delivered';
   return (
     <ol className="flex items-start">
       {ORDER_STEPS.map((step, i) => {
-        const done = i <= current;
+        const completed = i < current || delivered;
+        const active = i === current && !delivered;
+        const Icon = completed ? Check : step.icon;
         return (
-          <li key={step.status} className="relative flex flex-1 flex-col items-center text-center">
+          <li
+            key={step.status}
+            className="relative flex flex-1 flex-col items-center text-center"
+            aria-current={active ? 'step' : undefined}
+          >
             {i > 0 && (
-              <span className={cn('absolute top-3 right-1/2 h-0.5 w-full', i <= current ? 'bg-cyan-500' : 'bg-slate-200')} aria-hidden />
+              <span
+                className={cn('absolute top-4 right-1/2 h-0.5 w-full transition-colors', i <= current ? 'bg-emerald-500' : 'bg-slate-200')}
+                aria-hidden
+              />
             )}
             <span
               className={cn(
-                'relative z-10 flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-bold ring-4 ring-white',
-                done ? 'bg-cyan-600 text-white' : 'bg-slate-200 text-slate-500',
-                i === current && status !== 'delivered' && 'animate-pulse'
+                'relative z-10 flex h-8 w-8 items-center justify-center rounded-full ring-4 ring-white transition-colors',
+                completed && 'bg-emerald-500 text-white',
+                active && 'bg-cyan-600 text-white shadow-[0_0_0_6px_rgba(8,145,178,0.15)]',
+                !completed && !active && 'bg-slate-100 text-slate-400'
               )}
             >
-              {done ? <Check className="h-3.5 w-3.5" /> : i + 1}
+              <Icon className={cn('h-4 w-4', completed && 'stroke-[3]')} aria-hidden />
             </span>
-            <span className={cn('mt-1.5 text-[10px] leading-tight font-semibold sm:text-[11px]', done ? 'text-cyan-800' : 'text-slate-400')}>
+            <span
+              className={cn(
+                'mt-1.5 text-[10px] leading-tight font-semibold sm:text-[11px]',
+                completed ? 'text-emerald-700' : active ? 'text-cyan-800' : 'text-slate-400'
+              )}
+            >
               {step.label}
             </span>
           </li>

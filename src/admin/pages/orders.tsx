@@ -130,7 +130,11 @@ function OrderSheet({
                   </SelectTrigger>
                   <SelectContent>
                     {ORDER_STATUSES.map((s) => (
-                      <SelectItem key={s} value={s} disabled={s === 'assigned' && !order.supplier}>
+                      <SelectItem
+                        key={s}
+                        value={s}
+                        disabled={(s === 'assigned' && !order.supplier) || ((s === 'pending' || s === 'confirmed') && !!order.supplier)}
+                      >
                         {ORDER_STATUS_META[s].label}
                       </SelectItem>
                     ))}
@@ -188,7 +192,7 @@ function OrderSheet({
 
           {isSupplier && !closed && (
             <div className="grid gap-2">
-              {order.status === 'assigned' && (
+              {['pending', 'confirmed', 'assigned'].includes(order.status) && (
                 <Button size="lg" disabled={!!busy || user.status !== 'active'} onClick={() => setStatus('out_for_delivery')}>
                   {busy ? <Loader2 className="animate-spin" /> : <Truck />} Start delivery
                 </Button>
