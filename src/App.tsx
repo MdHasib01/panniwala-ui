@@ -60,8 +60,8 @@ export default function App() {
   // Close the drawer whenever the route changes.
   useEffect(() => setIsMoreOpen(false), [pathname]);
 
-  // The chat page is a full-height app screen: no footer or floating button.
-  const isChat = pathname === '/chat';
+  // No footer on the full-height chat screen or on the focused login / sign-up screens.
+  const hideFooter = ['/chat', '/login', '/register'].includes(pathname);
 
   return (
     <SiteContext.Provider value={site}>
@@ -78,7 +78,7 @@ export default function App() {
           </Suspense>
         </main>
 
-        {!isChat && <Footer />}
+        {!hideFooter && <Footer />}
 
         {/* Fixed WhatsApp Support Logo (Bottom Right) — landing page only; account pages have chat */}
         {pathname === '/' && <FloatingWhatsApp />}

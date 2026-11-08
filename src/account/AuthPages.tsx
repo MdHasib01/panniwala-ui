@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { Link, Navigate, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
-import { Loader2, LogIn, Store, UserRound, Droplets, Eye, EyeOff, Check } from 'lucide-react';
+import { Loader2, LogIn, Store, UserRound, Droplets, Eye, EyeOff } from 'lucide-react';
 import { KHULNA_AREAS } from '@/src/data/packages';
 import { cn } from '@/src/lib/utils';
 import { homePathFor, useAuth } from '@/src/lib/auth';
 import type { User } from '@/src/lib/models';
+import { authErrorBn, isBdPhone, normalizeBdPhone } from '@/src/lib/phone';
 import { Field, Spinner, fieldClass } from './ui';
+import { MultiSelect } from './MultiSelect';
 
 function AuthCard({ title, subtitle, children }: { title: string; subtitle: string; children: React.ReactNode }) {
   return (
@@ -70,7 +72,7 @@ function GuestGate({ children }: { children: React.ReactNode }) {
 export function LoginPage() {
   const { login } = useAuth();
   const afterAuth = useAfterAuth();
-  const [email, setEmail] = useState('');
+  const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -80,12 +82,13 @@ export function LoginPage() {
     setSubmitting(true);
     setError(null);
     try {
-      const user = await login(email, password);
+      // A phone number is normalised (e.g. +880…) — anything with "@" is treated as an email.
+      const id = identifier.includes('@') ? identifier.trim() : normalizeBdPhone(identifier);
+      const user = await login(id, password);
       toast.success(`স্বাগতম, ${user.name.split(' ')[0]}!`);
       afterAuth(user);
     } catch (err) {
-      const msg = (err as Error).message;
-      setError(/invalid email or password/i.test(msg) ? 'ইমেইল অথবা পাসওয়ার্ড সঠিক নয়' : /suspended/i.test(msg) ? 'আপনার অ্যাকাউন্টটি সাময়িকভাবে বন্ধ আছে। সাপোর্টে যোগাযোগ করুন।' : msg);
+      setError(authErrorBn((err as Error).message));
     } finally {
       setSubmitting(false);
     }
@@ -95,8 +98,8 @@ export function LoginPage() {
     <GuestGate>
       <AuthCard title="লগইন করুন" subtitle="গ্রাহক ও সাপ্লায়ার — একই লগইন">
         <form onSubmit={onSubmit} className="space-y-4">
-          <Field label="ইমেইল" htmlFor="email">
-            <input id="email" type="email" autoComplete="email" inputMode="email" placeholder="you@example.com" className={fieldClass} value={email} onChange={(e) => setEmail(e.target.value)} required />
+          <Field label="মোবাইল নম্বর অথবা ইমেইল" htmlFor="identifier">
+            <input id="identifier" type="text" autoComplete="username" autoCapitalize="none" spellCheck={false} placeholder="01XXXXXXXXX অথবা you@example.com" className={fieldClass} value={identifier} onChange={(e) => setIdentifier(e.target.value)} required />
           </Field>
           <Field label="পাসওয়ার্ড" htmlFor="password">
             <PasswordInput id="password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} required />
@@ -138,8 +141,9 @@ export function RegisterPage() {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    const phone = form.phone.replace(/[\s-]/g, '');
-    if ((type === 'supplier' || phone) && !/^01[3-9]\d{8}$/.test(phone)) {
+    const phone = normalizeBdPhone(form.phone);
+    const email = form.email.trim() || undefined;
+    if (!isBdPhone(phone)) {
       setError('সঠিক ১১ ডিজিটের মোবাইল নম্বর দিন (যেমন: 017XXXXXXXX)');
       return;
     }
@@ -147,15 +151,14 @@ export function RegisterPage() {
     try {
       const user =
         type === 'supplier'
-          ? await registerSupplier({ name: form.name, email: form.email, phone, password: form.password, businessName: form.businessName, tradeLicense: form.tradeLicense || undefined, serviceAreas: areas })
-          : await register({ name: form.name, email: form.email, phone: phone || undefined, password: form.password });
+          ? await registerSupplier({ name: form.name, email, phone, password: form.password, businessName: form.businessName, tradeLicense: form.tradeLicense || undefined, serviceAreas: areas })
+          : await register({ name: form.name, email, phone, password: form.password });
       toast.success(type === 'supplier' ? 'আবেদন জমা হয়েছে!' : 'অ্যাকাউন্ট তৈরি হয়েছে!', {
         description: type === 'supplier' ? 'অ্যাডমিন অনুমোদন দিলেই আপনি ডেলিভারি অর্ডার পাবেন।' : 'পানি ওয়ালায় আপনাকে স্বাগতম।',
       });
       afterAuth(user);
     } catch (err) {
-      const msg = (err as Error).message;
-      setError(/already exists/i.test(msg) ? 'এই ইমেইল দিয়ে আগেই অ্যাকাউন্ট খোলা হয়েছে' : msg);
+      setError(authErrorBn((err as Error).message));
     } finally {
       setSubmitting(false);
     }
@@ -197,11 +200,11 @@ export function RegisterPage() {
               <input id="businessName" className={fieldClass} value={form.businessName} onChange={set('businessName')} required minLength={2} />
             </Field>
           )}
-          <Field label={type === 'supplier' ? 'মোবাইল নম্বর' : 'মোবাইল নম্বর (ঐচ্ছিক)'} htmlFor="phone">
-            <input id="phone" type="tel" inputMode="tel" autoComplete="tel" placeholder="01XXXXXXXXX" className={fieldClass} value={form.phone} onChange={set('phone')} required={type === 'supplier'} />
+          <Field label="মোবাইল নম্বর" htmlFor="phone" hint="এই নম্বর দিয়েই লগইন করবেন">
+            <input id="phone" type="tel" inputMode="tel" autoComplete="tel" placeholder="01XXXXXXXXX" className={fieldClass} value={form.phone} onChange={set('phone')} required />
           </Field>
-          <Field label="ইমেইল" htmlFor="email">
-            <input id="email" type="email" inputMode="email" autoComplete="email" className={fieldClass} value={form.email} onChange={set('email')} required />
+          <Field label="ইমেইল (ঐচ্ছিক)" htmlFor="email">
+            <input id="email" type="email" inputMode="email" autoComplete="email" placeholder="you@example.com" className={fieldClass} value={form.email} onChange={set('email')} />
           </Field>
           <Field label="পাসওয়ার্ড" htmlFor="password" hint="কমপক্ষে ৬ অক্ষর">
             <PasswordInput id="password" autoComplete="new-password" value={form.password} onChange={set('password')} required minLength={6} />
@@ -212,29 +215,18 @@ export function RegisterPage() {
               <Field label="ট্রেড লাইসেন্স নং (ঐচ্ছিক)" htmlFor="tradeLicense">
                 <input id="tradeLicense" className={fieldClass} value={form.tradeLicense} onChange={set('tradeLicense')} />
               </Field>
-              <div className="space-y-1.5">
-                <p className="text-sm font-semibold text-slate-700">যেসব এলাকায় ডেলিভারি দিবেন</p>
-                <div className="flex flex-wrap gap-2">
-                  {KHULNA_AREAS.map((area) => {
-                    const on = areas.includes(area);
-                    return (
-                      <button
-                        key={area}
-                        type="button"
-                        aria-pressed={on}
-                        onClick={() => setAreas((p) => (on ? p.filter((a) => a !== area) : [...p, area]))}
-                        className={cn(
-                          'inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors',
-                          on ? 'border-cyan-600 bg-cyan-600 text-white' : 'border-slate-200 bg-white text-slate-600'
-                        )}
-                      >
-                        {on && <Check className="h-3 w-3" />}
-                        {area}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
+              <Field label="যেসব এলাকায় ডেলিভারি দিবেন" htmlFor="serviceAreas">
+                <MultiSelect
+                  id="serviceAreas"
+                  options={KHULNA_AREAS}
+                  value={areas}
+                  onChange={setAreas}
+                  placeholder="এলাকা নির্বাচন করুন"
+                  searchPlaceholder="এলাকা খুঁজুন…"
+                  unit="টি এলাকা নির্বাচিত"
+                  emptyText="এই নামে কোনো এলাকা নেই"
+                />
+              </Field>
             </>
           )}
 

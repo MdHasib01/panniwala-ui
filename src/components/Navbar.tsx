@@ -103,7 +103,7 @@ function AccountMenu() {
           <div className="border-b border-slate-100 px-4 py-3">
             <p className="truncate text-sm font-bold text-slate-900">{user.supplier?.businessName || user.name}</p>
             <p className="truncate text-xs text-slate-500">
-              {ROLE_LABEL_BN[user.role]} · {user.email}
+              {ROLE_LABEL_BN[user.role]} · {user.phone || user.email}
             </p>
           </div>
           <div className="p-1.5">

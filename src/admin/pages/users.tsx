@@ -124,12 +124,13 @@ export function UserDialog({
               <Input id="u-name" value={form.name} onChange={text('name')} required minLength={2} />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="u-email">Email</Label>
-              <Input id="u-email" type="email" value={form.email} onChange={text('email')} required />
+              {/* Admins sign in with email; customers & suppliers with their mobile number. */}
+              <Label htmlFor="u-email">{form.role === 'admin' ? 'Email' : 'Email (optional)'}</Label>
+              <Input id="u-email" type="email" value={form.email} onChange={text('email')} required={form.role === 'admin'} />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="u-phone">Phone</Label>
-              <Input id="u-phone" value={form.phone} onChange={text('phone')} />
+              <Label htmlFor="u-phone">{form.role === 'admin' ? 'Mobile (optional)' : 'Mobile'}</Label>
+              <Input id="u-phone" type="tel" placeholder="01XXXXXXXXX" value={form.phone} onChange={text('phone')} required={form.role !== 'admin'} />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="u-password">{initial ? 'New password' : 'Password'}</Label>
@@ -379,7 +380,7 @@ export function UsersPage() {
                         <UserAvatar name={u.name} online={onlineIds.has(u._id)} />
                         <div className="min-w-0">
                           <p className="truncate font-medium">{u.name}</p>
-                          <p className="text-muted-foreground max-w-56 truncate text-xs">{u.email}</p>
+                          <p className="text-muted-foreground max-w-56 truncate text-xs">{u.email || u.phone}</p>
                           <div className="mt-1 flex gap-1 sm:hidden"><RoleBadge role={u.role} /></div>
                         </div>
                       </div>

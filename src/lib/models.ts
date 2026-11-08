@@ -4,7 +4,9 @@ export type UserStatus = 'active' | 'pending' | 'suspended';
 export interface User {
   _id: string;
   name: string;
-  email: string;
+  /** Optional for customers & suppliers; always set for admins. */
+  email?: string;
+  /** Required for customers & suppliers (01XXXXXXXXX). */
   phone?: string;
   role: Role;
   status: UserStatus;

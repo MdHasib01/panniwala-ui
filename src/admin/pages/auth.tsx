@@ -95,8 +95,8 @@ export function LoginPage() {
   return (
     <AuthShell title="Admin sign in" description="This dashboard is for Pani Wala administrators.">
       <form onSubmit={onSubmit} className="grid gap-4">
-        <Field label="Email" htmlFor="email">
-          <Input id="email" type="email" autoComplete="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
+        <Field label="Email or mobile number" htmlFor="email">
+          <Input id="email" type="text" autoComplete="username" autoCapitalize="none" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
         </Field>
         <Field label="Password" htmlFor="password">
           <Input id="password" type="password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} required />

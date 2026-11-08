@@ -41,7 +41,7 @@ function PendingApprovals({ onChanged }: { onChanged: () => void }) {
               <UserAvatar name={s.name} />
               <div className="min-w-0 flex-1">
                 <p className="truncate font-medium">{s.supplier?.businessName || s.name}</p>
-                <p className="text-muted-foreground truncate text-xs">{s.name} · {s.email}</p>
+                <p className="text-muted-foreground truncate text-xs">{s.name} · {s.phone || s.email}</p>
               </div>
               <span className="text-muted-foreground shrink-0 text-xs">{timeAgo(s.createdAt)}</span>
             </div>

@@ -7,6 +7,7 @@ import { cn } from '@/src/lib/utils';
 import { api } from '@/src/lib/api';
 import { useAuth } from '@/src/lib/auth';
 import type { User } from '@/src/lib/models';
+import { authErrorBn, isBdPhone, normalizeBdPhone } from '@/src/lib/phone';
 import { ROLE_LABEL_BN, initialsOf } from '@/src/site/context';
 import { AccountHeader, AccountPage, Field, fieldClass } from './ui';
 
@@ -25,6 +26,7 @@ function DetailsForm({ user }: { user: User }) {
   const [form, setForm] = useState({
     name: user.name,
     phone: user.phone ?? '',
+    email: user.email ?? '',
     area: user.area ?? '',
     address: user.address ?? '',
     businessName: user.supplier?.businessName ?? '',
@@ -36,21 +38,22 @@ function DetailsForm({ user }: { user: User }) {
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const phone = form.phone.replace(/[\s-]/g, '');
-    if (phone && !/^01[3-9]\d{8}$/.test(phone)) {
+    // Phone is required (it's the login); email is optional and can be cleared.
+    const phone = normalizeBdPhone(form.phone);
+    if (!isBdPhone(phone)) {
       toast.error('সঠিক ১১ ডিজিটের মোবাইল নম্বর দিন');
       return;
     }
     setSaving(true);
     try {
-      const body: Record<string, unknown> = { name: form.name, phone };
+      const body: Record<string, unknown> = { name: form.name, phone, email: form.email.trim() };
       if (isSupplier) Object.assign(body, { businessName: form.businessName, tradeLicense: form.tradeLicense, serviceAreas: areas });
       else Object.assign(body, { area: form.area, address: form.address });
       const { user: updated } = await api.patch<{ user: User }>('/auth/me', body);
       setUser(updated);
       toast.success('প্রোফাইল সেভ হয়েছে');
     } catch (err) {
-      toast.error((err as Error).message);
+      toast.error(authErrorBn((err as Error).message));
     } finally {
       setSaving(false);
     }
@@ -63,11 +66,11 @@ function DetailsForm({ user }: { user: User }) {
           <Field label="নাম" htmlFor="p-name">
             <input id="p-name" className={fieldClass} value={form.name} onChange={set('name')} required minLength={2} />
           </Field>
-          <Field label="মোবাইল নম্বর" htmlFor="p-phone">
-            <input id="p-phone" type="tel" inputMode="tel" className={fieldClass} value={form.phone} onChange={set('phone')} placeholder="01XXXXXXXXX" />
+          <Field label="মোবাইল নম্বর" htmlFor="p-phone" hint="এই নম্বর দিয়ে লগইন করবেন">
+            <input id="p-phone" type="tel" inputMode="tel" className={fieldClass} value={form.phone} onChange={set('phone')} placeholder="01XXXXXXXXX" required />
           </Field>
-          <Field label="ইমেইল" htmlFor="p-email" hint="ইমেইল পরিবর্তন করতে সাপোর্টে যোগাযোগ করুন">
-            <input id="p-email" className={fieldClass} value={user.email} disabled />
+          <Field label="ইমেইল (ঐচ্ছিক)" htmlFor="p-email" hint="দিলে ইমেইল দিয়েও লগইন করতে পারবেন">
+            <input id="p-email" type="email" inputMode="email" className={fieldClass} value={form.email} onChange={set('email')} placeholder="you@example.com" />
           </Field>
           {isSupplier ? (
             <Field label="প্রতিষ্ঠানের নাম" htmlFor="p-biz">
@@ -174,7 +177,7 @@ export default function ProfilePage() {
           <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white/20 text-lg font-bold">{initialsOf(user.name)}</span>
           <div className="min-w-0 flex-1">
             <p className="truncate text-lg font-bold">{user.supplier?.businessName || user.name}</p>
-            <p className="truncate text-sm text-cyan-100">{user.email}</p>
+            <p className="truncate text-sm text-cyan-100">{[user.phone, user.email].filter(Boolean).join(' · ')}</p>
             <p className="mt-1.5 inline-flex items-center gap-1.5 rounded-full bg-white/15 px-2.5 py-0.5 text-xs font-semibold">
               {user.role === 'supplier' && user.status === 'pending' ? <Clock3 className="h-3.5 w-3.5" /> : <ShieldCheck className="h-3.5 w-3.5" />}
               {ROLE_LABEL_BN[user.role]}

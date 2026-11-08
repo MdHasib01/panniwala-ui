@@ -9,8 +9,8 @@ interface AuthResponse {
 
 export interface RegisterInput {
   name: string;
-  email: string;
-  phone?: string;
+  phone: string;
+  email?: string;
   password: string;
 }
 
@@ -25,7 +25,8 @@ interface AuthContextValue {
   user: User | null;
   token: string | null;
   loading: boolean;
-  login: (email: string, password: string) => Promise<User>;
+  /** `identifier` is a mobile number or an email address. */
+  login: (identifier: string, password: string) => Promise<User>;
   register: (input: RegisterInput) => Promise<User>;
   registerSupplier: (input: SupplierRegisterInput) => Promise<User>;
   logout: () => void;
@@ -87,7 +88,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       user,
       token,
       loading,
-      login: (email, password) => api.post<AuthResponse>('/auth/login', { email, password }).then(accept),
+      login: (identifier, password) => api.post<AuthResponse>('/auth/login', { identifier, password }).then(accept),
       register: (input) => api.post<AuthResponse>('/auth/register', input).then(accept),
       registerSupplier: (input) => api.post<AuthResponse>('/auth/register/supplier', input).then(accept),
       logout,
