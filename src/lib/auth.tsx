@@ -34,6 +34,13 @@ interface AuthContextValue {
 
 const AuthContext = React.createContext<AuthContextValue | null>(null);
 
+/** Where each role lands after signing in. Only admins use the /admin dashboard. */
+export function homePathFor(user: Pick<User, 'role'>) {
+  if (user.role === 'admin') return '/admin';
+  if (user.role === 'supplier') return '/deliveries';
+  return '/orders';
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [token, setToken] = React.useState<string | null>(() => tokenStore.get());
   const [user, setUser] = React.useState<User | null>(null);

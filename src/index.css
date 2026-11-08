@@ -262,3 +262,8 @@ html.admin ::selection {
     display: none;
   }
 }
+
+/* Keep in-page section targets (/#packages, /#faq …) clear of the sticky site header. */
+section[id] {
+  scroll-margin-top: 5.5rem;
+}

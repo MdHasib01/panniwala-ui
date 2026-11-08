@@ -1,24 +1,20 @@
 import * as React from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
-import { ArrowLeft, Search, SendHorizontal, MessagesSquare, Headset, Loader2, Check, CheckCheck } from 'lucide-react';
+import { ArrowLeft, Search, SendHorizontal, MessagesSquare, Loader2, Check, CheckCheck } from 'lucide-react';
 import { Card } from '@/src/admin/components/ui/card';
 import { Button } from '@/src/admin/components/ui/button';
 import { Input } from '@/src/admin/components/ui/input';
 import { Textarea } from '@/src/admin/components/ui/textarea';
 import { Skeleton } from '@/src/admin/components/ui/skeleton';
 import { cn } from '@/src/lib/utils';
-import { api } from '@/src/lib/api';
 import { useAuth } from '@/src/lib/auth';
-import { emitWithAck, useSocket, useSocketEvent } from '@/src/lib/socket';
+import { useSocket, useSocketEvent } from '@/src/lib/socket';
 import { useDebounced, useFetch } from '@/src/lib/use-fetch';
+import { isGrouped, isNewDay, useChatThread } from '@/src/lib/use-chat-thread';
 import { EmptyState, RoleBadge, UserAvatar } from '../components/shared';
 import { formatClock, timeAgo } from '../lib/format';
-import type { ChatMessage, Conversation } from '@/src/lib/models';
-
-type UiMessage = ChatMessage & { pending?: boolean; failed?: boolean };
-
-const PAGE = 50;
+import type { Conversation } from '@/src/lib/models';
 
 function dayLabel(iso: string) {
   const d = new Date(iso);
@@ -107,254 +103,70 @@ function ConversationList({
 function Thread({
   conversation,
   onBack,
-  onConversationUpdate,
+  onRead,
 }: {
   conversation: Conversation;
-  onBack?: () => void;
-  onConversationUpdate: (c: Conversation) => void;
+  onBack: () => void;
+  onRead: () => void;
 }) {
   const { user } = useAuth();
-  const { socket, connected, onlineIds, supportOnline } = useSocket();
-  const isAdmin = user?.role === 'admin';
-  const convId = conversation._id;
-
-  const [messages, setMessages] = React.useState<UiMessage[]>([]);
-  const [loading, setLoading] = React.useState(true);
-  const [hasMore, setHasMore] = React.useState(false);
-  const [loadingMore, setLoadingMore] = React.useState(false);
+  const { connected, onlineIds } = useSocket();
   const [text, setText] = React.useState('');
-  const [otherTyping, setOtherTyping] = React.useState<string | null>(null);
-  const [otherRead, setOtherRead] = React.useState(false);
-  const scrollRef = React.useRef<HTMLDivElement>(null);
-  const stickToBottom = React.useRef(true);
-  const typingTimeout = React.useRef<ReturnType<typeof setTimeout>>(undefined);
-  const lastTypingEmit = React.useRef(0);
+  const t = useChatThread({ conversation, onRead });
 
-  const scrollToBottom = (smooth = false) =>
-    requestAnimationFrame(() => {
-      const el = scrollRef.current;
-      if (el) el.scrollTo({ top: el.scrollHeight, behavior: smooth ? 'smooth' : 'auto' });
-    });
-
-  const markRead = React.useCallback(() => {
-    if (document.visibilityState !== 'visible') return;
-    if (socket?.connected) emitWithAck(socket, 'chat:read', { conversationId: convId }).catch(() => {});
-    else api.post(`/chat/conversations/${convId}/read`).catch(() => {});
-  }, [socket, convId]);
-
-  // Load history whenever the conversation changes.
-  React.useEffect(() => {
-    let cancelled = false;
-    setLoading(true);
-    setMessages([]);
-    setOtherTyping(null);
-    setOtherRead((isAdmin ? conversation.unreadForUser : conversation.unreadForAdmin) === 0);
-    api
-      .get<{ items: ChatMessage[] }>(`/chat/conversations/${convId}/messages`, { limit: PAGE })
-      .then(({ items }) => {
-        if (cancelled) return;
-        setMessages(items);
-        setHasMore(items.length === PAGE);
-        stickToBottom.current = true;
-        scrollToBottom();
-        markRead();
-      })
-      .catch((err) => !cancelled && toast.error(err.message))
-      .finally(() => !cancelled && setLoading(false));
-    return () => {
-      cancelled = true;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [convId]);
-
-  React.useEffect(() => {
-    const onVisible = () => markRead();
-    document.addEventListener('visibilitychange', onVisible);
-    return () => document.removeEventListener('visibilitychange', onVisible);
-  }, [markRead]);
-
-  const loadOlder = async () => {
-    if (!messages.length) return;
-    setLoadingMore(true);
-    const el = scrollRef.current;
-    const prevHeight = el?.scrollHeight ?? 0;
-    try {
-      const { items } = await api.get<{ items: ChatMessage[] }>(`/chat/conversations/${convId}/messages`, {
-        limit: PAGE,
-        before: messages[0].createdAt,
-      });
-      setMessages((m) => [...items, ...m]);
-      setHasMore(items.length === PAGE);
-      requestAnimationFrame(() => {
-        if (el) el.scrollTop = el.scrollHeight - prevHeight;
-      });
-    } catch (err) {
-      toast.error((err as Error).message);
-    } finally {
-      setLoadingMore(false);
-    }
-  };
-
-  /** Adds a server message, replacing a matching optimistic one if present. */
-  const reconcile = React.useCallback((msg: ChatMessage) => {
-    setMessages((prev) => {
-      if (prev.some((m) => m._id === msg._id)) return prev;
-      const tempIdx = prev.findIndex((m) => m.pending && m.sender._id === msg.sender._id && m.text === msg.text);
-      if (tempIdx >= 0) {
-        const next = [...prev];
-        next[tempIdx] = msg;
-        return next;
-      }
-      return [...prev, msg];
-    });
-  }, []);
-
-  useSocketEvent<{ conversation: Conversation; message: ChatMessage }>('chat:message', ({ conversation: c, message }) => {
-    if (c._id !== convId) return;
-    reconcile(message);
-    if (message.sender._id !== user?._id) {
-      setOtherTyping(null);
-      markRead();
-    } else {
-      setOtherRead(false);
-    }
-    if (stickToBottom.current) scrollToBottom(true);
-  });
-
-  useSocketEvent<{ conversationId: string; userId: string; name: string; typing: boolean }>('chat:typing', (p) => {
-    if (p.conversationId !== convId || p.userId === user?._id) return;
-    setOtherTyping(p.typing ? p.name : null);
-    clearTimeout(typingTimeout.current);
-    if (p.typing) typingTimeout.current = setTimeout(() => setOtherTyping(null), 4000);
-  });
-
-  useSocketEvent<{ conversationId: string; side: string }>('chat:read', (p) => {
-    if (p.conversationId !== convId) return;
-    const otherSide = isAdmin ? 'user' : 'admin';
-    if (p.side === otherSide) setOtherRead(true);
-    // Reflect our own read in the conversation list.
-    if (p.side === (isAdmin ? 'admin' : 'user')) {
-      onConversationUpdate({ ...conversation, ...(isAdmin ? { unreadForAdmin: 0 } : { unreadForUser: 0 }) });
-    }
-  });
-
-  React.useEffect(() => () => clearTimeout(typingTimeout.current), []);
-
-  const emitTyping = (typing: boolean) => {
-    if (!socket?.connected) return;
-    const now = Date.now();
-    if (typing && now - lastTypingEmit.current < 2000) return;
-    lastTypingEmit.current = typing ? now : 0;
-    socket.emit('chat:typing', { conversationId: convId, typing });
-  };
-
-  const send = async () => {
-    const body = text.trim();
-    if (!body || !user) return;
+  const send = () => {
+    const body = text;
+    if (!body.trim()) return;
     setText('');
-    emitTyping(false);
-    const temp: UiMessage = {
-      _id: `tmp-${Date.now()}`,
-      conversation: convId,
-      sender: { _id: user._id, name: user.name, role: user.role },
-      text: body,
-      createdAt: new Date().toISOString(),
-      pending: true,
-    };
-    setMessages((m) => [...m, temp]);
-    setOtherRead(false);
-    stickToBottom.current = true;
-    scrollToBottom(true);
-
-    try {
-      const res = socket?.connected
-        ? await emitWithAck<{ message: ChatMessage }>(socket, 'chat:send', { conversationId: convId, text: body })
-        : await api.post<{ message: ChatMessage }>(`/chat/conversations/${convId}/messages`, { text: body });
-      reconcile(res.message);
-    } catch (err) {
-      setMessages((m) => m.map((x) => (x._id === temp._id ? { ...x, pending: false, failed: true } : x)));
-      toast.error(`Message not sent: ${(err as Error).message}`);
-    }
-  };
-
-  const retry = (m: UiMessage) => {
-    setMessages((prev) => prev.filter((x) => x._id !== m._id));
-    setText(m.text);
+    t.send(body).catch((err: Error) => toast.error(`Message not sent: ${err.message}`));
   };
 
   const other = conversation.user;
-  const otherOnline = isAdmin ? onlineIds.has(other._id) : supportOnline;
-  const title = isAdmin ? displayName(conversation) : 'Pani Wala Support';
-  const subtitle = otherTyping
-    ? 'typing…'
-    : isAdmin
-      ? otherOnline ? 'Online' : 'Offline'
-      : supportOnline ? 'Online — we usually reply in minutes' : 'Offline — we\'ll reply as soon as we\'re back';
-
-  const lastMine = [...messages].reverse().find((m) => m.sender._id === user?._id && !m.pending && !m.failed);
+  const otherOnline = onlineIds.has(other._id);
+  const title = displayName(conversation);
 
   return (
     <div className="flex min-h-0 min-w-0 flex-1 flex-col">
-      {/* Header */}
       <div className="flex items-center gap-3 border-b px-3 py-2.5 sm:px-4">
-        {onBack && (
-          <Button variant="ghost" size="icon-sm" onClick={onBack} className="md:hidden" aria-label="Back to conversations">
-            <ArrowLeft />
-          </Button>
-        )}
-        {isAdmin ? (
-          <UserAvatar name={title} online={otherOnline} />
-        ) : (
-          <span className="relative inline-flex">
-            <span className="bg-primary/10 text-primary flex size-9 items-center justify-center rounded-full"><Headset className="size-4" /></span>
-            <span className={cn('ring-background absolute right-0 bottom-0 size-2.5 rounded-full ring-2', otherOnline ? 'bg-emerald-500' : 'bg-muted-foreground/40')} />
-          </span>
-        )}
+        <Button variant="ghost" size="icon-sm" onClick={onBack} className="md:hidden" aria-label="Back to conversations">
+          <ArrowLeft />
+        </Button>
+        <UserAvatar name={title} online={otherOnline} />
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
             <p className="truncate font-medium">{title}</p>
-            {isAdmin && <RoleBadge role={other.role} />}
+            <RoleBadge role={other.role} />
           </div>
-          <p className={cn('truncate text-xs', otherTyping ? 'text-primary' : 'text-muted-foreground')}>{subtitle}</p>
+          <p className={cn('truncate text-xs', t.otherTyping ? 'text-primary' : 'text-muted-foreground')}>
+            {t.otherTyping ? 'typing…' : otherOnline ? 'Online' : 'Offline'}
+          </p>
         </div>
-        {isAdmin && other.phone && (
+        {other.phone && (
           <Button variant="outline" size="sm" asChild className="hidden sm:inline-flex">
             <a href={`tel:${other.phone}`}>{other.phone}</a>
           </Button>
         )}
       </div>
 
-      {/* Messages */}
-      <div
-        ref={scrollRef}
-        onScroll={(e) => {
-          const el = e.currentTarget;
-          stickToBottom.current = el.scrollHeight - el.scrollTop - el.clientHeight < 80;
-        }}
-        className="bg-muted/30 min-h-0 flex-1 overflow-y-auto px-3 py-4 sm:px-6"
-      >
-        {loading ? (
+      <div ref={t.scrollRef} onScroll={t.onScroll} className="bg-muted/30 min-h-0 flex-1 overflow-y-auto px-3 py-4 sm:px-6">
+        {t.loading ? (
           <div className="flex h-full items-center justify-center"><Loader2 className="text-muted-foreground size-5 animate-spin" /></div>
-        ) : !messages.length ? (
-          <EmptyState
-            icon={MessagesSquare}
-            title={isAdmin ? `Say hello to ${other.name.split(' ')[0]}` : 'How can we help?'}
-            description={isAdmin ? 'Messages are delivered instantly while they are online.' : 'Ask about an order, a delivery or anything else — our team will reply here.'}
-          />
+        ) : !t.messages.length ? (
+          <EmptyState icon={MessagesSquare} title={`Say hello to ${other.name.split(' ')[0]}`} description="Messages are delivered instantly while they are online." />
         ) : (
           <div className="mx-auto grid max-w-3xl gap-1">
-            {hasMore && (
-              <Button variant="ghost" size="sm" className="mb-2 justify-self-center" onClick={loadOlder} disabled={loadingMore}>
-                {loadingMore && <Loader2 className="animate-spin" />} Load earlier messages
+            {t.hasMore && (
+              <Button variant="ghost" size="sm" className="mb-2 justify-self-center" onClick={t.loadOlder} disabled={t.loadingMore}>
+                {t.loadingMore && <Loader2 className="animate-spin" />} Load earlier messages
               </Button>
             )}
-            {messages.map((m, i) => {
+            {t.messages.map((m, i) => {
               const mine = m.sender._id === user?._id;
-              const prev = messages[i - 1];
-              const newDay = !prev || new Date(prev.createdAt).toDateString() !== new Date(m.createdAt).toDateString();
-              const grouped = !newDay && prev && prev.sender._id === m.sender._id && new Date(m.createdAt).getTime() - new Date(prev.createdAt).getTime() < 5 * 60000;
-              // Admins see which teammate replied; customers see "Support".
-              const showName = !mine && !grouped && (isAdmin ? m.sender.role === 'admin' : true);
+              const prev = t.messages[i - 1];
+              const newDay = isNewDay(prev, m);
+              const grouped = isGrouped(prev, m);
+              // Show which teammate replied when another admin answered.
+              const showName = !mine && !grouped && m.sender.role === 'admin';
               return (
                 <React.Fragment key={m._id}>
                   {newDay && (
@@ -364,11 +176,7 @@ function Thread({
                   )}
                   <div className={cn('flex', mine ? 'justify-end' : 'justify-start', !grouped && 'mt-2')}>
                     <div className={cn('flex max-w-[85%] flex-col sm:max-w-[70%]', mine ? 'items-end' : 'items-start')}>
-                      {showName && (
-                        <span className="text-muted-foreground mb-0.5 px-1 text-[11px]">
-                          {m.sender.role === 'admin' && !isAdmin ? `${m.sender.name} · Support` : m.sender.name}
-                        </span>
-                      )}
+                      {showName && <span className="text-muted-foreground mb-0.5 px-1 text-[11px]">{m.sender.name}</span>}
                       <div
                         className={cn(
                           'rounded-2xl px-3.5 py-2 text-sm leading-relaxed break-words whitespace-pre-wrap shadow-xs',
@@ -381,11 +189,11 @@ function Thread({
                       </div>
                       <span className="text-muted-foreground mt-0.5 flex items-center gap-1 px-1 text-[10px]">
                         {m.failed ? (
-                          <button className="text-destructive underline" onClick={() => retry(m)}>Failed — tap to edit & retry</button>
+                          <button className="text-destructive underline" onClick={() => setText(t.discardFailed(m))}>Failed — tap to edit & retry</button>
                         ) : (
                           <>
                             {formatClock(m.createdAt)}
-                            {mine && (m.pending ? <Loader2 className="size-3 animate-spin" /> : m._id === lastMine?._id && otherRead ? <CheckCheck className="text-primary size-3" /> : <Check className="size-3" />)}
+                            {mine && (m.pending ? <Loader2 className="size-3 animate-spin" /> : m._id === t.lastMineId && t.otherRead ? <CheckCheck className="text-primary size-3" /> : <Check className="size-3" />)}
                           </>
                         )}
                       </span>
@@ -394,7 +202,7 @@ function Thread({
                 </React.Fragment>
               );
             })}
-            {otherTyping && (
+            {t.otherTyping && (
               <div className="mt-2 flex justify-start">
                 <div className="bg-background flex items-center gap-1 rounded-2xl rounded-bl-md border px-3.5 py-3">
                   {[0, 150, 300].map((d) => (
@@ -407,7 +215,6 @@ function Thread({
         )}
       </div>
 
-      {/* Composer */}
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -419,9 +226,9 @@ function Thread({
           value={text}
           onChange={(e) => {
             setText(e.target.value);
-            emitTyping(e.target.value.length > 0);
+            t.emitTyping(e.target.value.length > 0);
           }}
-          onBlur={() => emitTyping(false)}
+          onBlur={() => t.emitTyping(false)}
           onKeyDown={(e) => {
             if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) {
               e.preventDefault();
@@ -445,25 +252,21 @@ function Thread({
 
 export function ChatPage() {
   const { user } = useAuth();
-  const isAdmin = user?.role === 'admin';
   const [params, setParams] = useSearchParams();
   const [search, setSearch] = React.useState('');
   const debounced = useDebounced(search);
   const [typing, setTyping] = React.useState<Record<string, boolean>>({});
 
-  const { data, setData, loading, error, refetch } = useFetch<{ items: Conversation[] }>('/chat/conversations', {
-    search: isAdmin ? debounced : undefined,
-  });
+  const { data, setData, loading, error, refetch } = useFetch<{ items: Conversation[] }>('/chat/conversations', { search: debounced });
   const items = data?.items ?? [];
-
-  const selectedId = isAdmin ? params.get('c') : items[0]?._id ?? null;
+  const selectedId = params.get('c');
   const selected = items.find((c) => c._id === selectedId) ?? null;
 
   // A ?c= link to a conversation outside the current list (e.g. a brand-new thread):
   // refetch once per id, then give up so an invalid id can't loop.
   const refetchedFor = React.useRef<string | null>(null);
   React.useEffect(() => {
-    if (!isAdmin || !selectedId || !data || selected || debounced) return;
+    if (!selectedId || !data || selected || debounced) return;
     if (refetchedFor.current === selectedId) return;
     refetchedFor.current = selectedId;
     refetch();
@@ -474,19 +277,22 @@ export function ChatPage() {
     (c: Conversation) =>
       setData((d) => {
         if (!d) return d;
-        const rest = d.items.filter((x) => x._id !== c._id);
         const existing = d.items.find((x) => x._id === c._id);
         // Only re-sort when there's a newer message.
         if (existing && existing.lastMessageAt === c.lastMessageAt) {
           return { items: d.items.map((x) => (x._id === c._id ? c : x)) };
         }
-        return { items: [c, ...rest] };
+        return { items: [c, ...d.items.filter((x) => x._id !== c._id)] };
       }),
     [setData]
   );
 
+  const clearUnread = React.useCallback(
+    (id: string) => setData((d) => (d ? { items: d.items.map((x) => (x._id === id ? { ...x, unreadForAdmin: 0 } : x)) } : d)),
+    [setData]
+  );
+
   useSocketEvent<{ conversation: Conversation }>('chat:message', ({ conversation }) => {
-    // While the thread is open its unread count will be cleared by markRead.
     updateConversation(conversation);
     setTyping((t) => ({ ...t, [conversation._id]: false }));
   });
@@ -505,28 +311,21 @@ export function ChatPage() {
 
   return (
     <Card className="h-[calc(100svh-7.5rem)] min-h-[30rem] gap-0 overflow-hidden py-0 md:h-[calc(100svh-9rem)]">
-      <div className={cn('flex h-full min-h-0', isAdmin && 'md:grid md:grid-cols-[18rem_1fr] lg:grid-cols-[20rem_1fr]')}>
-        {isAdmin && (
-          <div className={cn('min-h-0 w-full flex-col border-r md:flex', selected ? 'hidden' : 'flex')}>
-            <ConversationList
-              items={items}
-              loading={loading}
-              selectedId={selectedId}
-              onSelect={(id) => setParams({ c: id })}
-              search={search}
-              onSearch={setSearch}
-              typing={typing}
-            />
-          </div>
-        )}
-        <div className={cn('min-h-0 min-w-0 flex-1 flex-col', isAdmin && !selected ? 'hidden md:flex' : 'flex')}>
+      <div className="flex h-full min-h-0 md:grid md:grid-cols-[18rem_1fr] lg:grid-cols-[20rem_1fr]">
+        <div className={cn('min-h-0 w-full flex-col border-r md:flex', selected ? 'hidden' : 'flex')}>
+          <ConversationList
+            items={items}
+            loading={loading}
+            selectedId={selectedId}
+            onSelect={(id) => setParams({ c: id })}
+            search={search}
+            onSearch={setSearch}
+            typing={typing}
+          />
+        </div>
+        <div className={cn('min-h-0 min-w-0 flex-1 flex-col', !selected ? 'hidden md:flex' : 'flex')}>
           {selected ? (
-            <Thread
-              key={selected._id}
-              conversation={selected}
-              onBack={isAdmin ? () => setParams({}) : undefined}
-              onConversationUpdate={updateConversation}
-            />
+            <Thread key={selected._id} conversation={selected} onBack={() => setParams({})} onRead={() => clearUnread(selected._id)} />
           ) : loading ? (
             <div className="flex flex-1 items-center justify-center"><Loader2 className="text-muted-foreground size-5 animate-spin" /></div>
           ) : (

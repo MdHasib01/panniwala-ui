@@ -30,7 +30,13 @@ npm run server           # API on http://localhost:5000
 npm run dev              # site on http://localhost:3000, dashboard on /admin
 ```
 
-- `/admin/login`, `/admin/register` (customers and suppliers can sign up; suppliers need admin approval)
-- `/admin` — role-based dashboard: overview & charts, orders, realtime support chat, profile;
-  admins also manage packages, users and suppliers.
+- **`/admin` — admins only.** Overview & charts, orders, supplier assignment, packages, users,
+  supplier approvals and the realtime support inbox. Anyone else is sent back to the website.
+- **Website pages for customers & suppliers** (one login at `/login`, sign-up at `/register`;
+  suppliers need admin approval):
+  - customers: `/orders` (live order tracking, cancel), `/chat` (support chat), `/profile`
+  - suppliers: `/deliveries` (assigned jobs: call, navigate, start → delivered), `/chat`, `/profile`
+  - guests: `/orders` tracks an order by number + phone
+- On phones the site works like an app: a bottom tab bar (with the Order button in the middle)
+  and a **More** drawer replace the top hamburger menu.
 - Landing-page orders are saved to the database and show up in the dashboard instantly.

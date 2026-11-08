@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
-import { Loader2, Monitor, Moon, Sun, Clock3 } from 'lucide-react';
+import { Loader2, Monitor, Moon, Sun } from 'lucide-react';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/src/admin/components/ui/sidebar';
 import { Separator } from '@/src/admin/components/ui/separator';
 import { Button } from '@/src/admin/components/ui/button';
@@ -14,10 +14,9 @@ import {
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/src/admin/components/ui/tooltip';
 import { cn } from '@/src/lib/utils';
 import { AppSidebar } from './app-sidebar';
-import { useAuth } from '@/src/lib/auth';
-import { SocketProvider, useSocket } from '@/src/lib/socket';
+import { homePathFor, useAuth } from '@/src/lib/auth';
+import { useSocket } from '@/src/lib/socket';
 import { useTheme, type Theme } from '../context/theme';
-import type { Role } from '@/src/lib/models';
 
 const TITLES: Record<string, string> = {
   '/admin': 'Overview',
@@ -86,23 +85,6 @@ function ConnectionPill() {
   );
 }
 
-function PendingBanner() {
-  const { user } = useAuth();
-  if (user?.role !== 'supplier' || user.status !== 'pending') return null;
-  return (
-    <div className="flex items-start gap-3 rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 text-sm text-amber-800 dark:text-amber-300">
-      <Clock3 className="mt-0.5 size-4 shrink-0" />
-      <div>
-        <p className="font-medium">Your supplier account is awaiting approval</p>
-        <p className="opacity-80">
-          An admin will review your details shortly. You'll be notified here the moment you're approved — meanwhile
-          you can message the team from Messages.
-        </p>
-      </div>
-    </div>
-  );
-}
-
 function Shell() {
   const { pathname } = useLocation();
   const title = TITLES[pathname] ?? 'Dashboard';
@@ -125,7 +107,6 @@ function Shell() {
           </div>
         </header>
         <main className="flex min-w-0 flex-1 flex-col gap-6 p-4 md:p-6">
-          <PendingBanner />
           <Outlet />
         </main>
       </SidebarInset>
@@ -133,23 +114,17 @@ function Shell() {
   );
 }
 
-/** Authenticated dashboard shell. The socket connects here, right after login. */
+/**
+ * Admin-only dashboard shell. Customers and suppliers are sent to their own pages
+ * on the website. (The realtime socket is provided at the app root.)
+ */
 export function DashboardLayout() {
   const { user, loading } = useAuth();
   const location = useLocation();
   if (loading) return <FullPageLoader />;
   if (!user) return <Navigate to="/admin/login" replace state={{ from: location }} />;
-  return (
-    <SocketProvider>
-      <Shell />
-    </SocketProvider>
-  );
-}
-
-export function RequireRole({ roles, children }: { roles: Role[]; children: React.ReactNode }) {
-  const { user } = useAuth();
-  if (!user || !roles.includes(user.role)) return <Navigate to="/admin" replace />;
-  return <>{children}</>;
+  if (user.role !== 'admin') return <Navigate to={homePathFor(user)} replace />;
+  return <Shell />;
 }
 
 export function GuestOnly({ children }: { children: React.ReactNode }) {
@@ -157,6 +132,7 @@ export function GuestOnly({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   if (loading) return <FullPageLoader />;
   if (user) {
+    if (user.role !== 'admin') return <Navigate to={homePathFor(user)} replace />;
     const from = (location.state as { from?: { pathname: string } } | null)?.from?.pathname;
     return <Navigate to={from && from.startsWith('/admin') ? from : '/admin'} replace />;
   }

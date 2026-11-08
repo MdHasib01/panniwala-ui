@@ -1,7 +1,17 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { ArrowUp } from 'lucide-react';
 import { WHATSAPP_NUMBER } from '@/src/data/packages';
 
 export const FloatingWhatsApp: React.FC = () => {
+  const [showTop, setShowTop] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setShowTop(window.scrollY > 400);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
     'আসসালামু আলাইকুম, আমি পানি ওয়ালা থেকে খাবার পানির জার অর্ডার করতে চাই।'
   )}`;
@@ -9,15 +19,28 @@ export const FloatingWhatsApp: React.FC = () => {
   return (
     <aside
       aria-label="WhatsApp Support"
-      className="fixed bottom-20 right-4 sm:right-5 md:bottom-6 md:right-6 z-40 group"
+      className="fixed bottom-20 right-4 sm:right-5 md:bottom-6 md:right-6 z-40 flex flex-col items-center gap-3"
     >
+      <button
+        type="button"
+        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        aria-label="Go to top"
+        title="উপরে যান"
+        tabIndex={showTop ? 0 : -1}
+        className={`flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/90 backdrop-blur-md text-slate-700 border border-slate-200 shadow-md hover:bg-white hover:text-slate-900 hover:scale-105 active:scale-95 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-slate-300/50 ${
+          showTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 pointer-events-none'
+        }`}
+      >
+        <ArrowUp className="w-4 h-4" aria-hidden="true" />
+      </button>
+
       <a
         id="floating-whatsapp-btn"
         href={whatsappUrl}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chat with Pani Wala on WhatsApp"
-        className="relative flex items-center justify-center w-11 h-11 sm:w-12 sm:h-12 md:w-13 md:h-13 rounded-full bg-[#25D366] hover:bg-[#20ba5a] text-white shadow-md shadow-emerald-600/30 hover:shadow-xl hover:shadow-emerald-600/50 hover:scale-105 active:scale-95 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-emerald-400/40"
+        className="group relative flex items-center justify-center w-11 h-11 sm:w-12 sm:h-12 md:w-13 md:h-13 rounded-full bg-[#25D366] hover:bg-[#20ba5a] text-white shadow-md shadow-emerald-600/30 hover:shadow-xl hover:shadow-emerald-600/50 hover:scale-105 active:scale-95 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-emerald-400/40"
       >
         {/* Breathing animated pulse wave */}
         <span

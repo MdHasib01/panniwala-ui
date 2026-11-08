@@ -3,6 +3,8 @@ import confetti from 'canvas-confetti';
 import { KHULNA_AREAS, HOTLINE_NUMBER, HOTLINE_TEL, toBengaliNumber } from '@/src/data/packages';
 import { usePackages } from '@/src/lib/packages-api';
 import { api } from '@/src/lib/api';
+import { useAuth } from '@/src/lib/auth';
+import { Link } from 'react-router-dom';
 import { WaterPackage, CustomerDetails, ConfirmedOrder } from '@/src/types';
 import { Button } from '@/src/components/ui/button';
 import { Input } from '@/src/components/ui/input';
@@ -58,6 +60,16 @@ export const OrderModal: React.FC<OrderModalProps> = ({
       setPackageId(selectedPackage.id);
     }
   }, [selectedPackage]);
+
+  // Signed-in customers: pre-fill their saved details (never overwrite what they typed).
+  const { user } = useAuth();
+  useEffect(() => {
+    if (!isOpen || !user) return;
+    setName((v) => v || user.name);
+    setPhone((v) => v || user.phone || '');
+    setAddress((v) => v || user.address || '');
+    if (user.area && KHULNA_AREAS.includes(user.area)) setArea((v) => (v === KHULNA_AREAS[0] ? user.area! : v));
+  }, [isOpen, user]);
 
   if (!isOpen) return null;
 
@@ -251,6 +263,24 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                 <Phone className="w-4 h-4 text-white" />
                 <span>হটলাইনে যোগাযোগ করুন: {HOTLINE_NUMBER}</span>
               </a>
+              {user?.role === 'user' ? (
+                <Link
+                  to="/orders"
+                  onClick={handleClose}
+                  className="w-full py-3.5 px-5 rounded-xl bg-white border border-cyan-200 text-cyan-800 font-bold text-sm flex items-center justify-center gap-2 hover:bg-cyan-50 transition-colors"
+                >
+                  <Truck className="w-4 h-4" />
+                  <span>আমার অর্ডার — লাইভ ট্র্যাক করুন</span>
+                </Link>
+              ) : !user ? (
+                <Link
+                  to="/register"
+                  onClick={handleClose}
+                  className="text-xs font-semibold text-cyan-700 hover:underline"
+                >
+                  অ্যাকাউন্ট খুলে পরবর্তী অর্ডারগুলো লাইভ ট্র্যাক করুন →
+                </Link>
+              ) : null}
             </div>
 
             <button

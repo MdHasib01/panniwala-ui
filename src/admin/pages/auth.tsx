@@ -9,7 +9,7 @@ import { Input } from '@/src/admin/components/ui/input';
 import { Label } from '@/src/admin/components/ui/label';
 import { Checkbox } from '@/src/admin/components/ui/checkbox';
 import { cn } from '@/src/lib/utils';
-import { useAuth } from '@/src/lib/auth';
+import { homePathFor, useAuth } from '@/src/lib/auth';
 
 function AuthShell({ title, description, children }: { title: string; description: string; children: React.ReactNode }) {
   return (
@@ -77,6 +77,12 @@ export function LoginPage() {
     setError(null);
     try {
       const user = await login(email, password);
+      if (user.role !== 'admin') {
+        // Customers and suppliers use the website, not the dashboard.
+        toast.info('The dashboard is for admins only', { description: 'Taking you to your account on the website.' });
+        navigate(homePathFor(user), { replace: true });
+        return;
+      }
       toast.success(`Welcome back, ${user.name.split(' ')[0]}!`);
       navigate('/admin', { replace: true });
     } catch (err) {
@@ -87,7 +93,7 @@ export function LoginPage() {
   };
 
   return (
-    <AuthShell title="Sign in" description="Enter your email and password to access your dashboard.">
+    <AuthShell title="Admin sign in" description="This dashboard is for Pani Wala administrators.">
       <form onSubmit={onSubmit} className="grid gap-4">
         <Field label="Email" htmlFor="email">
           <Input id="email" type="email" autoComplete="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
@@ -101,132 +107,8 @@ export function LoginPage() {
         </Button>
       </form>
       <p className="text-muted-foreground text-center text-sm">
-        Don&apos;t have an account?{' '}
-        <Link to="/admin/register" className="text-primary font-medium underline-offset-4 hover:underline">Create one</Link>
-      </p>
-    </AuthShell>
-  );
-}
-
-export function RegisterPage() {
-  const { register, registerSupplier } = useAuth();
-  const navigate = useNavigate();
-  const [type, setType] = React.useState<'user' | 'supplier'>(() =>
-    new URLSearchParams(window.location.search).get('as') === 'supplier' ? 'supplier' : 'user'
-  );
-  const [form, setForm] = React.useState({ name: '', email: '', phone: '', password: '', businessName: '', tradeLicense: '' });
-  const [areas, setAreas] = React.useState<string[]>([]);
-  const [submitting, setSubmitting] = React.useState(false);
-  const [error, setError] = React.useState<string | null>(null);
-
-  const set = (key: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
-    setForm((f) => ({ ...f, [key]: e.target.value }));
-
-  const onSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitting(true);
-    setError(null);
-    try {
-      const phone = form.phone.replace(/[\s-]/g, '');
-      if (type === 'supplier') {
-        await registerSupplier({
-          name: form.name,
-          email: form.email,
-          phone,
-          password: form.password,
-          businessName: form.businessName,
-          tradeLicense: form.tradeLicense || undefined,
-          serviceAreas: areas,
-        });
-        toast.success('Supplier account created', { description: 'An admin will review and approve your account.' });
-      } else {
-        await register({ name: form.name, email: form.email, phone: phone || undefined, password: form.password });
-        toast.success('Account created — welcome to Pani Wala!');
-      }
-      navigate('/admin', { replace: true });
-    } catch (err) {
-      setError((err as Error).message);
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  return (
-    <AuthShell
-      title="Create an account"
-      description={type === 'supplier' ? 'Join as a delivery partner and start receiving orders.' : 'Track your orders and chat with our team.'}
-    >
-      <div className="bg-muted grid grid-cols-2 gap-1 rounded-lg p-1" role="tablist">
-        {([
-          { value: 'user', label: 'Customer', icon: UserIcon },
-          { value: 'supplier', label: 'Supplier', icon: Store },
-        ] as const).map((t) => (
-          <button
-            key={t.value}
-            type="button"
-            role="tab"
-            aria-selected={type === t.value}
-            onClick={() => setType(t.value)}
-            className={cn(
-              'flex items-center justify-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium transition-all',
-              type === t.value ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'
-            )}
-          >
-            <t.icon className="size-4" /> {t.label}
-          </button>
-        ))}
-      </div>
-
-      <form onSubmit={onSubmit} className="grid gap-4">
-        <Field label="Full name" htmlFor="name">
-          <Input id="name" autoComplete="name" value={form.name} onChange={set('name')} required minLength={2} />
-        </Field>
-        {type === 'supplier' && (
-          <Field label="Business name" htmlFor="businessName">
-            <Input id="businessName" value={form.businessName} onChange={set('businessName')} required minLength={2} />
-          </Field>
-        )}
-        <Field label="Email" htmlFor="email">
-          <Input id="email" type="email" autoComplete="email" value={form.email} onChange={set('email')} required />
-        </Field>
-        <Field label={type === 'supplier' ? 'Mobile number' : 'Mobile number (optional)'} htmlFor="phone">
-          <Input id="phone" type="tel" autoComplete="tel" placeholder="01XXXXXXXXX" value={form.phone} onChange={set('phone')} required={type === 'supplier'} />
-        </Field>
-        <Field label="Password" htmlFor="password" hint="At least 6 characters.">
-          <Input id="password" type="password" autoComplete="new-password" value={form.password} onChange={set('password')} required minLength={6} />
-        </Field>
-
-        {type === 'supplier' && (
-          <>
-            <Field label="Trade license no. (optional)" htmlFor="tradeLicense">
-              <Input id="tradeLicense" value={form.tradeLicense} onChange={set('tradeLicense')} />
-            </Field>
-            <div className="grid gap-2">
-              <Label>Service areas</Label>
-              <div className="grid max-h-44 gap-2 overflow-y-auto rounded-lg border p-3">
-                {KHULNA_AREAS.map((area) => (
-                  <label key={area} className="flex cursor-pointer items-center gap-2 text-sm">
-                    <Checkbox
-                      checked={areas.includes(area)}
-                      onCheckedChange={(v) => setAreas((prev) => (v ? [...prev, area] : prev.filter((a) => a !== area)))}
-                    />
-                    {area}
-                  </label>
-                ))}
-              </div>
-            </div>
-          </>
-        )}
-
-        {error && <p className="text-destructive text-sm" role="alert">{error}</p>}
-        <Button type="submit" className="w-full" disabled={submitting}>
-          {submitting && <Loader2 className="animate-spin" />}
-          {type === 'supplier' ? 'Apply as supplier' : 'Create account'}
-        </Button>
-      </form>
-      <p className="text-muted-foreground text-center text-sm">
-        Already have an account?{' '}
-        <Link to="/admin/login" className="text-primary font-medium underline-offset-4 hover:underline">Sign in</Link>
+        Customer or supplier?{' '}
+        <Link to="/login" className="text-primary font-medium underline-offset-4 hover:underline">Sign in on the website</Link>
       </p>
     </AuthShell>
   );
