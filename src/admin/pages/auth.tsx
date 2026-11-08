@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { Droplets, Loader2, ShieldCheck, Truck, MessagesSquare, User as UserIcon, Store } from 'lucide-react';
 import logo from '@/src/assets/logo.png';
-import { KHULNA_AREAS } from '@/src/data/packages';
 import { Button } from '@/src/admin/components/ui/button';
 import { Input } from '@/src/admin/components/ui/input';
 import { Label } from '@/src/admin/components/ui/label';

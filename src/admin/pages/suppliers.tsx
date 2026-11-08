@@ -1,17 +1,82 @@
 import * as React from 'react';
-import { Plus, Search, CheckCircle2, XCircle, MapPin, Phone, Truck, Clock3 } from 'lucide-react';
+import { toast } from 'sonner';
+import { Plus, Search, CheckCircle2, XCircle, MapPin, Phone, Truck, Clock3, Loader2, MapPinPlus } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/admin/components/ui/card';
 import { Button } from '@/src/admin/components/ui/button';
 import { Badge } from '@/src/admin/components/ui/badge';
 import { Input } from '@/src/admin/components/ui/input';
 import { Skeleton } from '@/src/admin/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/src/admin/components/ui/table';
+import { api } from '@/src/lib/api';
+import { invalidateAreas } from '@/src/lib/areas-api';
 import { useSocket, useSocketEvent } from '@/src/lib/socket';
 import { useDebounced, useFetch } from '@/src/lib/use-fetch';
 import { EmptyState, PageHeader, Pagination, UserAvatar, UserStatusBadge } from '../components/shared';
 import { formatDate, timeAgo } from '../lib/format';
 import type { Paginated, User } from '@/src/lib/models';
 import { UserDialog, UserRowMenu, useUserActions } from './users';
+import { AreaRequestDecider, allDecided, pendingRequests, toAreaDecisions, type AreaDecisions } from '../components/area-requests';
+
+/**
+ * A supplier waiting for approval. Any areas they asked to add must be approved or
+ * rejected before the account can be approved; approved ones join the public list.
+ */
+function PendingSupplierCard({ supplier: s, onApproved, onReject }: { supplier: User; onApproved: (u: User) => void; onReject: () => void }) {
+  const requests = s.supplier?.areaRequests ?? [];
+  const pending = pendingRequests(requests);
+  const [decisions, setDecisions] = React.useState<AreaDecisions>({});
+  const [saving, setSaving] = React.useState(false);
+  const ready = allDecided(requests, decisions);
+
+  const approve = async () => {
+    setSaving(true);
+    try {
+      const { user } = await api.patch<{ user: User }>(`/users/${s._id}`, { status: 'active', areaDecisions: toAreaDecisions(decisions) });
+      if (Object.values(decisions).includes('approved')) invalidateAreas();
+      toast.success(`${s.supplier?.businessName || s.name} approved`);
+      onApproved(user);
+    } catch (err) {
+      toast.error((err as Error).message);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="grid content-start gap-3 rounded-xl border p-4">
+      <div className="flex items-start gap-3">
+        <UserAvatar name={s.name} />
+        <div className="min-w-0 flex-1">
+          <p className="truncate font-medium">{s.supplier?.businessName || s.name}</p>
+          <p className="text-muted-foreground truncate text-xs">{s.name} · {s.phone || s.email}</p>
+        </div>
+        <span className="text-muted-foreground shrink-0 text-xs">{timeAgo(s.createdAt)}</span>
+      </div>
+      <div className="text-muted-foreground grid gap-1 text-sm">
+        {s.phone && <span className="flex items-center gap-2"><Phone className="size-3.5" /> {s.phone}</span>}
+        <span className="flex items-start gap-2">
+          <MapPin className="mt-0.5 size-3.5 shrink-0" />
+          <span className="line-clamp-2">{s.supplier?.serviceAreas?.length ? s.supplier.serviceAreas.join(', ') : pending.length ? 'Only new areas requested' : 'No areas listed'}</span>
+        </span>
+        {s.supplier?.tradeLicense && <span className="text-xs">License: {s.supplier.tradeLicense}</span>}
+      </div>
+      {pending.length > 0 && (
+        <div className="grid gap-2 rounded-lg border border-dashed border-amber-500/40 p-2.5">
+          <p className="flex items-center gap-1.5 text-xs font-medium text-amber-600 dark:text-amber-400">
+            <MapPinPlus className="size-3.5" /> New areas requested — approve or reject each
+          </p>
+          <AreaRequestDecider requests={requests} value={decisions} onChange={setDecisions} compact />
+        </div>
+      )}
+      <div className="mt-auto flex gap-2">
+        <Button size="sm" className="flex-1" disabled={!ready || saving} onClick={approve} title={ready ? undefined : 'Decide every requested area first'}>
+          {saving ? <Loader2 className="animate-spin" /> : <CheckCircle2 />} Approve
+        </Button>
+        <Button size="sm" variant="outline" className="flex-1" onClick={onReject}><XCircle /> Reject</Button>
+      </div>
+    </div>
+  );
+}
 
 function PendingApprovals({ onChanged }: { onChanged: () => void }) {
   const { data, setData, loading, refetch } = useFetch<Paginated<User>>('/users', { role: 'supplier', status: 'pending', limit: 50 });
@@ -36,28 +101,7 @@ function PendingApprovals({ onChanged }: { onChanged: () => void }) {
       </CardHeader>
       <CardContent className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
         {data.items.map((s) => (
-          <div key={s._id} className="grid gap-3 rounded-xl border p-4">
-            <div className="flex items-start gap-3">
-              <UserAvatar name={s.name} />
-              <div className="min-w-0 flex-1">
-                <p className="truncate font-medium">{s.supplier?.businessName || s.name}</p>
-                <p className="text-muted-foreground truncate text-xs">{s.name} · {s.phone || s.email}</p>
-              </div>
-              <span className="text-muted-foreground shrink-0 text-xs">{timeAgo(s.createdAt)}</span>
-            </div>
-            <div className="text-muted-foreground grid gap-1 text-sm">
-              {s.phone && <span className="flex items-center gap-2"><Phone className="size-3.5" /> {s.phone}</span>}
-              <span className="flex items-start gap-2">
-                <MapPin className="mt-0.5 size-3.5 shrink-0" />
-                <span className="line-clamp-2">{s.supplier?.serviceAreas?.length ? s.supplier.serviceAreas.join(', ') : 'No areas listed'}</span>
-              </span>
-              {s.supplier?.tradeLicense && <span className="text-xs">License: {s.supplier.tradeLicense}</span>}
-            </div>
-            <div className="flex gap-2">
-              <Button size="sm" className="flex-1" onClick={() => actions.setStatus(s, 'active')}><CheckCircle2 /> Approve</Button>
-              <Button size="sm" variant="outline" className="flex-1" onClick={() => actions.suspend(s)}><XCircle /> Reject</Button>
-            </div>
-          </div>
+          <PendingSupplierCard key={s._id} supplier={s} onApproved={(u) => drop(u._id)} onReject={() => actions.suspend(s)} />
         ))}
       </CardContent>
     </Card>

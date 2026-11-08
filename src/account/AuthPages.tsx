@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { Link, Navigate, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import { Loader2, LogIn, Store, UserRound, Droplets, Eye, EyeOff } from 'lucide-react';
-import { KHULNA_AREAS } from '@/src/data/packages';
 import { cn } from '@/src/lib/utils';
 import { homePathFor, useAuth } from '@/src/lib/auth';
 import type { User } from '@/src/lib/models';
 import { authErrorBn, isBdPhone, normalizeBdPhone } from '@/src/lib/phone';
 import { Field, Spinner, fieldClass } from './ui';
-import { MultiSelect } from './MultiSelect';
+import { useAreas } from '@/src/lib/areas-api';
+import { AreaPicker, splitAreas } from './AreaPicker';
 
 function AuthCard({ title, subtitle, children }: { title: string; subtitle: string; children: React.ReactNode }) {
   return (
@@ -133,6 +133,7 @@ export function RegisterPage() {
   const type: 'user' | 'supplier' = params.get('as') === 'supplier' ? 'supplier' : 'user';
   const [form, setForm] = useState({ name: '', email: '', phone: '', password: '', businessName: '', tradeLicense: '' });
   const [areas, setAreas] = useState<string[]>([]);
+  const areaOptions = useAreas();
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -151,7 +152,7 @@ export function RegisterPage() {
     try {
       const user =
         type === 'supplier'
-          ? await registerSupplier({ name: form.name, email, phone, password: form.password, businessName: form.businessName, tradeLicense: form.tradeLicense || undefined, serviceAreas: areas })
+          ? await registerSupplier({ name: form.name, email, phone, password: form.password, businessName: form.businessName, tradeLicense: form.tradeLicense || undefined, ...splitAreas(areas, areaOptions) })
           : await register({ name: form.name, email, phone, password: form.password });
       toast.success(type === 'supplier' ? 'আবেদন জমা হয়েছে!' : 'অ্যাকাউন্ট তৈরি হয়েছে!', {
         description: type === 'supplier' ? 'অ্যাডমিন অনুমোদন দিলেই আপনি ডেলিভারি অর্ডার পাবেন।' : 'পানি ওয়ালায় আপনাকে স্বাগতম।',
@@ -216,16 +217,7 @@ export function RegisterPage() {
                 <input id="tradeLicense" className={fieldClass} value={form.tradeLicense} onChange={set('tradeLicense')} />
               </Field>
               <Field label="যেসব এলাকায় ডেলিভারি দিবেন" htmlFor="serviceAreas">
-                <MultiSelect
-                  id="serviceAreas"
-                  options={KHULNA_AREAS}
-                  value={areas}
-                  onChange={setAreas}
-                  placeholder="এলাকা নির্বাচন করুন"
-                  searchPlaceholder="এলাকা খুঁজুন…"
-                  unit="টি এলাকা নির্বাচিত"
-                  emptyText="এই নামে কোনো এলাকা নেই"
-                />
+                <AreaPicker id="serviceAreas" value={areas} onChange={setAreas} />
               </Field>
             </>
           )}

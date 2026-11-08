@@ -18,6 +18,8 @@ export interface SupplierRegisterInput extends RegisterInput {
   phone: string;
   businessName: string;
   serviceAreas: string[];
+  /** Areas not on the list yet — sent to the admin as requests. */
+  newAreas?: string[];
   tradeLicense?: string;
 }
 

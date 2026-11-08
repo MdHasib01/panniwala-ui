@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
-import { KHULNA_AREAS, HOTLINE_NUMBER, HOTLINE_TEL, toBengaliNumber } from '@/src/data/packages';
+import { HOTLINE_NUMBER, HOTLINE_TEL, toBengaliNumber } from '@/src/data/packages';
+import { useAreas } from '@/src/lib/areas-api';
 import { usePackages } from '@/src/lib/packages-api';
 import { api } from '@/src/lib/api';
 import { useAuth } from '@/src/lib/auth';
@@ -44,7 +45,13 @@ export const OrderModal: React.FC<OrderModalProps> = ({
   // Customer form state
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
-  const [area, setArea] = useState(KHULNA_AREAS[0]);
+  const areas = useAreas();
+  const [area, setArea] = useState(areas[0] ?? '');
+  // Keep the choice valid when the live list arrives or an area is removed.
+  useEffect(() => {
+    if (areas.length && !areas.includes(area)) setArea(areas[0]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [areas]);
   const [address, setAddress] = useState('');
   const [deliverySlot, setDeliverySlot] = useState('আজকেই দ্রুততম ডেলিভারি (১ ঘণ্টার মধ্যে)');
   const [paymentMethod, setPaymentMethod] = useState<'cod' | 'bkash' | 'nagad'>('cod');
@@ -68,8 +75,8 @@ export const OrderModal: React.FC<OrderModalProps> = ({
     setName((v) => v || user.name);
     setPhone((v) => v || user.phone || '');
     setAddress((v) => v || user.address || '');
-    if (user.area && KHULNA_AREAS.includes(user.area)) setArea((v) => (v === KHULNA_AREAS[0] ? user.area! : v));
-  }, [isOpen, user]);
+    if (user.area && areas.includes(user.area)) setArea((v) => (v === areas[0] ? user.area! : v));
+  }, [isOpen, user, areas]);
 
   if (!isOpen) return null;
 
@@ -452,7 +459,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                   onChange={(e) => setArea(e.target.value)}
                   className="w-full h-11 px-3.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-800 focus:outline-cyan-500"
                 >
-                  {KHULNA_AREAS.map((loc, idx) => (
+                  {areas.map((loc, idx) => (
                     <option key={idx} value={loc}>
                       {loc}
                     </option>

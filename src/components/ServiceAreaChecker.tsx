@@ -1,12 +1,25 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { SectionHeader } from '@/src/components/SectionHeader';
 import { Button } from '@/src/components/ui/button';
-import { MapPin, Search, CheckCircle2, Phone, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
+import { MapPin, Search, CheckCircle2, Phone, Clock, ChevronLeft, ChevronRight, AlertCircle } from 'lucide-react';
 import { HOTLINE_NUMBER, HOTLINE_TEL } from '@/src/data/packages';
+import { useAreas } from '@/src/lib/areas-api';
+
+/** Loose match: the typed text appears in an area name, or one of its words does. */
+function findAreas(query: string, areas: string[]): string[] {
+  const q = query.trim().toLowerCase();
+  if (!q) return [];
+  const direct = areas.filter((a) => a.toLowerCase().includes(q));
+  if (direct.length) return direct;
+  const words = q.split(/[\s,]+/).filter((w) => w.length >= 2);
+  return areas.filter((a) => words.some((w) => a.toLowerCase().includes(w)));
+}
 
 export const ServiceAreaChecker: React.FC<{ onOpenOrder: () => void }> = ({ onOpenOrder }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [checkedArea, setCheckedArea] = useState<string | null>(null);
+  const areas = useAreas();
+  const matches = checkedArea ? findAreas(checkedArea, areas) : [];
 
   const zones = [
     {
@@ -91,12 +104,12 @@ export const ServiceAreaChecker: React.FC<{ onOpenOrder: () => void }> = ({ onOp
           </form>
 
           {/* Area result alert */}
-          {checkedArea && (
+          {checkedArea && matches.length > 0 && (
             <div className="mt-3 p-3.5 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center justify-between text-xs sm:text-sm text-emerald-900 animate-in fade-in">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                 <span>
-                  অভিনন্দন! <strong>&quot;{checkedArea}&quot;</strong> এলাকায় আমাদের এক্সপ্রেস ডেলিভারি সচল রয়েছে।
+                  অভিনন্দন! <strong>{matches.slice(0, 2).join(', ')}{matches.length > 2 ? ' …' : ''}</strong> এলাকায় আমাদের এক্সপ্রেস ডেলিভারি সচল রয়েছে।
                 </span>
               </div>
               <button
@@ -107,6 +120,33 @@ export const ServiceAreaChecker: React.FC<{ onOpenOrder: () => void }> = ({ onOp
               </button>
             </div>
           )}
+          {checkedArea && matches.length === 0 && (
+            <div className="mt-3 p-3.5 bg-amber-50 border border-amber-200 rounded-2xl flex items-center gap-2 text-xs sm:text-sm text-amber-900 animate-in fade-in">
+              <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
+              <span>
+                <strong>&quot;{checkedArea}&quot;</strong> এখনো আমাদের তালিকায় নেই। নিশ্চিত হতে কল দিন:{' '}
+                <a href={`tel:${HOTLINE_TEL}`} className="font-bold underline">{HOTLINE_NUMBER}</a>
+              </span>
+            </div>
+          )}
+
+          {/* Every area we deliver to (managed from the admin dashboard) */}
+          <div className="mt-5 flex flex-wrap justify-center gap-2">
+            {areas.map((a) => (
+              <button
+                key={a}
+                type="button"
+                onClick={() => {
+                  setSearchQuery(a);
+                  setCheckedArea(a);
+                }}
+                className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:border-cyan-300 hover:bg-cyan-50 hover:text-cyan-800"
+              >
+                <MapPin className="w-3 h-3 text-cyan-600" />
+                {a}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Zones Scroller */}

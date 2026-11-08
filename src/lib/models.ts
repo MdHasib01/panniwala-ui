@@ -14,8 +14,11 @@ export interface User {
   area?: string;
   supplier?: {
     businessName?: string;
+    /** Approved areas only. */
     serviceAreas?: string[];
     tradeLicense?: string;
+    /** Areas the supplier asked to add; kept as history after a decision. */
+    areaRequests?: AreaRequest[];
   };
   lastSeenAt?: string;
   createdAt: string;
@@ -24,6 +27,31 @@ export interface User {
   orderCount?: number;
   assignedCount?: number;
   deliveredCount?: number;
+}
+
+export type AreaRequestStatus = 'pending' | 'approved' | 'rejected';
+
+export interface AreaRequest {
+  _id: string;
+  name: string;
+  status: AreaRequestStatus;
+  requestedAt: string;
+  decidedAt?: string;
+}
+
+/** A delivery area as the admin manages it (GET /api/areas/manage). */
+export interface ManagedArea {
+  _id: string;
+  name: string;
+  sortOrder: number;
+  supplierCount: number;
+  customerCount: number;
+  createdAt: string;
+}
+
+/** A pending request across all suppliers (GET /api/areas/manage). */
+export interface PendingAreaRequest extends AreaRequest {
+  supplier: { _id: string; name: string; phone?: string; status: UserStatus; businessName?: string };
 }
 
 export type OrderStatus =

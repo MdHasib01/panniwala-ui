@@ -1,6 +1,7 @@
 import package1Img from '@/src/assets/package1.png';
 import package2Img from '@/src/assets/package2.png';
 import package4Img from '@/src/assets/package4.png';
+import defaultAreas from './areas.default.json';
 
 /**
  * Bundled artwork for the default packages, keyed by slug. The package data itself
@@ -12,22 +13,11 @@ export const PACKAGE_IMAGES: Record<string, string> = {
   'corporate-monthly': package4Img,
 };
 
-export const KHULNA_AREAS = [
-  'সোনাডাঙ্গা আবাসিক (১ম ও ২য় ফেজ)',
-  'বয়রা ও মুজগুন্নি',
-  'খালিশপুর হাউজিং এস্টেট',
-  'দৌলতপুর ও ফুলবাড়ীগেট',
-  'শিববাড়ি মোড় ও কেডিএ এভিনিউ',
-  'রয়্যাল মোড় ও শান্তিধাম মোড়',
-  'নিরালা আবাসিক এলাকা',
-  'ময়লাপোতা ও আহসান আহমেদ রোড',
-  'গল্লামারী ও জিরো পয়েন্ট',
-  'ডাকবাংলা ও পিকচার প্যালেস',
-  'রূপসা ও রূপসা ঘাট',
-  'নতুন বাজার ও বড় বাজার',
-  'খান জাহান আলী রোড',
-  'কুয়েট ও তেলিগাতী এলাকা'
-];
+/**
+ * Default delivery areas. The live list is managed by admins (GET /api/areas, see
+ * src/lib/areas-api.ts); this copy seeds the database and is the offline fallback.
+ */
+export const KHULNA_AREAS: string[] = defaultAreas;
 
 
 export const HOTLINE_NUMBER = '০১৭০০-১২৩৪৫৬';

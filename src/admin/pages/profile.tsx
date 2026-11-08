@@ -8,7 +8,7 @@ import { Label } from '@/src/admin/components/ui/label';
 import { Checkbox } from '@/src/admin/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/src/admin/components/ui/select';
 import { api } from '@/src/lib/api';
-import { KHULNA_AREAS } from '@/src/data/packages';
+import { useAreas } from '@/src/lib/areas-api';
 import { useAuth } from '@/src/lib/auth';
 import { PageHeader, RoleBadge, UserAvatar, UserStatusBadge } from '../components/shared';
 import { formatDate } from '../lib/format';
@@ -25,6 +25,7 @@ function ProfileForm() {
     tradeLicense: user?.supplier?.tradeLicense ?? '',
   });
   const [areas, setAreas] = React.useState<string[]>(user?.supplier?.serviceAreas ?? []);
+  const areaOptions = useAreas();
   const [saving, setSaving] = React.useState(false);
   if (!user) return null;
   const isSupplier = user.role === 'supplier';
@@ -77,7 +78,7 @@ function ProfileForm() {
               <Select value={form.area || undefined} onValueChange={(v) => setForm((f) => ({ ...f, area: v }))}>
                 <SelectTrigger className="w-full"><SelectValue placeholder="Select your area" /></SelectTrigger>
                 <SelectContent>
-                  {KHULNA_AREAS.map((a) => <SelectItem key={a} value={a}>{a}</SelectItem>)}
+                  {areaOptions.map((a) => <SelectItem key={a} value={a}>{a}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
@@ -101,7 +102,7 @@ function ProfileForm() {
               <div className="grid gap-2 sm:col-span-2">
                 <Label>Service areas</Label>
                 <div className="grid max-h-48 gap-2 overflow-y-auto rounded-lg border p-3 sm:grid-cols-2">
-                  {KHULNA_AREAS.map((a) => (
+                  {areaOptions.map((a) => (
                     <label key={a} className="flex cursor-pointer items-center gap-2 text-sm">
                       <Checkbox checked={areas.includes(a)} onCheckedChange={(v) => setAreas((p) => (v ? [...p, a] : p.filter((x) => x !== a)))} />
                       {a}

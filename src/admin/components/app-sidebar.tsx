@@ -11,6 +11,7 @@ import {
   LogOut,
   ChevronsUpDown,
   Globe,
+  MapPin,
   type LucideIcon,
 } from 'lucide-react';
 import logo from '@/src/assets/logo.png';
@@ -49,7 +50,7 @@ interface NavItem {
   to: string;
   icon: LucideIcon;
   roles: Role[];
-  badge?: 'chat' | 'suppliers';
+  badge?: 'chat' | 'suppliers' | 'areas';
 }
 
 const NAV: { label: string; items: NavItem[] }[] = [
@@ -67,6 +68,7 @@ const NAV: { label: string; items: NavItem[] }[] = [
       { title: 'Packages', to: '/admin/packages', icon: PackageIcon, roles: ['admin'] },
       { title: 'Users', to: '/admin/users', icon: Users, roles: ['admin'] },
       { title: 'Suppliers', to: '/admin/suppliers', icon: Truck, roles: ['admin'], badge: 'suppliers' },
+      { title: 'Areas', to: '/admin/areas', icon: MapPin, roles: ['admin'], badge: 'areas' },
     ],
   },
   {
@@ -90,16 +92,36 @@ function usePendingSuppliers(enabled: boolean) {
   return { count, reload: load };
 }
 
+/** Count of supplier area requests waiting for a decision. */
+function usePendingAreaRequests(enabled: boolean) {
+  const [count, setCount] = React.useState(0);
+  const load = React.useCallback(() => {
+    if (!enabled) return;
+    api
+      .get<{ requests: unknown[] }>('/areas/manage')
+      .then((r) => setCount(r.requests.length))
+      .catch(() => {});
+  }, [enabled]);
+  React.useEffect(load, [load]);
+  useSocketEvent('user:new', load);
+  useSocketEvent('area:request', load);
+  return { count, reload: load };
+}
+
 export function AppSidebar() {
   const { user, logout } = useAuth();
   const { unreadChats } = useSocket();
   const { pathname } = useLocation();
   const { isMobile, setOpenMobile } = useSidebar();
   const pending = usePendingSuppliers(user?.role === 'admin');
+  const areaRequests = usePendingAreaRequests(user?.role === 'admin');
 
   // Re-check pending approvals whenever the admin navigates (e.g. after approving one).
   React.useEffect(() => {
-    if (user?.role === 'admin') pending.reload();
+    if (user?.role === 'admin') {
+      pending.reload();
+      areaRequests.reload();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
@@ -108,6 +130,7 @@ export function AppSidebar() {
   const badgeFor = (b?: NavItem['badge']) => {
     if (b === 'chat') return unreadChats;
     if (b === 'suppliers') return pending.count;
+    if (b === 'areas') return areaRequests.count;
     return 0;
   };
 

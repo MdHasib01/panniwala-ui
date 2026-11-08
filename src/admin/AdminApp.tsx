@@ -12,6 +12,7 @@ import { ChatPage } from './pages/chat';
 import { PackagesPage } from './pages/packages';
 import { UsersPage } from './pages/users';
 import { SuppliersPage } from './pages/suppliers';
+import { AreasPage } from './pages/areas';
 import { ProfilePage } from './pages/profile';
 
 function NotFound() {
@@ -46,6 +47,7 @@ export default function AdminApp() {
               <Route path="packages" element={<PackagesPage />} />
               <Route path="users" element={<UsersPage />} />
               <Route path="suppliers" element={<SuppliersPage />} />
+              <Route path="areas" element={<AreasPage />} />
               <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>

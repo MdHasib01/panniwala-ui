@@ -20,7 +20,8 @@ import {
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/src/admin/components/ui/table';
 import { cn } from '@/src/lib/utils';
 import { api } from '@/src/lib/api';
-import { KHULNA_AREAS } from '@/src/data/packages';
+import { invalidateAreas, useAreas } from '@/src/lib/areas-api';
+import { AreaRequestDecider, AreaRequestHistory, pendingRequests, toAreaDecisions, type AreaDecisions } from '../components/area-requests';
 import { useAuth } from '@/src/lib/auth';
 import { useSocket, useSocketEvent } from '@/src/lib/socket';
 import { useDebounced, useFetch } from '@/src/lib/use-fetch';
@@ -47,12 +48,15 @@ export function UserDialog({
   const blank = { name: '', email: '', phone: '', password: '', role: defaultRole, status: 'active' as UserStatus, address: '', area: '', businessName: '', tradeLicense: '' };
   const [form, setForm] = React.useState(blank);
   const [areas, setAreas] = React.useState<string[]>([]);
+  const [decisions, setDecisions] = React.useState<AreaDecisions>({});
+  const areaOptions = useAreas();
   const [saving, setSaving] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     if (!open) return;
     setError(null);
+    setDecisions({});
     if (initial) {
       setForm({
         name: initial.name,
@@ -95,12 +99,14 @@ export function UserDialog({
       body.businessName = form.businessName;
       body.tradeLicense = form.tradeLicense;
       body.serviceAreas = areas;
+      if (Object.keys(decisions).length) body.areaDecisions = toAreaDecisions(decisions);
     }
     try {
       const { user } = initial
         ? await api.patch<{ user: User }>(`/users/${initial._id}`, body)
         : await api.post<{ user: User }>('/users', body);
       onSaved(user);
+      if (Object.values(decisions).includes('approved')) invalidateAreas();
       toast.success(initial ? 'User updated' : 'User created');
       onOpenChange(false);
     } catch (err) {
@@ -184,10 +190,17 @@ export function UserDialog({
                   <Input id="u-lic" value={form.tradeLicense} onChange={text('tradeLicense')} />
                 </div>
               </div>
+              {pendingRequests(initial?.supplier?.areaRequests).length > 0 && (
+                <div className="grid gap-2">
+                  <Label>Requested new areas</Label>
+                  <p className="text-muted-foreground -mt-1 text-xs">Approved areas are added to the public list and to this supplier.</p>
+                  <AreaRequestDecider requests={initial!.supplier!.areaRequests!} value={decisions} onChange={setDecisions} />
+                </div>
+              )}
               <div className="grid gap-2">
                 <Label>Service areas</Label>
                 <div className="grid max-h-40 gap-2 overflow-y-auto sm:grid-cols-2">
-                  {KHULNA_AREAS.map((a) => (
+                  {areaOptions.map((a) => (
                     <label key={a} className="flex cursor-pointer items-center gap-2 text-sm">
                       <Checkbox checked={areas.includes(a)} onCheckedChange={(v) => setAreas((p) => (v ? [...p, a] : p.filter((x) => x !== a)))} />
                       {a}
@@ -195,6 +208,12 @@ export function UserDialog({
                   ))}
                 </div>
               </div>
+              {(initial?.supplier?.areaRequests ?? []).some((r) => r.status !== 'pending') && (
+                <div className="grid gap-2">
+                  <Label>Area request history</Label>
+                  <AreaRequestHistory requests={initial!.supplier!.areaRequests!} />
+                </div>
+              )}
             </div>
           )}
 

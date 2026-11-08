@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { Loader2, LogOut, Check, Clock3, ShieldCheck } from 'lucide-react';
-import { KHULNA_AREAS } from '@/src/data/packages';
+import { Loader2, LogOut, Clock3, ShieldCheck } from 'lucide-react';
+import { useAreas } from '@/src/lib/areas-api';
 import { cn } from '@/src/lib/utils';
 import { api } from '@/src/lib/api';
 import { useAuth } from '@/src/lib/auth';
-import type { User } from '@/src/lib/models';
+import type { AreaRequest, User } from '@/src/lib/models';
 import { authErrorBn, isBdPhone, normalizeBdPhone } from '@/src/lib/phone';
 import { ROLE_LABEL_BN, initialsOf } from '@/src/site/context';
 import { AccountHeader, AccountPage, Field, fieldClass } from './ui';
+import { AreaPicker, splitAreas } from './AreaPicker';
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -17,6 +18,42 @@ function Section({ title, children }: { title: string; children: React.ReactNode
       <h2 className="mb-4 text-base font-bold text-slate-900">{title}</h2>
       {children}
     </section>
+  );
+}
+
+const REQUEST_STATUS_BN: Record<AreaRequest['status'], { label: string; pill: string }> = {
+  pending: { label: 'অনুমোদনের অপেক্ষায়', pill: 'bg-amber-50 text-amber-700 ring-amber-200' },
+  approved: { label: 'অনুমোদিত', pill: 'bg-emerald-50 text-emerald-700 ring-emerald-200' },
+  rejected: { label: 'বাতিল', pill: 'bg-rose-50 text-rose-600 ring-rose-200' },
+};
+
+const dateBn = (iso?: string) => (iso ? new Date(iso).toLocaleDateString('bn-BD', { day: 'numeric', month: 'short', year: 'numeric' }) : '');
+
+/** Every area this supplier has asked to add, newest first — kept even after a decision. */
+function AreaRequestHistory({ requests }: { requests: AreaRequest[] }) {
+  if (!requests.length) return null;
+  const sorted = [...requests].sort((a, b) => +new Date(b.requestedAt) - +new Date(a.requestedAt));
+  return (
+    <div className="space-y-2">
+      <p className="text-sm font-semibold text-slate-700">নতুন এলাকার অনুরোধ</p>
+      <ul className="divide-y divide-slate-100 rounded-xl border border-slate-200">
+        {sorted.map((r) => {
+          const meta = REQUEST_STATUS_BN[r.status];
+          return (
+            <li key={r._id} className="flex items-center justify-between gap-3 px-3.5 py-2.5">
+              <div className="min-w-0">
+                <p className="truncate text-sm font-semibold text-slate-800">{r.name}</p>
+                <p className="text-xs text-slate-500">
+                  অনুরোধ: {dateBn(r.requestedAt)}
+                  {r.decidedAt && ` · সিদ্ধান্ত: ${dateBn(r.decidedAt)}`}
+                </p>
+              </div>
+              <span className={cn('shrink-0 rounded-full px-2.5 py-1 text-[11px] font-bold ring-1', meta.pill)}>{meta.label}</span>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
   );
 }
 
@@ -33,6 +70,7 @@ function DetailsForm({ user }: { user: User }) {
     tradeLicense: user.supplier?.tradeLicense ?? '',
   });
   const [areas, setAreas] = useState<string[]>(user.supplier?.serviceAreas ?? []);
+  const areaOptions = useAreas();
   const [saving, setSaving] = useState(false);
   const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => setForm((f) => ({ ...f, [k]: e.target.value }));
 
@@ -47,10 +85,12 @@ function DetailsForm({ user }: { user: User }) {
     setSaving(true);
     try {
       const body: Record<string, unknown> = { name: form.name, phone, email: form.email.trim() };
-      if (isSupplier) Object.assign(body, { businessName: form.businessName, tradeLicense: form.tradeLicense, serviceAreas: areas });
+      if (isSupplier) Object.assign(body, { businessName: form.businessName, tradeLicense: form.tradeLicense, ...splitAreas(areas, areaOptions) });
       else Object.assign(body, { area: form.area, address: form.address });
       const { user: updated } = await api.patch<{ user: User }>('/auth/me', body);
       setUser(updated);
+      // New areas became requests; keep only the approved ones selected.
+      if (isSupplier) setAreas(updated.supplier?.serviceAreas ?? []);
       toast.success('প্রোফাইল সেভ হয়েছে');
     } catch (err) {
       toast.error(authErrorBn((err as Error).message));
@@ -80,7 +120,7 @@ function DetailsForm({ user }: { user: User }) {
             <Field label="এলাকা" htmlFor="p-area">
               <select id="p-area" className={fieldClass} value={form.area} onChange={set('area')}>
                 <option value="">এলাকা নির্বাচন করুন</option>
-                {KHULNA_AREAS.map((a) => <option key={a} value={a}>{a}</option>)}
+                {areaOptions.map((a) => <option key={a} value={a}>{a}</option>)}
               </select>
             </Field>
           )}
@@ -90,26 +130,10 @@ function DetailsForm({ user }: { user: User }) {
             <Field label="ট্রেড লাইসেন্স নং" htmlFor="p-lic">
               <input id="p-lic" className={fieldClass} value={form.tradeLicense} onChange={set('tradeLicense')} />
             </Field>
-            <div className="space-y-1.5">
-              <p className="text-sm font-semibold text-slate-700">ডেলিভারি এলাকা</p>
-              <div className="flex flex-wrap gap-2">
-                {KHULNA_AREAS.map((area) => {
-                  const on = areas.includes(area);
-                  return (
-                    <button
-                      key={area}
-                      type="button"
-                      aria-pressed={on}
-                      onClick={() => setAreas((p) => (on ? p.filter((a) => a !== area) : [...p, area]))}
-                      className={cn('inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs font-semibold', on ? 'border-cyan-600 bg-cyan-600 text-white' : 'border-slate-200 bg-white text-slate-600')}
-                    >
-                      {on && <Check className="h-3 w-3" />}
-                      {area}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
+            <Field label="ডেলিভারি এলাকা" htmlFor="p-areas" hint="তালিকায় না থাকলে নতুন এলাকার নাম লিখে যোগ করুন">
+              <AreaPicker id="p-areas" value={areas} onChange={setAreas} />
+            </Field>
+            <AreaRequestHistory requests={user.supplier?.areaRequests ?? []} />
           </>
         ) : (
           <Field label="ঠিকানা" htmlFor="p-address" hint="অর্ডার করার সময় স্বয়ংক্রিয়ভাবে বসে যাবে">
