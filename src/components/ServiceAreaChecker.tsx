@@ -58,7 +58,7 @@ export const ServiceAreaChecker: React.FC<{ onOpenOrder: () => void }> = ({ onOp
   };
 
   return (
-    <section id="areas" className="py-16 sm:py-24 bg-slate-50/70 border-t border-slate-200/70">
+    <section id="areas" className="pt-10 sm:pt-14 pb-16 sm:pb-24 bg-slate-50/70 border-t border-slate-200/70">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <div className="text-center max-w-3xl mx-auto mb-12 space-y-3">

@@ -37,7 +37,7 @@ export const Faq: React.FC = () => {
   ];
 
   return (
-    <section id="faq" className="py-16 sm:py-24 bg-slate-50/70 border-t border-slate-200/70">
+    <section id="faq" className="pt-10 sm:pt-14 pb-16 sm:pb-24 bg-slate-50/70 border-t border-slate-200/70">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <div className="text-center mb-12 space-y-3">

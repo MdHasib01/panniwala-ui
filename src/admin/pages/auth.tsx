@@ -30,7 +30,7 @@ function AuthShell({ title, description, children }: { title: string; descriptio
         </div>
       </div>
 
-      <div className="relative hidden overflow-hidden bg-gradient-to-br from-cyan-600 via-sky-700 to-blue-900 lg:block">
+      <div className="relative hidden overflow-hidden bg-gradient-to-br from-cyan-600 via-sky-700 to-blue-900 lg:sticky lg:top-0 lg:block lg:h-svh">
         <div className="absolute inset-0 opacity-30 [background:radial-gradient(circle_at_20%_20%,white_0,transparent_35%),radial-gradient(circle_at_80%_70%,#67e8f9_0,transparent_40%)]" />
         <div className="relative flex h-full flex-col justify-end gap-8 p-12 text-white">
           <div className="flex size-14 items-center justify-center rounded-2xl bg-white/15 backdrop-blur">

@@ -152,7 +152,7 @@ export function AppSidebar() {
                           </NavLink>
                         </SidebarMenuButton>
                         {badge > 0 && (
-                          <SidebarMenuBadge className="bg-primary text-primary-foreground rounded-full px-1.5">
+                          <SidebarMenuBadge className="bg-primary text-primary-foreground! rounded-full px-1.5">
                             {badge}
                           </SidebarMenuBadge>
                         )}

@@ -459,9 +459,14 @@ export function ChatPage() {
   const selectedId = isAdmin ? params.get('c') : items[0]?._id ?? null;
   const selected = items.find((c) => c._id === selectedId) ?? null;
 
-  // A ?c= link to a conversation outside the current list (e.g. a brand-new thread).
+  // A ?c= link to a conversation outside the current list (e.g. a brand-new thread):
+  // refetch once per id, then give up so an invalid id can't loop.
+  const refetchedFor = React.useRef<string | null>(null);
   React.useEffect(() => {
-    if (isAdmin && selectedId && data && !selected && !debounced) refetch();
+    if (!isAdmin || !selectedId || !data || selected || debounced) return;
+    if (refetchedFor.current === selectedId) return;
+    refetchedFor.current = selectedId;
+    refetch();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedId, data]);
 

@@ -59,7 +59,7 @@ export const PurityProcess: React.FC = () => {
   ];
 
   return (
-    <section id="purity" className="py-16 sm:py-24 bg-white relative">
+    <section id="purity" className="pt-10 sm:pt-14 pb-16 sm:pb-24 bg-white relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}

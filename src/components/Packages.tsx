@@ -6,7 +6,6 @@ import { Button } from '@/src/components/ui/button';
 import { Badge } from '@/src/components/ui/badge';
 import {
   Check,
-  Building2,
   ArrowRight,
   ChevronLeft,
   ChevronRight
@@ -202,31 +201,6 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
             />
           ))}
         </div>
-
-        {/* Corporate Note banner */}
-        <div className="mt-6 md:mt-8 p-4 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3 text-center sm:text-left">
-            <div className="w-10 h-10 rounded-full bg-cyan-100 flex items-center justify-center text-cyan-700 shrink-0">
-              <Building2 className="w-5 h-5" />
-            </div>
-            <div>
-              <h4 className="text-sm font-bold text-slate-800">
-                কর্পোরেট অফিস, ফ্যাক্টরি বা ইভেন্টের জন্য বিশেষ বাল্ক রেট প্রয়োজন?
-              </h4>
-              <p className="text-xs text-slate-500">
-                আমাদের প্রতিনিধি সরাসরি আপনার অফিসে গিয়ে ফ্রি ট্রায়াল ও ডিসপেনসার সেটআপ করে দেবেন।
-              </p>
-            </div>
-          </div>
-          <a
-            href="tel:+8801700123456"
-            className="shrink-0 inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-cyan-800 bg-cyan-50 hover:bg-cyan-100 border border-cyan-200 transition-colors"
-          >
-            <span>কর্পোরেট হটলাইনে কল দিন</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </a>
-        </div>
-
       </div>
     </section>
   );
