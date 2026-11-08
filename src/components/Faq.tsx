@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { SectionEyebrow } from '@/src/components/SectionEyebrow';
+import { SectionHeader } from '@/src/components/SectionHeader';
 import { ChevronDown } from 'lucide-react';
 
 export const Faq: React.FC = () => {
@@ -40,17 +40,12 @@ export const Faq: React.FC = () => {
     <section id="faq" className="pt-10 sm:pt-14 pb-16 sm:pb-24 bg-slate-50/70 border-t border-slate-200/70">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <div className="text-center mb-12 space-y-3">
-          <SectionEyebrow>
-            সাধারণ জিজ্ঞাসা
-          </SectionEyebrow>
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight">
-            সচরাচর জিজ্ঞাসিত প্রশ্ন ও উত্তর
-          </h2>
-          <p className="text-sm sm:text-base text-slate-600">
-            পানি ওয়ালা সম্পর্কে আপনার মনে থাকা যে কোনো সাধারণ প্রশ্নের সহজ উত্তর এখানে পেয়ে যাবেন।
-          </p>
-        </div>
+        <SectionHeader
+          eyebrow="সাধারণ জিজ্ঞাসা"
+          title="সচরাচর জিজ্ঞাসিত প্রশ্ন ও উত্তর"
+          subtitle="পানি ওয়ালা সম্পর্কে আপনার মনে থাকা যে কোনো সাধারণ প্রশ্নের সহজ উত্তর এখানে পেয়ে যাবেন।"
+          className="mb-12"
+        />
 
         <div className="space-y-3">
           {faqs.map((faq, idx) => {

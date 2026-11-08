@@ -16,7 +16,7 @@ import {
   AlertDialogTitle,
 } from '@/src/admin/components/ui/alert-dialog';
 import { ORDER_STATUS_META, ROLE_META, USER_STATUS_META, initials } from '../lib/format';
-import type { OrderStatus, Role, UserStatus } from '../lib/types';
+import type { OrderStatus, Role, UserStatus } from '@/src/lib/models';
 
 export function PageHeader({
   title,

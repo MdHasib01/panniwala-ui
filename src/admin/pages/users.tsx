@@ -21,12 +21,12 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { cn } from '@/src/lib/utils';
 import { api } from '@/src/lib/api';
 import { KHULNA_AREAS } from '@/src/data/packages';
-import { useAuth } from '../context/auth';
-import { useSocket, useSocketEvent } from '../context/socket';
-import { useDebounced, useFetch } from '../hooks/use-fetch';
+import { useAuth } from '@/src/lib/auth';
+import { useSocket, useSocketEvent } from '@/src/lib/socket';
+import { useDebounced, useFetch } from '@/src/lib/use-fetch';
 import { EmptyState, PageHeader, Pagination, RoleBadge, UserAvatar, UserStatusBadge, useConfirm } from '../components/shared';
 import { formatDate } from '../lib/format';
-import type { Conversation, Paginated, Role, User, UserStatus } from '../lib/types';
+import type { Conversation, Paginated, Role, User, UserStatus } from '@/src/lib/models';
 
 /* ------------------------------ User dialog ------------------------------ */
 

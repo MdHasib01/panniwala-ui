@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { api, setUnauthorizedHandler, tokenStore } from '@/src/lib/api';
-import type { User } from '../lib/types';
+import type { User } from './models';
 
 interface AuthResponse {
   token: string;

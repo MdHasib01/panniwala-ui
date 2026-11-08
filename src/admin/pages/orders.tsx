@@ -27,9 +27,9 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/src/admin/components/ui/table';
 import { cn } from '@/src/lib/utils';
 import { api } from '@/src/lib/api';
-import { useAuth } from '../context/auth';
-import { useSocketEvent } from '../context/socket';
-import { useDebounced, useFetch } from '../hooks/use-fetch';
+import { useAuth } from '@/src/lib/auth';
+import { useSocketEvent } from '@/src/lib/socket';
+import { useDebounced, useFetch } from '@/src/lib/use-fetch';
 import { EmptyState, OrderStatusBadge, PageHeader, Pagination, useConfirm } from '../components/shared';
 import {
   ORDER_STATUSES,
@@ -39,7 +39,7 @@ import {
   formatDate,
   timeAgo,
 } from '../lib/format';
-import type { Order, OrderStatus, Paginated, PaymentStatus, User } from '../lib/types';
+import type { Order, OrderStatus, Paginated, PaymentStatus, User } from '@/src/lib/models';
 
 const PAGE_SIZE = 15;
 

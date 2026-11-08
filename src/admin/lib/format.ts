@@ -1,4 +1,4 @@
-import type { OrderStatus, PaymentMethod, Role, UserStatus } from './types';
+import type { OrderStatus, PaymentMethod, Role, UserStatus } from '@/src/lib/models';
 
 const taka = new Intl.NumberFormat('en-IN', { maximumFractionDigits: 0 });
 

@@ -14,10 +14,10 @@ import {
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/src/admin/components/ui/tooltip';
 import { cn } from '@/src/lib/utils';
 import { AppSidebar } from './app-sidebar';
-import { useAuth } from '../context/auth';
-import { SocketProvider, useSocket } from '../context/socket';
+import { useAuth } from '@/src/lib/auth';
+import { SocketProvider, useSocket } from '@/src/lib/socket';
 import { useTheme, type Theme } from '../context/theme';
-import type { Role } from '../lib/types';
+import type { Role } from '@/src/lib/models';
 
 const TITLES: Record<string, string> = {
   '/admin': 'Overview',

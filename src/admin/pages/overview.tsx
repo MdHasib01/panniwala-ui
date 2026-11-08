@@ -19,12 +19,12 @@ import { Skeleton } from '@/src/admin/components/ui/skeleton';
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from '@/src/admin/components/ui/chart';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/src/admin/components/ui/table';
 import { cn } from '@/src/lib/utils';
-import { useAuth } from '../context/auth';
-import { useSocketEvent } from '../context/socket';
-import { useFetch } from '../hooks/use-fetch';
+import { useAuth } from '@/src/lib/auth';
+import { useSocketEvent } from '@/src/lib/socket';
+import { useFetch } from '@/src/lib/use-fetch';
 import { EmptyState, OrderStatusBadge, PageHeader, StatCard } from '../components/shared';
 import { ORDER_STATUSES, ORDER_STATUS_META, formatCurrency, formatNumber, timeAgo } from '../lib/format';
-import type { StatsOverview } from '../lib/types';
+import type { StatsOverview } from '@/src/lib/models';
 
 type Metric = 'orders' | 'revenue' | 'jars';
 const METRICS: { key: Metric; label: string }[] = [

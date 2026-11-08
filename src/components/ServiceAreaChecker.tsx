@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { SectionEyebrow } from '@/src/components/SectionEyebrow';
+import { SectionHeader } from '@/src/components/SectionHeader';
 import { Button } from '@/src/components/ui/button';
 import { MapPin, Search, CheckCircle2, Phone, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
 import { HOTLINE_NUMBER, HOTLINE_TEL } from '@/src/data/packages';
@@ -61,17 +61,12 @@ export const ServiceAreaChecker: React.FC<{ onOpenOrder: () => void }> = ({ onOp
     <section id="areas" className="pt-10 sm:pt-14 pb-16 sm:pb-24 bg-slate-50/70 border-t border-slate-200/70">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <div className="text-center max-w-3xl mx-auto mb-12 space-y-3">
-          <SectionEyebrow>
-            সার্ভিস কাভারেজ জোন
-          </SectionEyebrow>
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight">
-            আমরা যেখানে দ্রুততম সেবা পৌঁছে দিই
-          </h2>
-          <p className="text-sm sm:text-base text-slate-600">
-            আমাদের ডেডিকেটেড বাইক ও ভ্যান ডেলিভারি টিম সার্বক্ষণিক প্রস্তুত থাকে যাতে অর্ডার পাওয়ার কিছুক্ষণের মধ্যেই আপনার দরজায় পানি পৌঁছে দেওয়া যায়।
-          </p>
-        </div>
+        <SectionHeader
+          eyebrow="সার্ভিস কাভারেজ জোন"
+          title="আমরা যেখানে দ্রুততম সেবা পৌঁছে দিই"
+          subtitle="আমাদের ডেডিকেটেড বাইক ও ভ্যান ডেলিভারি টিম সার্বক্ষণিক প্রস্তুত থাকে যাতে অর্ডার পাওয়ার কিছুক্ষণের মধ্যেই আপনার দরজায় পানি পৌঁছে দেওয়া যায়।"
+          className="mb-12"
+        />
 
         {/* Quick Search Tool */}
         <div className="max-w-xl mx-auto mb-14">

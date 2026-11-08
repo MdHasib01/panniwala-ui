@@ -9,7 +9,7 @@ import { Input } from '@/src/admin/components/ui/input';
 import { Label } from '@/src/admin/components/ui/label';
 import { Checkbox } from '@/src/admin/components/ui/checkbox';
 import { cn } from '@/src/lib/utils';
-import { useAuth } from '../context/auth';
+import { useAuth } from '@/src/lib/auth';
 
 function AuthShell({ title, description, children }: { title: string; description: string; children: React.ReactNode }) {
   return (

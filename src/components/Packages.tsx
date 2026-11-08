@@ -3,7 +3,7 @@ import { toBengaliNumber } from '@/src/data/packages';
 import { usePackages } from '@/src/lib/packages-api';
 import { WaterPackage } from '@/src/types';
 import { Button } from '@/src/components/ui/button';
-import { SectionEyebrow } from '@/src/components/SectionEyebrow';
+import { SectionHeader } from '@/src/components/SectionHeader';
 import {
   Check,
   ArrowRight,
@@ -80,14 +80,11 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-3 sm:mb-5 space-y-2">
-          <SectionEyebrow>
-            পানির প্যাকেজ ও মূল্যতালিকা
-          </SectionEyebrow>
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight">
-            আপনার প্রয়োজন অনুযায়ী সেরা প্যাকেজটি বেছে নিন
-          </h2>
-        </div>
+        <SectionHeader
+          eyebrow="পানির প্যাকেজ ও মূল্যতালিকা"
+          title="আপনার প্রয়োজন অনুযায়ী সেরা প্যাকেজটি বেছে নিন"
+          className="mb-3 sm:mb-5"
+        />
 
         {/* Packages Grid */}
         {/* Mobile: horizontal snap carousel · md+: 3-column grid */}

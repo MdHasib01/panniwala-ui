@@ -9,10 +9,10 @@ import { Checkbox } from '@/src/admin/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/src/admin/components/ui/select';
 import { api } from '@/src/lib/api';
 import { KHULNA_AREAS } from '@/src/data/packages';
-import { useAuth } from '../context/auth';
+import { useAuth } from '@/src/lib/auth';
 import { PageHeader, RoleBadge, UserAvatar, UserStatusBadge } from '../components/shared';
 import { formatDate } from '../lib/format';
-import type { User } from '../lib/types';
+import type { User } from '@/src/lib/models';
 
 function ProfileForm() {
   const { user, setUser } = useAuth();

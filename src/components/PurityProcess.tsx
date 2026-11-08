@@ -1,5 +1,5 @@
 import React from 'react';
-import { SectionEyebrow } from '@/src/components/SectionEyebrow';
+import { SectionHeader } from '@/src/components/SectionHeader';
 import { Card, CardContent } from '@/src/components/ui/card';
 import {
   ShieldCheck,
@@ -63,17 +63,12 @@ export const PurityProcess: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-14 space-y-3">
-          <SectionEyebrow>
-            কোয়ালিটি ও বিশুদ্ধতার নিশ্চয়তা
-          </SectionEyebrow>
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight">
-            আমাদের ৭ স্তরের আধুনিক পরিশোধন প্রযুক্তি
-          </h2>
-          <p className="text-sm sm:text-base text-slate-600">
-            প্রতিটি ফোঁটা পানি যাতে আপনার পরিবারের সুস্বাস্থ্য নিশ্চিত করে, সেজন্য আমরা বিশ্বমানের ওয়াটার ট্রিটমেন্ট প্রটোকল অনুসরণ করি।
-          </p>
-        </div>
+        <SectionHeader
+          eyebrow="কোয়ালিটি ও বিশুদ্ধতার নিশ্চয়তা"
+          title="আমাদের ৭ স্তরের আধুনিক পরিশোধন প্রযুক্তি"
+          subtitle="প্রতিটি ফোঁটা পানি যাতে আপনার পরিবারের সুস্বাস্থ্য নিশ্চিত করে, সেজন্য আমরা বিশ্বমানের ওয়াটার ট্রিটমেন্ট প্রটোকল অনুসরণ করি।"
+          className="mb-14"
+        />
 
         {/* Steps Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

@@ -4,8 +4,9 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { API_URL, api } from '@/src/lib/api';
 import { useAuth } from './auth';
-import { ORDER_STATUS_META } from '../lib/format';
-import type { ChatMessage, Conversation, Order, User } from '../lib/types';
+import { toBengaliNumber } from '@/src/data/packages';
+import { ORDER_STATUS_BN } from './order-status';
+import type { ChatMessage, Conversation, Order, User } from './models';
 
 interface SocketContextValue {
   socket: Socket | null;
@@ -20,8 +21,9 @@ interface SocketContextValue {
 const SocketContext = React.createContext<SocketContextValue | null>(null);
 
 /**
- * Opens a single authenticated Socket.IO connection as soon as the user logs in
- * and keeps it alive for the whole dashboard session.
+ * Opens a single authenticated Socket.IO connection as soon as anyone logs in
+ * (admin dashboard or the customer/supplier site) and keeps it for the session.
+ * Mounted once at the app root, so it survives navigating between the two.
  */
 export function SocketProvider({ children }: { children: React.ReactNode }) {
   const { token, user, setUser, logout } = useAuth();
@@ -38,7 +40,8 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
 
   const userId = user?._id;
   const role = user?.role;
-  const side = role === 'admin' ? 'admin' : 'user';
+  const isAdmin = role === 'admin';
+  const side = isAdmin ? 'admin' : 'user';
 
   React.useEffect(() => {
     if (!token || !userId) return;
@@ -67,11 +70,11 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
     s.on('account:updated', ({ user: updated }: { user: User }) => {
       setUser(updated);
       if (updated.role === 'supplier' && updated.status === 'active') {
-        toast.success('Your account is active', { description: 'You can now receive delivery orders.' });
+        toast.success('আপনার সাপ্লায়ার অ্যাকাউন্ট সক্রিয় হয়েছে', { description: 'এখন থেকে আপনি ডেলিভারি অর্ডার পাবেন।' });
       }
     });
     s.on('account:deleted', () => {
-      toast.error('Your account was removed');
+      toast.error(isAdmin ? 'Your account was removed' : 'আপনার অ্যাকাউন্টটি মুছে ফেলা হয়েছে');
       logout();
     });
 
@@ -81,10 +84,14 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
         [conversation._id]: side === 'admin' ? conversation.unreadForAdmin : conversation.unreadForUser,
       }));
       const fromMe = message.sender._id === userId;
-      if (!fromMe && !pathRef.current.startsWith('/admin/chat')) {
-        toast(message.sender.name, {
+      const chatPath = isAdmin ? '/admin/chat' : '/chat';
+      if (!fromMe && !pathRef.current.startsWith(chatPath)) {
+        toast(isAdmin ? message.sender.name : 'পানি ওয়ালা সাপোর্ট', {
           description: message.text.length > 90 ? `${message.text.slice(0, 90)}…` : message.text,
-          action: { label: 'Reply', onClick: () => navigate(`/admin/chat?c=${conversation._id}`) },
+          action: {
+            label: isAdmin ? 'Reply' : 'উত্তর দিন',
+            onClick: () => navigate(isAdmin ? `${chatPath}?c=${conversation._id}` : chatPath),
+          },
         });
       }
     });
@@ -103,13 +110,16 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
       if (role === 'supplier' && order.status === 'assigned' && order.supplier?._id === userId) {
         const last = order.history[order.history.length - 1];
         if (last?.by?._id !== userId) {
-          toast.info(`Delivery assigned: ${order.orderNumber}`, {
-            description: `${order.customer.area} · ${order.item.quantity} × ${order.item.packageTitle}`,
-            action: { label: 'Open', onClick: () => navigate(`/admin/orders?open=${order._id}`) },
+          toast.info(`নতুন ডেলিভারি: ${order.orderNumber}`, {
+            description: `${order.customer.area} · ${toBengaliNumber(order.item.quantity)} × ${order.item.packageTitle}`,
+            action: { label: 'দেখুন', onClick: () => navigate('/deliveries') },
           });
         }
       } else if (role === 'user') {
-        toast.info(`Order ${order.orderNumber}`, { description: `Status: ${ORDER_STATUS_META[order.status].label}` });
+        toast.info(`অর্ডার ${order.orderNumber}`, {
+          description: ORDER_STATUS_BN[order.status].label,
+          action: { label: 'দেখুন', onClick: () => navigate('/orders') },
+        });
       }
     });
 

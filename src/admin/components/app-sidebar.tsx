@@ -37,12 +37,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/src/admin/components/ui/dropdown-menu';
-import { useAuth } from '../context/auth';
-import { useSocket, useSocketEvent } from '../context/socket';
+import { useAuth } from '@/src/lib/auth';
+import { useSocket, useSocketEvent } from '@/src/lib/socket';
 import { api } from '@/src/lib/api';
 import { ROLE_META } from '../lib/format';
 import { UserAvatar } from './shared';
-import type { Paginated, Role, User } from '../lib/types';
+import type { Paginated, Role, User } from '@/src/lib/models';
 
 interface NavItem {
   title: string;

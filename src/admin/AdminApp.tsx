@@ -3,7 +3,7 @@ import { Toaster } from '@/src/admin/components/ui/sonner';
 import { TooltipProvider } from '@/src/admin/components/ui/tooltip';
 import { Button } from '@/src/admin/components/ui/button';
 import { ThemeProvider } from './context/theme';
-import { AuthProvider } from './context/auth';
+import { AuthProvider } from '@/src/lib/auth';
 import { ConfirmProvider, EmptyState } from './components/shared';
 import { DashboardLayout, GuestOnly, RequireRole } from './components/layout';
 import { LoginPage, RegisterPage } from './pages/auth';

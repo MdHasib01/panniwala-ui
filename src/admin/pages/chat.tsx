@@ -9,12 +9,12 @@ import { Textarea } from '@/src/admin/components/ui/textarea';
 import { Skeleton } from '@/src/admin/components/ui/skeleton';
 import { cn } from '@/src/lib/utils';
 import { api } from '@/src/lib/api';
-import { useAuth } from '../context/auth';
-import { emitWithAck, useSocket, useSocketEvent } from '../context/socket';
-import { useDebounced, useFetch } from '../hooks/use-fetch';
+import { useAuth } from '@/src/lib/auth';
+import { emitWithAck, useSocket, useSocketEvent } from '@/src/lib/socket';
+import { useDebounced, useFetch } from '@/src/lib/use-fetch';
 import { EmptyState, RoleBadge, UserAvatar } from '../components/shared';
 import { formatClock, timeAgo } from '../lib/format';
-import type { ChatMessage, Conversation } from '../lib/types';
+import type { ChatMessage, Conversation } from '@/src/lib/models';
 
 type UiMessage = ChatMessage & { pending?: boolean; failed?: boolean };
 

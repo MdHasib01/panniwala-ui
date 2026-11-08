@@ -14,10 +14,10 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { cn } from '@/src/lib/utils';
 import { api } from '@/src/lib/api';
 import { packageImage } from '@/src/lib/packages-api';
-import { useFetch } from '../hooks/use-fetch';
+import { useFetch } from '@/src/lib/use-fetch';
 import { EmptyState, PageHeader, useConfirm } from '../components/shared';
 import { formatCurrency } from '../lib/format';
-import type { Package, PackageIcon as IconName } from '../lib/types';
+import type { Package, PackageIcon as IconName } from '@/src/lib/models';
 
 type FormState = {
   slug: string;

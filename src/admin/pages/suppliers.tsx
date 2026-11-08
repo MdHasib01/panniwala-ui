@@ -6,11 +6,11 @@ import { Badge } from '@/src/admin/components/ui/badge';
 import { Input } from '@/src/admin/components/ui/input';
 import { Skeleton } from '@/src/admin/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/src/admin/components/ui/table';
-import { useSocket, useSocketEvent } from '../context/socket';
-import { useDebounced, useFetch } from '../hooks/use-fetch';
+import { useSocket, useSocketEvent } from '@/src/lib/socket';
+import { useDebounced, useFetch } from '@/src/lib/use-fetch';
 import { EmptyState, PageHeader, Pagination, UserAvatar, UserStatusBadge } from '../components/shared';
 import { formatDate, timeAgo } from '../lib/format';
-import type { Paginated, User } from '../lib/types';
+import type { Paginated, User } from '@/src/lib/models';
 import { UserDialog, UserRowMenu, useUserActions } from './users';
 
 function PendingApprovals({ onChanged }: { onChanged: () => void }) {

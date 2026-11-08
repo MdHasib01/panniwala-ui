@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { SectionEyebrow } from '@/src/components/SectionEyebrow';
+import { SectionHeader } from '@/src/components/SectionHeader';
 import { Star, CheckCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 import { toBengaliNumber } from '@/src/data/packages';
 
@@ -77,17 +77,12 @@ export const Testimonials: React.FC = () => {
     <section id="reviews" className="pt-10 sm:pt-14 pb-16 sm:pb-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <div className="text-center max-w-3xl mx-auto mb-14 space-y-3">
-          <SectionEyebrow>
-            গ্রাহক অভিজ্ঞতা
-          </SectionEyebrow>
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight">
-            ১২,৫০০+ পরিবার ও প্রতিষ্ঠানের নির্ভরযোগ্য সঙ্গী
-          </h2>
-          <p className="text-sm sm:text-base text-slate-600">
-            আমাদের সেবা গ্রহণকারী সম্মানিত গ্রাহকদের মূল্যবান মতামত জেনে নিন।
-          </p>
-        </div>
+        <SectionHeader
+          eyebrow="গ্রাহক অভিজ্ঞতা"
+          title="১২,৫০০+ পরিবার ও প্রতিষ্ঠানের নির্ভরযোগ্য সঙ্গী"
+          subtitle="আমাদের সেবা গ্রহণকারী সম্মানিত গ্রাহকদের মূল্যবান মতামত জেনে নিন।"
+          className="mb-14"
+        />
 
         {/* Mobile: horizontal snap carousel · md+: grid */}
         <div className="relative">
