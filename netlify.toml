@@ -1,0 +1,14 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  # Public URL of the Express API (baked into the bundle at build time).
+  VITE_API_URL = "https://paniwalaapi.hasibdev.online"
+
+# Single-page app: send every unknown path to index.html so React Router
+# handles it (fixes "Page not found" on refresh / direct links).
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
