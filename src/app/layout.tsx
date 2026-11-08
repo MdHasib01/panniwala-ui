@@ -17,15 +17,34 @@ const inter = Inter({
   display: 'swap',
 });
 
-const TITLE = 'পানি ওয়ালা | নিরাপদ ও বিশুদ্ধ পানির বিশ্বস্ত সরবরাহ';
+// Public site origin — share images/URLs must be absolute. Netlify sets URL at build time.
+const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || process.env.URL || 'https://pani-wala.netlify.app').replace(/\/$/, '');
+const SITE_NAME = 'পানি ওয়ালা';
+const TITLE = 'পানি ওয়ালা | ১০০% বিশুদ্ধ ও নিরাপদ খাবার পানি — খুলনায় হোম ডেলিভারি';
 const DESCRIPTION =
-  'বাংলাদেশে নিরাপদ ও বিশুদ্ধ খাবার পানি সরবরাহের বিশ্বস্ত সেবা। বাসা-বাড়ি, অফিস ও প্রতিষ্ঠানে দ্রুত ২০ লিটার জার ও মিনারেল পানি ডেলিভারি।';
+  'RO ও UV ফিল্টারকৃত ল্যাব-পরীক্ষিত বিশুদ্ধ খাবার পানি। বাসা-বাড়ি ও অফিসে ২০ লিটার জার মাত্র ৳৪০ — খুলনা শহরে ফ্রি হোম ডেলিভারি।';
 
+// og:image / twitter:image come from app/opengraph-image.jpg + twitter-image.jpg
+// (generated from the hero image by scripts/generate-og-image.mjs).
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: TITLE,
   description: DESCRIPTION,
-  openGraph: { title: TITLE, description: DESCRIPTION, type: 'website' },
-  twitter: { card: 'summary_large_image' },
+  applicationName: SITE_NAME,
+  keywords: ['পানি ওয়ালা', 'Pani Wala', 'বিশুদ্ধ পানি', 'খাবার পানি', '২০ লিটার জার', 'মিনারেল পানি', 'পানি ডেলিভারি', 'খুলনা', 'water delivery Khulna'],
+  openGraph: {
+    type: 'website',
+    url: '/',
+    siteName: SITE_NAME,
+    locale: 'bn_BD',
+    title: TITLE,
+    description: DESCRIPTION,
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: TITLE,
+    description: DESCRIPTION,
+  },
 };
 
 export const viewport: Viewport = {

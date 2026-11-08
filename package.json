@@ -12,7 +12,8 @@
     "server": "npm --prefix server run dev",
     "server:install": "npm --prefix server install",
     "seed": "npm --prefix server run seed",
-    "seed:demo": "npm --prefix server run seed -- --demo"
+    "seed:demo": "npm --prefix server run seed -- --demo",
+    "og:image": "node scripts/generate-og-image.mjs"
   },
   "dependencies": {
     "canvas-confetti": "^1.9.4",
