@@ -16,14 +16,14 @@ export default function HomePage() {
       {/* Hero Section with proper Call & Order CTAs */}
       <Hero onOpenOrder={() => openOrder()} />
 
-      {/* Quick Trust Statistics */}
-      <QuickStats />
-
       {/* Packages & Pricing Table */}
       <Packages onSelectPackage={(pkg) => openOrder(pkg)} />
 
       {/* Delivery Service Area Checker */}
       <ServiceAreaChecker onOpenOrder={() => openOrder()} />
+
+      {/* Quick Trust Statistics */}
+      <QuickStats />
 
       {/* Customer Reviews & Social Proof */}
       <Testimonials />
