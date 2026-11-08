@@ -1,5 +1,7 @@
+'use client';
+
 import * as React from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 import {
   Banknote,
@@ -203,7 +205,7 @@ function RecentOrders({ orders, showSupplier }: { orders: StatsOverview['recentO
         <CardDescription>Updates in realtime</CardDescription>
         <CardAction>
           <Button variant="outline" size="sm" asChild>
-            <Link to="/admin/orders">
+            <Link href="/admin/orders">
               View all <ArrowRight />
             </Link>
           </Button>
@@ -226,7 +228,7 @@ function RecentOrders({ orders, showSupplier }: { orders: StatsOverview['recentO
             {orders.map((o) => (
               <TableRow key={o._id}>
                 <TableCell className="pl-6">
-                  <Link to={`/admin/orders?open=${o._id}`} className="font-medium hover:underline">
+                  <Link href={`/admin/orders?open=${o._id}`} className="font-medium hover:underline">
                     {o.orderNumber}
                   </Link>
                   <p className="text-muted-foreground text-xs">{timeAgo(o.createdAt)}</p>
@@ -301,13 +303,13 @@ export function OverviewPage() {
       actions={
         role === 'user' ? (
           <Button asChild>
-            <Link to="/">
+            <Link href="/">
               <Droplets /> Order water
             </Link>
           </Button>
         ) : role === 'admin' ? (
           <Button variant="outline" asChild>
-            <Link to="/admin/chat">
+            <Link href="/admin/chat">
               <MessagesSquare /> Open inbox
             </Link>
           </Button>

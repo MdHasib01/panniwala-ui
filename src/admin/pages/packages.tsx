@@ -1,3 +1,5 @@
+'use client';
+
 import * as React from 'react';
 import { toast } from 'sonner';
 import { Plus, Pencil, Trash2, Check, Loader2, Package as PackageIcon, Star, Award } from 'lucide-react';

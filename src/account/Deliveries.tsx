@@ -1,5 +1,7 @@
+'use client';
+
 import React, { useCallback, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { toast } from 'sonner';
 import { Truck, CheckCircle2, Banknote, Phone, MapPin, Navigation, Clock3, Loader2, StickyNote, MessageCircle, PackageCheck } from 'lucide-react';
 import { cn } from '@/src/lib/utils';
@@ -170,7 +172,7 @@ export default function DeliveriesPage() {
           <div className="text-sm">
             <p className="font-bold">আপনার অ্যাকাউন্টটি অনুমোদনের অপেক্ষায়</p>
             <p className="mt-0.5 text-amber-800/90">অ্যাডমিন অনুমোদন দিলেই এখানে ডেলিভারি অর্ডার আসবে — আপনাকে সাথে সাথে জানানো হবে।</p>
-            <Link to="/chat" className="mt-2 inline-flex items-center gap-1.5 font-bold text-amber-900 underline underline-offset-2">
+            <Link href="/chat" className="mt-2 inline-flex items-center gap-1.5 font-bold text-amber-900 underline underline-offset-2">
               <MessageCircle className="h-4 w-4" /> সাপোর্টে মেসেজ করুন
             </Link>
           </div>

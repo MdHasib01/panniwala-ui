@@ -1,5 +1,7 @@
+'use client';
+
 import * as React from 'react';
-import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { Loader2, Monitor, Moon, Sun } from 'lucide-react';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/src/admin/components/ui/sidebar';
 import { Separator } from '@/src/admin/components/ui/separator';
@@ -17,6 +19,7 @@ import { AppSidebar } from './app-sidebar';
 import { homePathFor, useAuth } from '@/src/lib/auth';
 import { useSocket } from '@/src/lib/socket';
 import { useTheme, type Theme } from '../context/theme';
+import { NEXT_PARAM, Redirect, safeNextPath, withNext } from '@/src/lib/navigation';
 
 const TITLES: Record<string, string> = {
   '/admin': 'Overview',
@@ -25,6 +28,7 @@ const TITLES: Record<string, string> = {
   '/admin/packages': 'Packages',
   '/admin/users': 'Users',
   '/admin/suppliers': 'Suppliers',
+  '/admin/areas': 'Areas',
   '/admin/profile': 'Profile',
 };
 
@@ -85,13 +89,10 @@ function ConnectionPill() {
   );
 }
 
-function Shell() {
-  const { pathname } = useLocation();
+function Shell({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  // Header label; the browser tab title comes from each page's `metadata` (src/app/admin).
   const title = TITLES[pathname] ?? 'Dashboard';
-
-  React.useEffect(() => {
-    document.title = `${title} · Pani Wala Dashboard`;
-  }, [title]);
 
   return (
     <SidebarProvider>
@@ -107,7 +108,7 @@ function Shell() {
           </div>
         </header>
         <main className="flex min-w-0 flex-1 flex-col gap-6 p-4 md:p-6">
-          <Outlet />
+          {children}
         </main>
       </SidebarInset>
     </SidebarProvider>
@@ -118,23 +119,23 @@ function Shell() {
  * Admin-only dashboard shell. Customers and suppliers are sent to their own pages
  * on the website. (The realtime socket is provided at the app root.)
  */
-export function DashboardLayout() {
+export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
-  const location = useLocation();
+  const pathname = usePathname();
   if (loading) return <FullPageLoader />;
-  if (!user) return <Navigate to="/admin/login" replace state={{ from: location }} />;
-  if (user.role !== 'admin') return <Navigate to={homePathFor(user)} replace />;
-  return <Shell />;
+  if (!user) return <Redirect to={withNext('/admin/login', pathname)} fallback={<FullPageLoader />} />;
+  if (user.role !== 'admin') return <Redirect to={homePathFor(user)} fallback={<FullPageLoader />} />;
+  return <Shell>{children}</Shell>;
 }
 
 export function GuestOnly({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
-  const location = useLocation();
+  const params = useSearchParams();
   if (loading) return <FullPageLoader />;
   if (user) {
-    if (user.role !== 'admin') return <Navigate to={homePathFor(user)} replace />;
-    const from = (location.state as { from?: { pathname: string } } | null)?.from?.pathname;
-    return <Navigate to={from && from.startsWith('/admin') ? from : '/admin'} replace />;
+    if (user.role !== 'admin') return <Redirect to={homePathFor(user)} fallback={<FullPageLoader />} />;
+    const from = safeNextPath(params.get(NEXT_PARAM));
+    return <Redirect to={from && from.startsWith('/admin') ? from : '/admin'} fallback={<FullPageLoader />} />;
   }
   return <>{children}</>;
 }

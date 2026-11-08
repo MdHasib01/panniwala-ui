@@ -1,3 +1,5 @@
+'use client';
+
 import * as React from 'react';
 
 export type Theme = 'light' | 'dark' | 'system';
@@ -29,8 +31,14 @@ function readStoredTheme(): Theme {
  * <html> while mounted and removes them on unmount so the landing page is untouched.
  */
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = React.useState<Theme>(readStoredTheme);
-  const [systemDark, setSystemDark] = React.useState(systemPrefersDark);
+  // Browser-only values are read after mount (before paint) so the server render matches.
+  const [theme, setThemeState] = React.useState<Theme>('system');
+  const [systemDark, setSystemDark] = React.useState(false);
+
+  React.useLayoutEffect(() => {
+    setThemeState(readStoredTheme());
+    setSystemDark(systemPrefersDark());
+  }, []);
 
   React.useEffect(() => {
     const mq = window.matchMedia('(prefers-color-scheme: dark)');

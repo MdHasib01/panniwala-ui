@@ -1,5 +1,8 @@
+'use client';
+
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   X,
   Package,
@@ -36,7 +39,7 @@ const SHORTCUTS: { to: string; label: string; icon: LucideIcon; tone: string }[]
 export const MoreDrawer: React.FC<{ open: boolean; onClose: () => void }> = ({ open, onClose }) => {
   const { user, logout } = useAuth();
   const accountLinks = useAccountLinks();
-  const navigate = useNavigate();
+  const router = useRouter();
   // Keep mounted during the close animation.
   const [mounted, setMounted] = useState(open);
   const [visible, setVisible] = useState(false);
@@ -109,7 +112,7 @@ export const MoreDrawer: React.FC<{ open: boolean; onClose: () => void }> = ({ o
               )}
               <div className="mt-3 grid gap-1.5">
                 {accountLinks.map((l) => (
-                  <Link key={l.to} to={l.to} onClick={onClose} className="flex items-center gap-2.5 rounded-xl bg-white/10 px-3 py-2.5 text-sm font-semibold hover:bg-white/20">
+                  <Link key={l.to} href={l.to} onClick={onClose} className="flex items-center gap-2.5 rounded-xl bg-white/10 px-3 py-2.5 text-sm font-semibold hover:bg-white/20">
                     <l.icon className="h-4 w-4" />
                     <span className="flex-1">{l.label}</span>
                     {l.badge > 0 && <span className="rounded-full bg-rose-500 px-1.5 text-[11px] font-bold">{l.badge}</span>}
@@ -123,14 +126,14 @@ export const MoreDrawer: React.FC<{ open: boolean; onClose: () => void }> = ({ o
               <p className="font-bold text-slate-900">আপনার অ্যাকাউন্ট</p>
               <p className="mt-0.5 text-xs text-slate-600">লগইন করে অর্ডার ট্র্যাক করুন ও সাপোর্টের সাথে চ্যাট করুন।</p>
               <div className="mt-3 grid grid-cols-2 gap-2">
-                <Link to="/login" onClick={onClose} className="flex h-11 items-center justify-center gap-1.5 rounded-xl bg-cyan-600 text-sm font-bold text-white">
+                <Link href="/login" onClick={onClose} className="flex h-11 items-center justify-center gap-1.5 rounded-xl bg-cyan-600 text-sm font-bold text-white">
                   <LogIn className="h-4 w-4" /> লগইন
                 </Link>
-                <Link to="/register" onClick={onClose} className="flex h-11 items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white text-sm font-bold text-slate-800">
+                <Link href="/register" onClick={onClose} className="flex h-11 items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white text-sm font-bold text-slate-800">
                   <UserPlus className="h-4 w-4" /> রেজিস্টার
                 </Link>
               </div>
-              <Link to="/register?as=supplier" onClick={onClose} className="mt-2 flex items-center gap-2 rounded-xl px-1 py-2 text-sm font-semibold text-cyan-800">
+              <Link href="/register?as=supplier" onClick={onClose} className="mt-2 flex items-center gap-2 rounded-xl px-1 py-2 text-sm font-semibold text-cyan-800">
                 <Store className="h-4 w-4" /> সাপ্লায়ার হিসেবে যোগ দিন
                 <ChevronRight className="ml-auto h-4 w-4" />
               </Link>
@@ -142,7 +145,7 @@ export const MoreDrawer: React.FC<{ open: boolean; onClose: () => void }> = ({ o
             <p className="mb-2 text-xs font-bold uppercase tracking-wider text-slate-500">এক নজরে</p>
             <div className="grid grid-cols-3 gap-2">
               {shortcuts.map((s) => (
-                <Link key={s.to} to={s.to} onClick={onClose} className="flex flex-col items-center gap-1.5 rounded-2xl border border-slate-100 bg-white p-3 text-center text-xs font-semibold text-slate-700 active:scale-[0.97] transition-transform">
+                <Link key={s.to} href={s.to} onClick={onClose} className="flex flex-col items-center gap-1.5 rounded-2xl border border-slate-100 bg-white p-3 text-center text-xs font-semibold text-slate-700 active:scale-[0.97] transition-transform">
                   <span className={`flex h-10 w-10 items-center justify-center rounded-xl ${s.tone}`}>
                     <s.icon className="h-5 w-5" />
                   </span>
@@ -182,7 +185,7 @@ export const MoreDrawer: React.FC<{ open: boolean; onClose: () => void }> = ({ o
               onClick={() => {
                 onClose();
                 logout();
-                navigate('/');
+                router.push('/');
               }}
               className="flex h-12 w-full items-center justify-center gap-2 rounded-2xl border border-rose-100 bg-rose-50 text-sm font-bold text-rose-600"
             >

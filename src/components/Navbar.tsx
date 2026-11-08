@@ -1,5 +1,8 @@
+'use client';
+
 import React, { useEffect, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { BrandLogo } from '@/src/components/BrandLogo';
 import { Button } from '@/src/components/ui/button';
 import { HOTLINE_NUMBER, HOTLINE_TEL } from '@/src/data/packages';
@@ -50,7 +53,7 @@ export function useAccountLinks() {
 function AccountMenu() {
   const { user, logout } = useAuth();
   const links = useAccountLinks();
-  const navigate = useNavigate();
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -71,7 +74,7 @@ function AccountMenu() {
   if (!user) {
     return (
       <Link
-        to="/login"
+        href="/login"
         className="hidden md:inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-sm font-semibold text-slate-700 hover:bg-slate-100 transition-colors"
       >
         <LogIn className="w-4 h-4 text-cyan-600" />
@@ -110,7 +113,7 @@ function AccountMenu() {
             {links.map((l) => (
               <Link
                 key={l.to}
-                to={l.to}
+                href={l.to}
                 role="menuitem"
                 onClick={() => setOpen(false)}
                 className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-cyan-50 hover:text-cyan-800"
@@ -127,7 +130,7 @@ function AccountMenu() {
               onClick={() => {
                 setOpen(false);
                 logout();
-                navigate('/');
+                router.push('/');
               }}
               className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium text-rose-600 hover:bg-rose-50"
             >
@@ -148,7 +151,7 @@ function MobileAccountButton() {
   if (!user) {
     return (
       <Link
-        to="/login"
+        href="/login"
         className="md:hidden inline-flex items-center gap-1.5 h-10 px-3 rounded-xl text-sm font-semibold text-cyan-700 bg-cyan-50 border border-cyan-100"
       >
         <LogIn className="w-4 h-4" />
@@ -158,7 +161,7 @@ function MobileAccountButton() {
   }
   return (
     <Link
-      to={user.role === 'admin' ? '/admin' : '/profile'}
+      href={user.role === 'admin' ? '/admin' : '/profile'}
       aria-label="আমার অ্যাকাউন্ট"
       className="md:hidden relative flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-100 text-sm font-bold text-cyan-700"
     >
@@ -198,7 +201,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenOrder }) => {
       {/* Main Navbar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 md:h-18 flex items-center justify-between">
         <div className="flex items-center gap-6">
-          <Link to="/" className="flex items-center gap-2 focus:outline-none">
+          <Link href="/" className="flex items-center gap-2 focus:outline-none">
             <BrandLogo size="md" />
           </Link>
 
@@ -207,7 +210,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenOrder }) => {
             {navLinks.map((link) => (
               <Link
                 key={link.to}
-                to={link.to}
+                href={link.to}
                 className="text-sm font-medium text-slate-600 hover:text-cyan-700 transition-colors py-1 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-cyan-600 hover:after:w-full after:transition-all"
               >
                 {link.label}

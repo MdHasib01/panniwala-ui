@@ -1,5 +1,10 @@
+'use client';
+
 import * as React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import Link from 'next/link';
+import Image from 'next/image';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { NEXT_PARAM, safeNextPath } from '@/src/lib/navigation';
 import { toast } from 'sonner';
 import { Droplets, Loader2, ShieldCheck, Truck, MessagesSquare, User as UserIcon, Store } from 'lucide-react';
 import logo from '@/src/assets/logo.png';
@@ -14,8 +19,8 @@ function AuthShell({ title, description, children }: { title: string; descriptio
   return (
     <div className="bg-background grid min-h-svh lg:grid-cols-2">
       <div className="flex flex-col gap-6 p-6 md:p-10">
-        <Link to="/" className="flex items-center gap-2 self-start font-semibold">
-          <img src={logo} alt="" className="size-8 object-contain" />
+        <Link href="/" className="flex items-center gap-2 self-start font-semibold">
+          <Image src={logo} alt="" width={64} height={64} className="size-8 object-contain" />
           Pani Wala
         </Link>
         <div className="flex flex-1 items-center justify-center">
@@ -64,7 +69,9 @@ function Field({ label, htmlFor, children, hint }: { label: string; htmlFor: str
 
 export function LoginPage() {
   const { login } = useAuth();
-  const navigate = useNavigate();
+  const router = useRouter();
+  // Same destination GuestOnly picks once the session is set (whichever redirect lands last wins).
+  const next = safeNextPath(useSearchParams().get(NEXT_PARAM));
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [submitting, setSubmitting] = React.useState(false);
@@ -79,11 +86,11 @@ export function LoginPage() {
       if (user.role !== 'admin') {
         // Customers and suppliers use the website, not the dashboard.
         toast.info('The dashboard is for admins only', { description: 'Taking you to your account on the website.' });
-        navigate(homePathFor(user), { replace: true });
+        router.replace(homePathFor(user));
         return;
       }
       toast.success(`Welcome back, ${user.name.split(' ')[0]}!`);
-      navigate('/admin', { replace: true });
+      router.replace(next && next.startsWith('/admin') ? next : '/admin');
     } catch (err) {
       setError((err as Error).message);
     } finally {
@@ -107,7 +114,7 @@ export function LoginPage() {
       </form>
       <p className="text-muted-foreground text-center text-sm">
         Customer or supplier?{' '}
-        <Link to="/login" className="text-primary font-medium underline-offset-4 hover:underline">Sign in on the website</Link>
+        <Link href="/login" className="text-primary font-medium underline-offset-4 hover:underline">Sign in on the website</Link>
       </p>
     </AuthShell>
   );

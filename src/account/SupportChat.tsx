@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { Headset, SendHorizontal, Loader2, Check, CheckCheck } from 'lucide-react';

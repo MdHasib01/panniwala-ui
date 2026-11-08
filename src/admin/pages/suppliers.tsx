@@ -1,3 +1,5 @@
+'use client';
+
 import * as React from 'react';
 import { toast } from 'sonner';
 import { Plus, Search, CheckCircle2, XCircle, MapPin, Phone, Truck, Clock3, Loader2, MapPinPlus } from 'lucide-react';

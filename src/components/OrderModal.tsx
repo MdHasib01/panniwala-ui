@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
 import { HOTLINE_NUMBER, HOTLINE_TEL, toBengaliNumber } from '@/src/data/packages';
@@ -5,7 +7,7 @@ import { useAreas } from '@/src/lib/areas-api';
 import { usePackages } from '@/src/lib/packages-api';
 import { api } from '@/src/lib/api';
 import { useAuth } from '@/src/lib/auth';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { WaterPackage, CustomerDetails, ConfirmedOrder } from '@/src/types';
 import { Button } from '@/src/components/ui/button';
 import { Input } from '@/src/components/ui/input';
@@ -272,7 +274,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
               </a>
               {user?.role === 'user' ? (
                 <Link
-                  to="/orders"
+                  href="/orders"
                   onClick={handleClose}
                   className="w-full py-3.5 px-5 rounded-xl bg-white border border-cyan-200 text-cyan-800 font-bold text-sm flex items-center justify-center gap-2 hover:bg-cyan-50 transition-colors"
                 >
@@ -281,7 +283,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                 </Link>
               ) : !user ? (
                 <Link
-                  to="/register"
+                  href="/register"
                   onClick={handleClose}
                   className="text-xs font-semibold text-cyan-700 hover:underline"
                 >

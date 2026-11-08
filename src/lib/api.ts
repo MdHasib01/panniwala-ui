@@ -1,9 +1,10 @@
 /**
  * Minimal fetch wrapper for the Pani Wala API.
- * In development Vite proxies /api and /socket.io to the Express server, so the
- * base URL is empty. Set VITE_API_URL when the API lives on another origin.
+ * In development `next dev` proxies /api and /socket.io to the Express server (see
+ * next.config.ts), so the base URL is empty. Set NEXT_PUBLIC_API_URL when the API
+ * lives on another origin — it is inlined into the client bundle at build time.
  */
-export const API_URL: string = (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, '') || '';
+export const API_URL: string = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, '') || '';
 
 const TOKEN_KEY = 'pw_token';
 

@@ -27,7 +27,7 @@ export interface ApiPackage {
 /** Bundled artwork for the default packages; custom packages can set an image URL. */
 export function packageImage(slug: string, image?: string): string {
   if (image) return image;
-  return PACKAGE_IMAGES[slug] ?? package1Img;
+  return PACKAGE_IMAGES[slug] ?? package1Img.src;
 }
 
 export function toWaterPackage(p: ApiPackage): WaterPackage {

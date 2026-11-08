@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 import { Button } from '@/src/components/ui/button';
 import { HOTLINE_NUMBER, HOTLINE_TEL } from '@/src/data/packages';
 import heroImage from '@/src/assets/hero-image.png';
@@ -86,9 +87,11 @@ export const Hero: React.FC<HeroProps> = ({ onOpenOrder }) => {
             <div className="relative w-full max-w-sm sm:max-w-md lg:max-w-lg flex items-center justify-center py-0 sm:py-4">
               
               {/* Main Hero Image from asset */}
-              <img
+              <Image
                 src={heroSrc}
                 alt="পানি ওয়ালা ১০০% বিশুদ্ধ খাবার পানি"
+                preload
+                sizes="(min-width: 1024px) 512px, (min-width: 640px) 448px, 384px"
                 className="w-full h-auto max-h-[520px] object-contain drop-shadow-2xl transition-transform duration-700 hover:scale-[1.03] select-none"
               />
 

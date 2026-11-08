@@ -1,5 +1,7 @@
+'use client';
+
 import * as React from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { toast } from 'sonner';
 import { Check, Loader2, MapPin, MapPinPlus, MoreHorizontal, Pencil, Plus, Search, Trash2, X } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/admin/components/ui/card';
@@ -50,7 +52,7 @@ function RequestsCard({ requests, onDecided }: { requests: PendingAreaRequest[];
         </CardTitle>
         <CardDescription>
           Approving adds the area to every area list (website, order form, supplier sign-up) and to that supplier's service areas.
-          New suppliers' requests can also be decided while approving them on the <Link to="/admin/suppliers" className="underline">Suppliers</Link> page.
+          New suppliers' requests can also be decided while approving them on the <Link href="/admin/suppliers" className="underline">Suppliers</Link> page.
         </CardDescription>
       </CardHeader>
       <CardContent className="grid gap-2">

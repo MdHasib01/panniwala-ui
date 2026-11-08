@@ -1,5 +1,8 @@
-import React, { useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+'use client';
+
+import React from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { ArrowLeft, Droplets, HelpCircle, Home, Package, Phone } from 'lucide-react';
 import { BrandLogo } from '@/src/components/BrandLogo';
 import { HOTLINE_NUMBER, HOTLINE_TEL } from '@/src/data/packages';
@@ -10,21 +13,14 @@ const quickLinks = [
 ];
 
 export const NotFound: React.FC = () => {
-  const { pathname } = useLocation();
-
-  useEffect(() => {
-    const previous = document.title;
-    document.title = 'পেজটি পাওয়া যায়নি | পানি ওয়ালা';
-    return () => {
-      document.title = previous;
-    };
-  }, []);
+  const pathname = usePathname();
+  // The tab title comes from src/app/not-found.tsx metadata.
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col selection:bg-cyan-500 selection:text-white font-sans antialiased">
       <header className="border-b border-slate-200/70 bg-white/80 backdrop-blur">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 py-3">
-          <Link to="/" className="inline-flex focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 rounded-xl">
+          <Link href="/" className="inline-flex focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 rounded-xl">
             <BrandLogo size="sm" />
           </Link>
         </div>
@@ -56,7 +52,7 @@ export const NotFound: React.FC = () => {
 
           <div className="mt-8 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3">
             <Link
-              to="/"
+              href="/"
               className="btn-shine inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-cyan-600 px-5 text-sm font-semibold text-white shadow-md shadow-cyan-600/20 transition-all hover:bg-cyan-700 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500"
             >
               <Home className="h-4 w-4" />

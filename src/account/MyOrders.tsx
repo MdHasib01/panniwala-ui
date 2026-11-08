@@ -1,5 +1,8 @@
+'use client';
+
 import React, { useCallback, useEffect, useState } from 'react';
-import { Link, Navigate } from 'react-router-dom';
+import Link from 'next/link';
+import { Redirect, withNext } from '@/src/lib/navigation';
 import { toast } from 'sonner';
 import { Package, PackageSearch, Plus, Phone, Truck, Loader2, MapPin, Search, LogIn, XCircle } from 'lucide-react';
 import { cn } from '@/src/lib/utils';
@@ -174,10 +177,10 @@ function TrackOrder() {
         <p className="font-bold">সব অর্ডার এক জায়গায় দেখতে চান?</p>
         <p className="mt-1 text-sm text-cyan-100">লগইন করে অর্ডার করলে লাইভ আপডেট পাবেন ও সাপোর্টের সাথে চ্যাট করতে পারবেন।</p>
         <div className="mt-4 flex gap-2">
-          <Link to="/login" state={{ from: { pathname: '/orders' } }} className="flex h-11 flex-1 items-center justify-center gap-1.5 rounded-xl bg-white text-sm font-bold text-cyan-800">
+          <Link href={withNext('/login', '/orders')} className="flex h-11 flex-1 items-center justify-center gap-1.5 rounded-xl bg-white text-sm font-bold text-cyan-800">
             <LogIn className="h-4 w-4" /> লগইন
           </Link>
-          <Link to="/register" className="flex h-11 flex-1 items-center justify-center rounded-xl bg-white/15 text-sm font-bold text-white ring-1 ring-white/30">
+          <Link href="/register" className="flex h-11 flex-1 items-center justify-center rounded-xl bg-white/15 text-sm font-bold text-white ring-1 ring-white/30">
             রেজিস্টার
           </Link>
         </div>
@@ -287,9 +290,10 @@ function CustomerOrders() {
 
 export default function MyOrdersPage() {
   const { user, loading } = useAuth();
-  if (loading) return <Spinner className="min-h-[60vh] items-center" />;
+  const spinner = <Spinner className="min-h-[60vh] items-center" />;
+  if (loading) return spinner;
   if (!user) return <TrackOrder />;
-  if (user.role === 'supplier') return <Navigate to="/deliveries" replace />;
-  if (user.role === 'admin') return <Navigate to="/admin/orders" replace />;
+  if (user.role === 'supplier') return <Redirect to="/deliveries" fallback={spinner} />;
+  if (user.role === 'admin') return <Redirect to="/admin/orders" fallback={spinner} />;
   return <CustomerOrders />;
 }

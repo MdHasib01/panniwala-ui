@@ -1,5 +1,9 @@
+'use client';
+
 import * as React from 'react';
-import { Link, NavLink, useLocation } from 'react-router-dom';
+import Link from 'next/link';
+import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard,
   ShoppingBag,
@@ -111,7 +115,7 @@ function usePendingAreaRequests(enabled: boolean) {
 export function AppSidebar() {
   const { user, logout } = useAuth();
   const { unreadChats } = useSocket();
-  const { pathname } = useLocation();
+  const pathname = usePathname();
   const { isMobile, setOpenMobile } = useSidebar();
   const pending = usePendingSuppliers(user?.role === 'admin');
   const areaRequests = usePendingAreaRequests(user?.role === 'admin');
@@ -140,9 +144,9 @@ export function AppSidebar() {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <Link to="/admin">
+              <Link href="/admin">
                 <div className="bg-primary/10 flex aspect-square size-8 items-center justify-center overflow-hidden rounded-lg">
-                  <img src={logo} alt="" className="size-7 object-contain" />
+                  <Image src={logo} alt="" width={56} height={56} className="size-7 object-contain" />
                 </div>
                 <div className="grid flex-1 text-left leading-tight">
                   <span className="truncate font-semibold">Pani Wala</span>
@@ -169,10 +173,10 @@ export function AppSidebar() {
                     return (
                       <SidebarMenuItem key={item.to}>
                         <SidebarMenuButton asChild isActive={active} tooltip={item.title}>
-                          <NavLink to={item.to} end={item.to === '/admin'} onClick={() => isMobile && setOpenMobile(false)}>
+                          <Link href={item.to} aria-current={active ? 'page' : undefined} onClick={() => isMobile && setOpenMobile(false)}>
                             <item.icon />
                             <span>{item.title}</span>
-                          </NavLink>
+                          </Link>
                         </SidebarMenuButton>
                         {badge > 0 && (
                           <SidebarMenuBadge className="bg-primary text-primary-foreground! rounded-full px-1.5">
@@ -217,12 +221,12 @@ export function AppSidebar() {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <Link to="/admin/profile">
+                  <Link href="/admin/profile">
                     <UserCircle /> Profile
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link to="/">
+                  <Link href="/">
                     <Globe /> View website
                   </Link>
                 </DropdownMenuItem>

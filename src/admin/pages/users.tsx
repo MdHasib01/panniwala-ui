@@ -1,5 +1,7 @@
+'use client';
+
 import * as React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { Plus, Search, MoreHorizontal, Pencil, MessageSquare, Ban, CheckCircle2, Trash2, Loader2, Users as UsersIcon } from 'lucide-react';
 import { Card } from '@/src/admin/components/ui/card';
@@ -233,7 +235,7 @@ export function UserDialog({
 /* ----------------------------- Shared actions ----------------------------- */
 
 export function useUserActions(onUpdated: (u: User) => void, onDeleted: (id: string) => void) {
-  const navigate = useNavigate();
+  const router = useRouter();
   const confirm = useConfirm();
 
   const setStatus = async (u: User, status: UserStatus) => {
@@ -249,7 +251,7 @@ export function useUserActions(onUpdated: (u: User) => void, onDeleted: (id: str
   const message = async (u: User) => {
     try {
       const { conversation } = await api.post<{ conversation: Conversation }>('/chat/conversations', { userId: u._id });
-      navigate(`/admin/chat?c=${conversation._id}`);
+      router.push(`/admin/chat?c=${conversation._id}`);
     } catch (err) {
       toast.error((err as Error).message);
     }

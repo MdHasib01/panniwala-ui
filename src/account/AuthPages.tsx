@@ -1,5 +1,9 @@
+'use client';
+
 import React, { useState } from 'react';
-import { Link, Navigate, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { NEXT_PARAM, Redirect, safeNextPath } from '@/src/lib/navigation';
 import { toast } from 'sonner';
 import { Loader2, LogIn, Store, UserRound, Droplets, Eye, EyeOff } from 'lucide-react';
 import { cn } from '@/src/lib/utils';
@@ -45,27 +49,39 @@ function PasswordInput(props: React.InputHTMLAttributes<HTMLInputElement>) {
   );
 }
 
-/** Where to go after signing in: back to the page that asked for login, or the role's home. */
-function useAfterAuth() {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const from = (location.state as { from?: { pathname: string; search?: string } } | null)?.from;
+/** Where to go once signed in: back to the page that asked for login (`?next=`), or the role's home. */
+function useAuthDestination() {
+  const params = useSearchParams();
+  const from = safeNextPath(params.get(NEXT_PARAM));
   return (user: User) => {
-    const home = homePathFor(user);
-    // Only honour `from` when it's a page this role may open.
+    const fromPath = from?.split(/[?#]/)[0];
+    // Only honour `next` when it's a page this role may open.
     const allowed =
-      from &&
+      fromPath &&
       (user.role === 'admin'
-        ? from.pathname.startsWith('/admin')
-        : !from.pathname.startsWith('/admin') && !(user.role === 'supplier' && from.pathname === '/orders'));
-    navigate(allowed ? `${from!.pathname}${from!.search ?? ''}` : home, { replace: true });
+        ? fromPath.startsWith('/admin')
+        : !fromPath.startsWith('/admin') && !(user.role === 'supplier' && fromPath === '/orders'));
+    return allowed ? from! : homePathFor(user);
   };
 }
 
+function useAfterAuth() {
+  const router = useRouter();
+  const destination = useAuthDestination();
+  return (user: User) => router.replace(destination(user));
+}
+
+/**
+ * Signed-in users don't see the login / sign-up forms. This also fires right after a
+ * successful sign-in (before the router has moved on), so it must pick the same
+ * destination as `useAfterAuth`.
+ */
 function GuestGate({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
-  if (loading) return <Spinner className="min-h-[60vh] items-center" />;
-  if (user) return <Navigate to={homePathFor(user)} replace />;
+  const destination = useAuthDestination();
+  const spinner = <Spinner className="min-h-[60vh] items-center" />;
+  if (loading) return spinner;
+  if (user) return <Redirect to={destination(user)} fallback={spinner} />;
   return <>{children}</>;
 }
 
@@ -113,10 +129,10 @@ export function LoginPage() {
         <div className="mt-5 space-y-2 border-t border-slate-100 pt-4 text-center text-sm text-slate-600">
           <p>
             অ্যাকাউন্ট নেই?{' '}
-            <Link to="/register" className="font-bold text-cyan-700 hover:underline">নতুন অ্যাকাউন্ট খুলুন</Link>
+            <Link href="/register" className="font-bold text-cyan-700 hover:underline">নতুন অ্যাকাউন্ট খুলুন</Link>
           </p>
           <p>
-            <Link to="/register?as=supplier" className="inline-flex items-center gap-1.5 font-semibold text-slate-700 hover:text-cyan-700">
+            <Link href="/register?as=supplier" className="inline-flex items-center gap-1.5 font-semibold text-slate-700 hover:text-cyan-700">
               <Store className="h-4 w-4" /> সাপ্লায়ার হিসেবে যোগ দিন
             </Link>
           </p>
@@ -129,8 +145,16 @@ export function LoginPage() {
 export function RegisterPage() {
   const { register, registerSupplier } = useAuth();
   const afterAuth = useAfterAuth();
-  const [params, setParams] = useSearchParams();
+  const router = useRouter();
+  const params = useSearchParams();
   const type: 'user' | 'supplier' = params.get('as') === 'supplier' ? 'supplier' : 'user';
+  const setType = (value: 'user' | 'supplier') => {
+    const next = new URLSearchParams(params.toString());
+    if (value === 'supplier') next.set('as', 'supplier');
+    else next.delete('as');
+    const qs = next.toString();
+    router.replace(qs ? `/register?${qs}` : '/register', { scroll: false });
+  };
   const [form, setForm] = useState({ name: '', email: '', phone: '', password: '', businessName: '', tradeLicense: '' });
   const [areas, setAreas] = useState<string[]>([]);
   const areaOptions = useAreas();
@@ -181,7 +205,7 @@ export function RegisterPage() {
               type="button"
               role="tab"
               aria-selected={type === t.value}
-              onClick={() => setParams(t.value === 'supplier' ? { as: 'supplier' } : {}, { replace: true })}
+              onClick={() => setType(t.value)}
               className={cn(
                 'flex h-10 items-center justify-center gap-1.5 rounded-lg text-sm font-bold transition-all',
                 type === t.value ? 'bg-white text-cyan-700 shadow-sm' : 'text-slate-500'
@@ -230,7 +254,7 @@ export function RegisterPage() {
         </form>
         <p className="mt-5 border-t border-slate-100 pt-4 text-center text-sm text-slate-600">
           আগেই অ্যাকাউন্ট আছে?{' '}
-          <Link to="/login" className="font-bold text-cyan-700 hover:underline">লগইন করুন</Link>
+          <Link href="/login" className="font-bold text-cyan-700 hover:underline">লগইন করুন</Link>
         </p>
       </AuthCard>
     </GuestGate>

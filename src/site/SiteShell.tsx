@@ -1,5 +1,7 @@
-import React, { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+'use client';
+
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { Toaster } from 'sonner';
 import { Navbar } from '@/src/components/Navbar';
 import { Footer } from '@/src/components/Footer';
@@ -8,11 +10,13 @@ import { FloatingWhatsApp } from '@/src/components/FloatingWhatsApp';
 import { BottomNav } from '@/src/components/BottomNav';
 import { MoreDrawer } from '@/src/components/MoreDrawer';
 import { SiteContext } from '@/src/site/context';
+import { useHash } from '@/src/lib/navigation';
 import { WaterPackage } from '@/src/types';
 
 /** Scrolls to `#hash` targets (also across routes) and to the top on page changes. */
 function ScrollManager() {
-  const { pathname, hash } = useLocation();
+  const pathname = usePathname();
+  const hash = useHash();
   useEffect(() => {
     if (!hash) {
       window.scrollTo({ top: 0 });
@@ -20,22 +24,16 @@ function ScrollManager() {
     }
     // The target section may mount a frame later when coming from another page.
     let tries = 0;
+    let frame = 0;
     const tick = () => {
       const el = document.getElementById(decodeURIComponent(hash.slice(1)));
       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      else if (tries++ < 20) requestAnimationFrame(tick);
+      else if (tries++ < 20) frame = requestAnimationFrame(tick);
     };
     tick();
+    return () => cancelAnimationFrame(frame);
   }, [pathname, hash]);
   return null;
-}
-
-function PageFallback() {
-  return (
-    <div className="flex min-h-[60vh] items-center justify-center">
-      <div className="h-7 w-7 animate-spin rounded-full border-2 border-cyan-600 border-t-transparent" />
-    </div>
-  );
 }
 
 /**
@@ -43,8 +41,8 @@ function PageFallback() {
  * (orders, deliveries, chat, profile). On mobile it behaves like an app: a
  * bottom tab bar with a "More" drawer replaces the top hamburger menu.
  */
-export default function App() {
-  const { pathname } = useLocation();
+export default function SiteShell({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState<WaterPackage | null>(null);
   const [isMoreOpen, setIsMoreOpen] = useState(false);
@@ -72,11 +70,7 @@ export default function App() {
         <Navbar onOpenOrder={() => openOrder()} />
 
         {/* Page content */}
-        <main className="flex-1">
-          <Suspense fallback={<PageFallback />}>
-            <Outlet />
-          </Suspense>
-        </main>
+        <main className="flex-1">{children}</main>
 
         {!hideFooter && <Footer />}
 

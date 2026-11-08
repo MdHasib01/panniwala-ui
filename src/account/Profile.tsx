@@ -1,5 +1,7 @@
+'use client';
+
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { Loader2, LogOut, Clock3, ShieldCheck } from 'lucide-react';
 import { useAreas } from '@/src/lib/areas-api';
@@ -190,7 +192,7 @@ function PasswordForm() {
 
 export default function ProfilePage() {
   const { user, logout } = useAuth();
-  const navigate = useNavigate();
+  const router = useRouter();
   if (!user) return null;
 
   return (
@@ -216,7 +218,7 @@ export default function ProfilePage() {
         <button
           onClick={() => {
             logout();
-            navigate('/');
+            router.push('/');
           }}
           className="flex h-12 w-full items-center justify-center gap-2 rounded-2xl border border-rose-100 bg-rose-50 text-sm font-bold text-rose-600"
         >

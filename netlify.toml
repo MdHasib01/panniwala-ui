@@ -1,14 +1,9 @@
+# Netlify detects Next.js and builds it with its Next.js runtime (OpenNext adapter),
+# which serves the pages, image optimisation and routing — no SPA redirect needed.
 [build]
   command = "npm run build"
-  publish = "dist"
+  publish = ".next"
 
 [build.environment]
-  # Public URL of the Express API (baked into the bundle at build time).
-  VITE_API_URL = "https://paniwalaapi.hasibdev.online"
-
-# Single-page app: send every unknown path to index.html so React Router
-# handles it (fixes "Page not found" on refresh / direct links).
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+  # Public URL of the Express API (inlined into the client bundle at build time).
+  NEXT_PUBLIC_API_URL = "https://paniwalaapi.hasibdev.online"

@@ -1,5 +1,7 @@
+'use client';
+
 import * as React from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 import {
   Search,
@@ -328,7 +330,14 @@ function OrderSheet({
 
 export function OrdersPage() {
   const { user } = useAuth();
-  const [params, setParams] = useSearchParams();
+  const router = useRouter();
+  const params = useSearchParams();
+  const setParams = (q: Record<string, string>, opts?: { replace?: boolean }) => {
+    const qs = new URLSearchParams(q).toString();
+    const href = qs ? `/admin/orders?${qs}` : '/admin/orders';
+    if (opts?.replace) router.replace(href, { scroll: false });
+    else router.push(href, { scroll: false });
+  };
   const [status, setStatus] = React.useState<OrderStatus | 'all'>('all');
   const [search, setSearch] = React.useState('');
   const [supplierFilter, setSupplierFilter] = React.useState('all');

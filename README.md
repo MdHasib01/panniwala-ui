@@ -1,23 +1,22 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# Pani Wala — website & admin dashboard
 
-# Run and deploy your AI Studio app
-
-This contains everything you need to run your app locally.
-
-View your app in AI Studio: https://ai.studio/apps/4019b3b3-bfcc-4f58-b52b-0af1eb616379
+Next.js (App Router) front end for Pani Wala. Pages live in [src/app/](src/app/):
+`(site)/` is the public website (landing page, login, orders, chat, …) and `admin/` is the dashboard.
 
 ## Run Locally
 
-**Prerequisites:**  Node.js
-
+**Prerequisites:** Node.js 20+
 
 1. Install dependencies:
    `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+2. Run the app:
+   `npm run dev` → http://localhost:3000
+
+In development `/api` and `/socket.io` are proxied to the API on http://localhost:5000
+(override with `API_PROXY_TARGET`). To talk to an API on another origin instead, set
+`NEXT_PUBLIC_API_URL` (see [.env.example](.env.example)) — it is inlined at build time.
+
+Production: `npm run build && npm start`, or deploy to Netlify (see [netlify.toml](netlify.toml)).
 
 ## Backend & admin dashboard
 

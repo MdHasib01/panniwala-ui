@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 import defaultLogo from '@/src/assets/logo.png';
 
 interface BrandLogoProps {
@@ -26,8 +27,10 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
 
   return (
     <div className={`flex items-center gap-2.5 ${className}`}>
-      <img
+      <Image
         src={logoSrc}
+        width={112}
+        height={112}
         alt="পানি ওয়ালা লোগো"
         className={`object-cover rounded-xl drop-shadow-xs transition-transform hover:scale-105 shrink-0 ${imageSizes[size]}`}
         style={{ objectFit: 'cover', objectPosition: 'center' }}

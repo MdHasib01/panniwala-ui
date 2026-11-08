@@ -1,5 +1,7 @@
+'use client';
+
 import * as React from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 import { ArrowLeft, Search, SendHorizontal, MessagesSquare, Loader2, Check, CheckCheck } from 'lucide-react';
 import { Card } from '@/src/admin/components/ui/card';
@@ -252,7 +254,12 @@ function Thread({
 
 export function ChatPage() {
   const { user } = useAuth();
-  const [params, setParams] = useSearchParams();
+  const router = useRouter();
+  const params = useSearchParams();
+  const setParams = (q: Record<string, string>) => {
+    const qs = new URLSearchParams(q).toString();
+    router.push(qs ? `/admin/chat?${qs}` : '/admin/chat', { scroll: false });
+  };
   const [search, setSearch] = React.useState('');
   const debounced = useDebounced(search);
   const [typing, setTyping] = React.useState<Record<string, boolean>>({});

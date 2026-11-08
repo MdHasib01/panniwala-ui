@@ -1,5 +1,9 @@
+'use client';
+
 import React, { useLayoutEffect, useRef, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useHash } from '@/src/lib/navigation';
 import {
   Home,
   Package,
@@ -95,7 +99,8 @@ function barPath(w: number, h: number) {
  * Hidden from md up, where the regular navbar takes over.
  */
 export const BottomNav: React.FC = () => {
-  const { pathname, hash } = useLocation();
+  const pathname = usePathname();
+  const hash = useHash();
   const { openOrder, openMore } = useSite();
   const tabs = useTabs();
 
@@ -144,7 +149,7 @@ export const BottomNav: React.FC = () => {
             return (
               <div key="home" className="flex flex-1 items-start justify-center">
                 <Link
-                  to="/"
+                  href="/"
                   aria-current={active ? 'page' : undefined}
                   style={{ marginTop: -FAB / 2 }}
                   className={cn(
@@ -188,7 +193,7 @@ export const BottomNav: React.FC = () => {
           return (
             <Link
               key={`${tab.to}-${i}`}
-              to={tab.to}
+              href={tab.to}
               aria-current={active ? 'page' : undefined}
               className={cn(item, active ? 'text-cyan-700' : 'text-slate-500 active:text-cyan-700')}
             >

@@ -1,5 +1,8 @@
+'use client';
+
 import React from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import { usePathname } from 'next/navigation';
+import { Redirect, withNext } from '@/src/lib/navigation';
 import { Check, Loader2, type LucideIcon } from 'lucide-react';
 import { cn } from '@/src/lib/utils';
 import { homePathFor, useAuth } from '@/src/lib/auth';
@@ -130,10 +133,11 @@ export function OrderProgress({ status }: { status: OrderStatus }) {
  */
 export function RequireAuth({ roles, children }: { roles?: Role[]; children: React.ReactNode }) {
   const { user, loading } = useAuth();
-  const location = useLocation();
-  if (loading) return <Spinner className="min-h-[60vh] items-center" />;
-  if (!user) return <Navigate to="/login" replace state={{ from: location }} />;
-  if (roles && !roles.includes(user.role)) return <Navigate to={homePathFor(user)} replace />;
+  const pathname = usePathname();
+  const spinner = <Spinner className="min-h-[60vh] items-center" />;
+  if (loading) return spinner;
+  if (!user) return <Redirect to={withNext('/login', pathname)} fallback={spinner} />;
+  if (roles && !roles.includes(user.role)) return <Redirect to={homePathFor(user)} fallback={spinner} />;
   return <>{children}</>;
 }
 

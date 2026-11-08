@@ -1,6 +1,8 @@
+'use client';
+
 import * as React from 'react';
 import { io, type Socket } from 'socket.io-client';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { usePathname, useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { API_URL, api } from '@/src/lib/api';
 import { useAuth } from './auth';
@@ -27,10 +29,11 @@ const SocketContext = React.createContext<SocketContextValue | null>(null);
  */
 export function SocketProvider({ children }: { children: React.ReactNode }) {
   const { token, user, setUser, logout } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const pathRef = React.useRef(location.pathname);
-  pathRef.current = location.pathname;
+  const router = useRouter();
+  const pathname = usePathname();
+  const pathRef = React.useRef(pathname);
+  pathRef.current = pathname;
+  const navigate = (href: string) => router.push(href);
 
   const [socket, setSocket] = React.useState<Socket | null>(null);
   const [connected, setConnected] = React.useState(false);
@@ -129,7 +132,7 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
       setSocket(null);
       setConnected(false);
     };
-    // navigate is stable enough; re-connect only when the identity changes
+    // the router is stable; re-connect only when the identity changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token, userId, role]);
 

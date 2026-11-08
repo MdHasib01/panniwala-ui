@@ -8,9 +8,9 @@ import defaultAreas from './areas.default.json';
  * lives in packages.snapshot.json (a snapshot of the database used as a fallback).
  */
 export const PACKAGE_IMAGES: Record<string, string> = {
-  'ro-20l-jar': package1Img,
-  'ro-20l-pump-combo': package2Img,
-  'corporate-monthly': package4Img,
+  'ro-20l-jar': package1Img.src,
+  'ro-20l-pump-combo': package2Img.src,
+  'corporate-monthly': package4Img.src,
 };
 
 /**

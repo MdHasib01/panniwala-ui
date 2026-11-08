@@ -1,3 +1,5 @@
+'use client';
+
 import * as React from 'react';
 import { api, setUnauthorizedHandler, tokenStore } from '@/src/lib/api';
 import type { User } from './models';
@@ -45,9 +47,14 @@ export function homePathFor(user: Pick<User, 'role'>) {
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [token, setToken] = React.useState<string | null>(() => tokenStore.get());
+  // The token lives in localStorage, which only exists in the browser: read it after
+  // mount so the server render and the first client render match (no hydration mismatch).
+  const [token, setToken] = React.useState<string | null>(null);
   const [user, setUser] = React.useState<User | null>(null);
-  const [loading, setLoading] = React.useState<boolean>(() => !!tokenStore.get());
+  const [storageRead, setStorageRead] = React.useState(false);
+
+  // Still working out who is signed in: storage not read yet, or a stored token not verified yet.
+  const loading = !storageRead || (!!token && !user);
 
   const logout = React.useCallback(() => {
     tokenStore.set(null);
@@ -60,19 +67,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => setUnauthorizedHandler(null);
   }, [logout]);
 
+  React.useEffect(() => {
+    setToken(tokenStore.get());
+    setStorageRead(true);
+  }, []);
+
   // Restore the session on first load.
   React.useEffect(() => {
-    if (!token || user) {
-      setLoading(false);
-      return;
-    }
+    if (!token || user) return;
     let cancelled = false;
-    setLoading(true);
     api
       .get<{ user: User }>('/auth/me')
       .then(({ user }) => !cancelled && setUser(user))
-      .catch(() => !cancelled && logout())
-      .finally(() => !cancelled && setLoading(false));
+      .catch(() => !cancelled && logout());
     return () => {
       cancelled = true;
     };
