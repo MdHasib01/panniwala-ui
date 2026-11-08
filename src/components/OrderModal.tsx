@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
-import { WATER_PACKAGES, KHULNA_AREAS, HOTLINE_NUMBER, HOTLINE_TEL, toBengaliNumber } from '@/src/data/packages';
+import { KHULNA_AREAS, HOTLINE_NUMBER, HOTLINE_TEL, toBengaliNumber } from '@/src/data/packages';
+import { usePackages } from '@/src/lib/packages-api';
+import { api } from '@/src/lib/api';
 import { WaterPackage, CustomerDetails, ConfirmedOrder } from '@/src/types';
 import { Button } from '@/src/components/ui/button';
 import { Input } from '@/src/components/ui/input';
@@ -30,8 +32,9 @@ export const OrderModal: React.FC<OrderModalProps> = ({
   onClose,
   selectedPackage = null,
 }) => {
+  const packages = usePackages();
   const [packageId, setPackageId] = useState<string>(
-    selectedPackage?.id || WATER_PACKAGES[0].id
+    selectedPackage?.id || packages[0].id
   );
   const [quantity, setQuantity] = useState<number>(1);
   const [hasEmptyJar, setHasEmptyJar] = useState<boolean>(true);
@@ -59,7 +62,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
   if (!isOpen) return null;
 
   const currentPkg =
-    WATER_PACKAGES.find((p) => p.id === packageId) || WATER_PACKAGES[0];
+    packages.find((p) => p.id === packageId) || packages[0];
 
   // Pricing math
   const itemsCost = currentPkg.price * quantity;
@@ -83,42 +86,53 @@ export const OrderModal: React.FC<OrderModalProps> = ({
     return Object.keys(errs).length === 0;
   };
 
-  const handleOrderSubmit = (e: React.FormEvent) => {
+  const handleOrderSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
 
     setIsSubmitting(true);
 
-    const randomId = 'PW-' + Math.floor(100000 + Math.random() * 900000);
-    const newOrder: ConfirmedOrder = {
-      orderId: randomId,
-      createdAt: new Date().toLocaleTimeString('bn-BD', {
-        hour: '2-digit',
-        minute: '2-digit',
-      }),
-      customer: {
-        name,
-        phone,
-        area,
-        address,
+    try {
+      // The server re-prices the order from the stored package; its total is authoritative.
+      const { order } = await api.post<{
+        order: { orderNumber: string; total: number; item: { jarDeposit: number; unitPrice: number } };
+      }>('/orders', {
+        packageId: currentPkg.id,
+        quantity,
+        hasEmptyJar,
+        customer: { name, phone: phone.replace(/[\s-]/g, ''), area, address },
         deliverySlot,
         paymentMethod,
-        notes,
-      },
-      item: {
-        packageId: currentPkg.id,
-        packageTitle: currentPkg.title,
-        quantity,
-        unitPrice: currentPkg.price,
-        hasEmptyJar,
-        jarDeposit: totalDeposit,
-        totalPrice: grandTotal,
-      },
-      status: 'নিশ্চিত হয়েছে',
-    };
+        notes: notes || undefined,
+      });
 
-    setTimeout(() => {
-      setIsSubmitting(false);
+      const newOrder: ConfirmedOrder = {
+        orderId: order.orderNumber,
+        createdAt: new Date().toLocaleTimeString('bn-BD', {
+          hour: '2-digit',
+          minute: '2-digit',
+        }),
+        customer: {
+          name,
+          phone,
+          area,
+          address,
+          deliverySlot,
+          paymentMethod,
+          notes,
+        },
+        item: {
+          packageId: currentPkg.id,
+          packageTitle: currentPkg.title,
+          quantity,
+          unitPrice: order.item.unitPrice,
+          hasEmptyJar,
+          jarDeposit: order.item.jarDeposit,
+          totalPrice: order.total,
+        },
+        status: 'নিশ্চিত হয়েছে',
+      };
+
       setConfirmedOrder(newOrder);
 
       // Trigger Confetti!
@@ -131,7 +145,15 @@ export const OrderModal: React.FC<OrderModalProps> = ({
       } catch (err) {
         // fallback
       }
-    }, 600);
+    } catch (err) {
+      setErrors({
+        submit:
+          (err as Error).message ||
+          'অর্ডার পাঠানো যায়নি। আবার চেষ্টা করুন অথবা হটলাইনে কল করুন।',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleClose = () => {
@@ -248,7 +270,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                 ১. প্যাকেজ নির্বাচন করুন
               </label>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                {WATER_PACKAGES.map((pkg) => {
+                {packages.map((pkg) => {
                   const isSelected = pkg.id === packageId;
                   return (
                     <div
@@ -491,6 +513,12 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                 <span className="text-base text-cyan-800">৳{toBengaliNumber(grandTotal)}</span>
               </div>
             </div>
+
+            {errors.submit && (
+              <p role="alert" className="rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-2.5 text-sm text-rose-600">
+                {errors.submit}
+              </p>
+            )}
 
             {/* Submit Button */}
             <Button

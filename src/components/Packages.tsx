@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
-import { WATER_PACKAGES, toBengaliNumber } from '@/src/data/packages';
+import { toBengaliNumber } from '@/src/data/packages';
+import { usePackages } from '@/src/lib/packages-api';
 import { WaterPackage } from '@/src/types';
 import { Button } from '@/src/components/ui/button';
 import { Badge } from '@/src/components/ui/badge';
@@ -16,6 +17,7 @@ interface PackagesProps {
 }
 
 export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
+  const packages = usePackages();
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -101,7 +103,7 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
             <ChevronLeft className="w-5 h-5" />
           </button>
         )}
-        {activeIndex < WATER_PACKAGES.length - 1 && (
+        {activeIndex < packages.length - 1 && (
           <button
             type="button"
             aria-label="পরের প্যাকেজ"
@@ -116,7 +118,7 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
           onScroll={handleScroll}
           className="relative flex md:grid md:grid-cols-3 gap-4 md:gap-6 lg:gap-8 pt-2 pb-4 md:pb-2 md:pt-2 items-stretch max-w-6xl -mx-4 px-4 md:mx-auto md:px-0 overflow-x-auto md:overflow-visible snap-x snap-mandatory scroll-px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
-          {WATER_PACKAGES.map((pkg) => {
+          {packages.map((pkg) => {
             const theme = getTheme(pkg);
             const ribbon = pkg.popular ? '★ সবচেয়ে জনপ্রিয়' : pkg.bestValue ? '⚡ সেরা ভ্যালু' : null;
 
@@ -188,7 +190,7 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
 
         {/* Mobile carousel indicators */}
         <div className="flex md:hidden justify-center gap-2 mt-2">
-          {WATER_PACKAGES.map((pkg, i) => (
+          {packages.map((pkg, i) => (
             <button
               key={pkg.id}
               type="button"
