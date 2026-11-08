@@ -31,10 +31,10 @@ export const Hero: React.FC<HeroProps> = ({ onOpenOrder }) => {
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-10 lg:gap-12 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-10 lg:gap-12 items-center">
           
           {/* Left Column: Text & Primary CTA */}
-          <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
+          <div className="lg:col-span-7 space-y-3 sm:space-y-6 text-center lg:text-left">
 
             {/* Main Headline */}
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[54px] font-bold text-slate-900 leading-[1.2] tracking-tight">
@@ -51,7 +51,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenOrder }) => {
             </p>
 
             {/* Primary CTAs with mobile-first tap sizes */}
-            <div className="pt-2 flex flex-row items-stretch justify-center lg:justify-start gap-3">
+            <div className="pt-1 sm:pt-2 flex flex-row items-stretch justify-center lg:justify-start gap-3">
               {/* Order CTA */}
               <Button
                 id="hero-order-cta"
