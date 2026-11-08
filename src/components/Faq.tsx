@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Badge } from '@/src/components/ui/badge';
+import { SectionEyebrow } from '@/src/components/SectionEyebrow';
 import { ChevronDown } from 'lucide-react';
 
 export const Faq: React.FC = () => {
@@ -41,9 +41,9 @@ export const Faq: React.FC = () => {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <div className="text-center mb-12 space-y-3">
-          <Badge variant="cyan" className="px-3 py-1 text-xs">
+          <SectionEyebrow>
             সাধারণ জিজ্ঞাসা
-          </Badge>
+          </SectionEyebrow>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight">
             সচরাচর জিজ্ঞাসিত প্রশ্ন ও উত্তর
           </h2>

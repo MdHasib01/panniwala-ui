@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Badge } from '@/src/components/ui/badge';
+import { SectionEyebrow } from '@/src/components/SectionEyebrow';
 import { Button } from '@/src/components/ui/button';
 import { MapPin, Search, CheckCircle2, Phone, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
 import { HOTLINE_NUMBER, HOTLINE_TEL } from '@/src/data/packages';
@@ -62,9 +62,9 @@ export const ServiceAreaChecker: React.FC<{ onOpenOrder: () => void }> = ({ onOp
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <div className="text-center max-w-3xl mx-auto mb-12 space-y-3">
-          <Badge variant="cyan" className="px-3 py-1 text-xs">
+          <SectionEyebrow>
             সার্ভিস কাভারেজ জোন
-          </Badge>
+          </SectionEyebrow>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight">
             আমরা যেখানে দ্রুততম সেবা পৌঁছে দিই
           </h2>
@@ -88,7 +88,7 @@ export const ServiceAreaChecker: React.FC<{ onOpenOrder: () => void }> = ({ onOp
             </div>
             <Button
               type="submit"
-              className="bg-cyan-600 hover:bg-cyan-700 text-white font-semibold text-xs sm:text-sm px-5 rounded-xl shrink-0"
+              className="btn-shine bg-cyan-600 hover:bg-cyan-700 text-white font-semibold text-xs sm:text-sm px-5 rounded-xl shrink-0"
             >
               <Search className="w-4 h-4 mr-1 sm:inline hidden" />
               <span>চেক করুন</span>

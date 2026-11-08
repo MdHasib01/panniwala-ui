@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Badge } from '@/src/components/ui/badge';
+import { SectionEyebrow } from '@/src/components/SectionEyebrow';
 import { Star, CheckCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 import { toBengaliNumber } from '@/src/data/packages';
 
@@ -78,9 +78,9 @@ export const Testimonials: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <div className="text-center max-w-3xl mx-auto mb-14 space-y-3">
-          <Badge variant="cyan" className="px-3 py-1 text-xs">
+          <SectionEyebrow>
             গ্রাহক অভিজ্ঞতা
-          </Badge>
+          </SectionEyebrow>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight">
             ১২,৫০০+ পরিবার ও প্রতিষ্ঠানের নির্ভরযোগ্য সঙ্গী
           </h2>

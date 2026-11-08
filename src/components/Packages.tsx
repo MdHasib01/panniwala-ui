@@ -3,7 +3,7 @@ import { toBengaliNumber } from '@/src/data/packages';
 import { usePackages } from '@/src/lib/packages-api';
 import { WaterPackage } from '@/src/types';
 import { Button } from '@/src/components/ui/button';
-import { Badge } from '@/src/components/ui/badge';
+import { SectionEyebrow } from '@/src/components/SectionEyebrow';
 import {
   Check,
   ArrowRight,
@@ -54,7 +54,7 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
         panel: 'from-sky-100 via-cyan-50 to-white',
         badge: 'bg-sky-600 text-white',
         check: 'bg-sky-100 text-sky-700',
-        button: 'bg-sky-600 hover:bg-sky-700 text-white shadow-md shadow-sky-500/25',
+        button: 'btn-shine [--shine-glow:2_132_199] bg-sky-600 hover:bg-sky-700 text-white shadow-md shadow-sky-500/25',
       };
     }
     if (pkg.bestValue) {
@@ -63,7 +63,7 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
         panel: 'from-emerald-100 via-teal-50 to-white',
         badge: 'bg-emerald-600 text-white',
         check: 'bg-emerald-100 text-emerald-700',
-        button: 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-600/25',
+        button: 'btn-shine [--shine-glow:5_150_105] bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-600/25',
       };
     }
     return {
@@ -71,7 +71,7 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
       panel: 'from-slate-100 via-slate-50 to-white',
       badge: 'bg-slate-900 text-white',
       check: 'bg-slate-100 text-slate-700',
-      button: 'bg-slate-900 hover:bg-slate-800 text-white shadow-sm',
+      button: 'btn-shine [--shine-glow:15_23_42] bg-slate-900 hover:bg-slate-800 text-white shadow-sm',
     };
   };
 
@@ -81,9 +81,9 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
 
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-3 sm:mb-5 space-y-2">
-          <Badge variant="cyan" className="px-3 py-1 text-xs font-semibold">
+          <SectionEyebrow>
             পানির প্যাকেজ ও মূল্যতালিকা
-          </Badge>
+          </SectionEyebrow>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight">
             আপনার প্রয়োজন অনুযায়ী সেরা প্যাকেজটি বেছে নিন
           </h2>

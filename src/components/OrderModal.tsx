@@ -525,7 +525,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
               id="confirm-order-submit-btn"
               type="submit"
               disabled={isSubmitting}
-              className="w-full h-13 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-base shadow-lg shadow-cyan-600/30 active:scale-[0.99]"
+              className="btn-shine w-full h-13 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-base shadow-lg shadow-cyan-600/30 active:scale-[0.99]"
             >
               {isSubmitting ? (
                 <span>অর্ডার প্রসেস হচ্ছে...</span>

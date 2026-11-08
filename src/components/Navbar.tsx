@@ -82,7 +82,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenOrder }) => {
           <Button
             id="nav-order-now-btn"
             onClick={onOpenOrder}
-            className="bg-cyan-600 hover:bg-cyan-700 text-white shadow-md shadow-cyan-600/20 font-semibold px-4 sm:px-5"
+            className="btn-shine bg-cyan-600 hover:bg-cyan-700 text-white shadow-md shadow-cyan-600/20 font-semibold px-4 sm:px-5"
           >
             <ShoppingBag className="w-4 h-4" />
             <span>অর্ডার করুন</span>

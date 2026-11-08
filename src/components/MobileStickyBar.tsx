@@ -32,7 +32,7 @@ export const MobileStickyBar: React.FC<MobileStickyBarProps> = ({ onOpenOrder })
         <button
           id="mobile-order-btn"
           onClick={onOpenOrder}
-          className="flex-1 flex items-center justify-center gap-1.5 h-12 rounded-xl bg-gradient-to-r from-cyan-600 to-sky-600 text-white font-bold text-sm shadow-md shadow-cyan-600/30 active:scale-[0.98] transition-all"
+          className="btn-shine flex-1 flex items-center justify-center gap-1.5 h-12 rounded-xl bg-gradient-to-r from-cyan-600 to-sky-600 text-white font-bold text-sm shadow-md shadow-cyan-600/30 active:scale-[0.98] transition-all"
         >
           <ShoppingBag className="w-4 h-4" />
           <span>এখনই অর্ডার</span>

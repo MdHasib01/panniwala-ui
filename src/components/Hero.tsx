@@ -12,9 +12,23 @@ export const Hero: React.FC<HeroProps> = ({ onOpenOrder }) => {
   const heroSrc = heroImage;
 
   return (
-    <section id="hero" className="relative overflow-hidden pt-6 pb-14 lg:py-20 bg-gradient-to-b from-cyan-50/60 via-sky-50/30 to-white">
+    <section id="hero" className="relative overflow-hidden pt-12 sm:pt-14 pb-14 lg:py-20 bg-gradient-to-b from-cyan-50/60 via-sky-50/30 to-white">
       {/* Background soft ambient water waves */}
       <div className="absolute top-0 inset-x-0 h-96 bg-[radial-gradient(ellipse_80%_60%_at_50%_-20%,rgba(6,182,212,0.18),rgba(255,255,255,0))] pointer-events-none" />
+
+      {/* Subtle grid overlay, faded out toward the edges */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 pointer-events-none opacity-[0.35] mix-blend-multiply"
+        style={{
+          backgroundImage:
+            'linear-gradient(to right, rgba(8,145,178,0.18) 1px, transparent 1px), linear-gradient(to bottom, rgba(8,145,178,0.18) 1px, transparent 1px)',
+          backgroundSize: '44px 44px',
+          backgroundPosition: 'center top',
+          maskImage: 'radial-gradient(ellipse 75% 70% at 50% 35%, #000 40%, transparent 100%)',
+          WebkitMaskImage: 'radial-gradient(ellipse 75% 70% at 50% 35%, #000 40%, transparent 100%)',
+        }}
+      />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
@@ -43,7 +57,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenOrder }) => {
                 id="hero-order-cta"
                 size="lg"
                 onClick={onOpenOrder}
-                className="flex-1 sm:flex-none bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-sm sm:text-base shadow-lg shadow-cyan-600/30 hover:shadow-cyan-600/40 px-3 sm:px-8 py-3.5 rounded-xl transition-all"
+                className="btn-shine flex-1 sm:flex-none bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-sm sm:text-base shadow-lg shadow-cyan-600/30 hover:shadow-cyan-600/40 px-3 sm:px-8 py-3.5 rounded-xl transition-all"
               >
                 <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5 sm:mr-1 shrink-0" />
                 <span>অর্ডার করুন — ৳৪০</span>
