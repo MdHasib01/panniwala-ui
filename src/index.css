@@ -268,6 +268,30 @@ html.admin ::selection {
   }
 }
 
+/* ------------------------------------------------------------------ */
+/* Hand-drawn scribble that draws itself, holds, erases, and repeats.  */
+/* The SVG path must set pathLength="1".                               */
+/* ------------------------------------------------------------------ */
+.scribble-draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: scribbleDraw 3.2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@keyframes scribbleDraw {
+  0%   { stroke-dashoffset: 1; }
+  40%  { stroke-dashoffset: 0; }
+  78%  { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scribble-draw {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+}
+
 /* Keep in-page section targets (/#packages, /#faq …) clear of the sticky site header. */
 section[id] {
   scroll-margin-top: 5.5rem;

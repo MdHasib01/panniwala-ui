@@ -41,7 +41,6 @@ export const Faq: React.FC = () => {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <SectionHeader
-          eyebrow="সাধারণ জিজ্ঞাসা"
           title="সচরাচর জিজ্ঞাসিত প্রশ্ন ও উত্তর"
           subtitle="পানি ওয়ালা সম্পর্কে আপনার মনে থাকা যে কোনো সাধারণ প্রশ্নের সহজ উত্তর এখানে পেয়ে যাবেন।"
           className="mb-12"

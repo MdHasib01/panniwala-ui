@@ -49,7 +49,29 @@ export const Hero: React.FC<HeroProps> = ({ onOpenOrder }) => {
 
             {/* Subtitle */}
             <p className="text-base sm:text-lg text-slate-600 max-w-xl mx-auto lg:mx-0 leading-relaxed">
-              নিরাপদ ও বিশুদ্ধ পানির বিশ্বস্ত সরবরাহ, খুলনা শহরে ফ্রি হোম ডেলিভারি।
+              নিরাপদ ও বিশুদ্ধ পানির বিশ্বস্ত সরবরাহ, খুলনা শহরে{' '}
+              <span className="relative inline-block mx-1 -rotate-6 text-xl sm:text-2xl font-extrabold text-cyan-600 leading-none align-middle">
+                ফ্রি
+                {/* Rough hand-drawn underline that draws in a loop */}
+                <svg
+                  aria-hidden="true"
+                  viewBox="0 0 120 22"
+                  preserveAspectRatio="none"
+                  className="absolute left-[-14%] -bottom-2.5 w-[128%] h-3 sm:h-3.5 overflow-visible text-amber-400 pointer-events-none"
+                  fill="none"
+                >
+                  <path
+                    className="scribble-draw"
+                    pathLength={1}
+                    d="M4 13 C 26 6, 56 4, 84 8 S 112 12, 116 6 M 14 17 C 40 12, 72 11, 106 15"
+                    stroke="currentColor"
+                    strokeWidth={4}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </span>{' '}
+              <span className="font-semibold text-cyan-600">হোম ডেলিভারি</span>।
             </p>
 
             {/* Delivery area check */}

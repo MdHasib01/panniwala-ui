@@ -83,7 +83,6 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
 
         {/* Section Header */}
         <SectionHeader
-          eyebrow="পানির প্যাকেজ ও মূল্যতালিকা"
           title="আপনার প্রয়োজন অনুযায়ী সেরা প্যাকেজটি বেছে নিন"
           className="mb-3 sm:mb-5"
         />

@@ -78,7 +78,6 @@ export const Testimonials: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <SectionHeader
-          eyebrow="গ্রাহক অভিজ্ঞতা"
           title="১২,৫০০+ পরিবার ও প্রতিষ্ঠানের নির্ভরযোগ্য সঙ্গী"
           subtitle="আমাদের সেবা গ্রহণকারী সম্মানিত গ্রাহকদের মূল্যবান মতামত জেনে নিন।"
           className="mb-14"
