@@ -59,14 +59,13 @@ export const PurityProcess: React.FC = () => {
   ];
 
   return (
-    <section id="purity" className="pt-10 sm:pt-14 pb-16 sm:pb-24 bg-white relative">
+    <section id="purity" className="pt-6 sm:pt-8 pb-16 sm:pb-24 bg-white relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
         <SectionHeader
           title="আমাদের ৭ স্তরের আধুনিক পরিশোধন প্রযুক্তি"
-          subtitle="প্রতিটি ফোঁটা পানি যাতে আপনার পরিবারের সুস্বাস্থ্য নিশ্চিত করে, সেজন্য আমরা বিশ্বমানের ওয়াটার ট্রিটমেন্ট প্রটোকল অনুসরণ করি।"
-          className="mb-14"
+          className="mb-4 sm:mb-6"
         />
 
         {/* Steps Grid */}

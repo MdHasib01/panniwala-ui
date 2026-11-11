@@ -74,13 +74,12 @@ export const Testimonials: React.FC = () => {
   ];
 
   return (
-    <section id="reviews" className="pt-10 sm:pt-14 pb-16 sm:pb-24 bg-white">
+    <section id="reviews" className="pt-6 sm:pt-8 pb-16 sm:pb-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <SectionHeader
           title="১২,৫০০+ পরিবার ও প্রতিষ্ঠানের নির্ভরযোগ্য সঙ্গী"
-          subtitle="আমাদের সেবা গ্রহণকারী সম্মানিত গ্রাহকদের মূল্যবান মতামত জেনে নিন।"
-          className="mb-14"
+          className="mb-4 sm:mb-6"
         />
 
         {/* Mobile: horizontal snap carousel · md+: grid */}

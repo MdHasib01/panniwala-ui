@@ -54,13 +54,12 @@ export const ServiceAreaChecker: React.FC<{ onOpenOrder: () => void }> = ({ onOp
   };
 
   return (
-    <section id="areas" className="pt-10 sm:pt-14 pb-16 sm:pb-24 bg-slate-50/70 border-t border-slate-200/70">
+    <section id="areas" className="pt-6 sm:pt-8 pb-16 sm:pb-24 bg-slate-50/70 border-t border-slate-200/70">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         <SectionHeader
           title="আমরা যেখানে দ্রুততম সেবা পৌঁছে দিই"
-          subtitle="আমাদের ডেডিকেটেড বাইক ও ভ্যান ডেলিভারি টিম সার্বক্ষণিক প্রস্তুত থাকে যাতে অর্ডার পাওয়ার কিছুক্ষণের মধ্যেই আপনার দরজায় পানি পৌঁছে দেওয়া যায়।"
-          className="mb-12"
+          className="mb-4 sm:mb-6"
         />
 
         {/* Quick Search Tool */}

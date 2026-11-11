@@ -37,13 +37,12 @@ export const Faq: React.FC = () => {
   ];
 
   return (
-    <section id="faq" className="pt-10 sm:pt-14 pb-16 sm:pb-24 bg-slate-50/70 border-t border-slate-200/70">
+    <section id="faq" className="pt-6 sm:pt-8 pb-16 sm:pb-24 bg-slate-50/70 border-t border-slate-200/70">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <SectionHeader
           title="সচরাচর জিজ্ঞাসিত প্রশ্ন ও উত্তর"
-          subtitle="পানি ওয়ালা সম্পর্কে আপনার মনে থাকা যে কোনো সাধারণ প্রশ্নের সহজ উত্তর এখানে পেয়ে যাবেন।"
-          className="mb-12"
+          className="mb-4 sm:mb-6"
         />
 
         <div className="space-y-3">
