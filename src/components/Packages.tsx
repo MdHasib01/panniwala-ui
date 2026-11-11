@@ -5,7 +5,7 @@ import { WaterPackage } from '@/src/types';
 import { Button } from '@/src/components/ui/button';
 import { SectionHeader } from '@/src/components/SectionHeader';
 import {
-  Check,
+  CircleCheck,
   ArrowRight,
   ChevronLeft,
   ChevronRight
@@ -53,7 +53,6 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
         card: 'border-sky-200 shadow-lg shadow-sky-500/10 ring-1 ring-sky-300/50',
         panel: 'from-sky-100 via-cyan-50 to-white',
         badge: 'bg-sky-600 text-white',
-        check: 'bg-sky-100 text-sky-700',
         button: 'btn-shine [--shine-glow:2_132_199] bg-sky-600 hover:bg-sky-700 text-white shadow-md shadow-sky-500/25',
       };
     }
@@ -62,7 +61,6 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
         card: 'border-emerald-200 shadow-lg shadow-emerald-500/10 ring-1 ring-emerald-300/50',
         panel: 'from-emerald-100 via-teal-50 to-white',
         badge: 'bg-emerald-600 text-white',
-        check: 'bg-emerald-100 text-emerald-700',
         button: 'btn-shine [--shine-glow:5_150_105] bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-600/25',
       };
     }
@@ -70,7 +68,6 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
       card: 'border-slate-200 shadow-sm hover:border-slate-300',
       panel: 'from-slate-100 via-slate-50 to-white',
       badge: 'bg-slate-900 text-white',
-      check: 'bg-slate-100 text-slate-700',
       button: 'btn-shine [--shine-glow:15_23_42] bg-slate-900 hover:bg-slate-800 text-white shadow-sm',
     };
   };
@@ -159,9 +156,7 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
                   <ul className="space-y-2.5 text-[13px] text-slate-600">
                     {pkg.features.slice(0, 3).map((feat, fIdx) => (
                       <li key={fIdx} className="flex items-center gap-2.5">
-                        <span className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${theme.check}`}>
-                          <Check className="w-3 h-3 stroke-[3]" />
-                        </span>
+                        <CircleCheck className="w-[18px] h-[18px] shrink-0 text-slate-500" strokeWidth={1.75} />
                         <span className="leading-snug">{feat}</span>
                       </li>
                     ))}
