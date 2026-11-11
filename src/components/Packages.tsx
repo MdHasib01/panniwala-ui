@@ -128,7 +128,7 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
             return (
               <div
                 key={pkg.id}
-                className={`relative flex flex-col rounded-3xl bg-white border p-2.5 transition-all duration-300 md:hover:-translate-y-1 md:hover:shadow-xl group w-[84%] max-w-[340px] shrink-0 snap-center md:w-auto md:max-w-none md:shrink ${theme.card}`}
+                className={`relative flex flex-col rounded-3xl bg-white border transition-all duration-300 md:hover:-translate-y-1 md:hover:shadow-xl group w-[84%] max-w-[340px] shrink-0 snap-center md:w-auto md:max-w-none md:shrink ${theme.card}`}
               >
                 {/* Faint grid tucked into the bottom-right corner, fading toward the center */}
                 <div
@@ -152,7 +152,7 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
                 )}
 
                 {/* Image panel */}
-                <div className={`relative rounded-[20px] bg-gradient-to-br ${theme.panel} h-[190px] md:h-[230px] flex items-center justify-center overflow-hidden`}>
+                <div className={`relative rounded-t-[23px] bg-gradient-to-br ${theme.panel} h-[190px] md:h-[230px] flex items-center justify-center overflow-hidden`}>
                   {/* Subtle grid lines, faded toward the edges */}
                   <div
                     aria-hidden="true"
@@ -177,7 +177,7 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
                 </div>
 
                 {/* Details */}
-                <div className="relative z-10 px-2.5 pt-4 pb-1.5 flex flex-col flex-1 gap-4">
+                <div className="relative z-10 px-5 pt-4 pb-5 flex flex-col flex-1 gap-4">
                   <div>
                     <h3 className="text-base sm:text-lg font-bold text-slate-900 leading-snug [font-family:var(--font-hind-siliguri),'Hind_Siliguri',sans-serif]">
                       {pkg.title}
