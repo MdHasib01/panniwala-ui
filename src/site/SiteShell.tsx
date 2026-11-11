@@ -61,6 +61,10 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
   // No footer on the full-height chat screen or on the focused login / sign-up screens.
   const hideFooter = ['/chat', '/login', '/register'].includes(pathname);
 
+  // The footer is desktop-only, so on mobile reserve room for the fixed bottom nav —
+  // except on pages that already pad themselves for it (account pages, chat).
+  const selfPadded = ['/chat', '/login', '/register', '/orders', '/deliveries', '/profile'].includes(pathname);
+
   return (
     <SiteContext.Provider value={site}>
       <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col selection:bg-cyan-500 selection:text-white font-sans antialiased">
@@ -70,7 +74,7 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
         <Navbar onOpenOrder={() => openOrder()} />
 
         {/* Page content */}
-        <main className="flex-1">{children}</main>
+        <main className={selfPadded ? 'flex-1' : 'flex-1 pb-20 md:pb-0'}>{children}</main>
 
         {!hideFooter && <Footer />}
 

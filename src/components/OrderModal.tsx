@@ -8,6 +8,8 @@ import { LocationSelect } from '@/src/account/LocationSelect';
 import { usePackages } from '@/src/lib/packages-api';
 import { api } from '@/src/lib/api';
 import { useAuth } from '@/src/lib/auth';
+import { loadSavedDetails, saveDetails } from '@/src/lib/saved-details';
+import type { User } from '@/src/lib/models';
 import Link from 'next/link';
 import { WaterPackage, ConfirmedOrder } from '@/src/types';
 import { Button } from '@/src/components/ui/button';
@@ -107,16 +109,21 @@ export const OrderModal: React.FC<OrderModalProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, areaKeys]);
 
-  // Signed-in customers: pre-fill their saved details (never overwrite what they typed).
-  const { user } = useAuth();
+  // Pre-fill saved details: the profile when signed in, else what this device used
+  // last time. Never overwrites what they typed — every field stays editable.
+  const { user, loading: authLoading, setUser } = useAuth();
   useEffect(() => {
-    if (!isOpen || !user) return;
-    setName((v) => v || user.name);
-    setPhone((v) => v || user.phone || '');
-    setAddress((v) => v || user.address || '');
-    if (user.area && areas.some((a) => areaKey(a) === areaKey(user.area!))) setArea((v) => v || user.area!);
+    if (!isOpen || authLoading) return;
+    const saved = loadSavedDetails();
+    setName((v) => v || user?.name || saved.name || '');
+    setPhone((v) => v || user?.phone || saved.phone || '');
+    setAddress((v) => v || user?.address || saved.address || '');
+    const known = [user?.area, saved.area]
+      .map((x) => x && areas.find((a) => areaKey(a) === areaKey(x)))
+      .find(Boolean);
+    if (known) setArea((v) => v || known);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen, user, areaKeys]);
+  }, [isOpen, authLoading, user, areaKeys]);
 
   if (!isOpen) return null;
 
@@ -199,18 +206,25 @@ export const OrderModal: React.FC<OrderModalProps> = ({
 
     try {
       // The server re-prices the order from the stored package; its total is authoritative.
-      const { order } = await api.post<{
+      const customer = { name: name.trim(), phone: phone.replace(/[\s-]/g, ''), area, address: address.trim() };
+      const { order, user: updatedUser } = await api.post<{
         order: { orderNumber: string; total: number; item: { jarDeposit: number; unitPrice: number } };
+        /** Present when the signed-in customer's profile was updated with these details. */
+        user?: User;
       }>('/orders', {
         packageId: currentPkg.id,
         quantity,
         hasEmptyJar,
-        customer: { name, phone: phone.replace(/[\s-]/g, ''), area, address },
+        customer,
         deliverySlot,
         paymentMethod,
         transactionId: trxId,
         notes: notes || undefined,
       });
+
+      // Remember these details for the next order (device + profile).
+      saveDetails(customer);
+      if (updatedUser) setUser(updatedUser);
 
       const newOrder: ConfirmedOrder = {
         orderId: order.orderNumber,
