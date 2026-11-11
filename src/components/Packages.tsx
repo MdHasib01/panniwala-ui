@@ -54,7 +54,8 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
       return {
         card: 'border-sky-200 shadow-lg shadow-sky-500/10 ring-1 ring-sky-300/50',
         panel: 'from-sky-100 via-cyan-50 to-white',
-        badge: 'bg-sky-600 text-white',
+        badge: 'bg-sky-600 text-white shadow-sky-600/30',
+        grid: '2 132 199',
         button: 'btn-shine [--shine-glow:2_132_199] bg-sky-600 hover:bg-sky-700 text-white shadow-md shadow-sky-500/25',
       };
     }
@@ -62,14 +63,16 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
       return {
         card: 'border-emerald-200 shadow-lg shadow-emerald-500/10 ring-1 ring-emerald-300/50',
         panel: 'from-emerald-100 via-teal-50 to-white',
-        badge: 'bg-emerald-600 text-white',
+        badge: 'bg-emerald-600 text-white shadow-emerald-600/30',
+        grid: '5 150 105',
         button: 'btn-shine [--shine-glow:5_150_105] bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-600/25',
       };
     }
     return {
       card: 'border-slate-200 shadow-sm hover:border-slate-300',
       panel: 'from-slate-100 via-slate-50 to-white',
-      badge: 'bg-slate-900 text-white',
+      badge: 'bg-slate-900 text-white shadow-slate-900/20',
+      grid: '71 85 105',
       button: 'btn-shine [--shine-glow:15_23_42] bg-slate-900 hover:bg-slate-800 text-white shadow-sm',
     };
   };
@@ -111,7 +114,7 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
         <div
           ref={scrollerRef}
           onScroll={handleScroll}
-          className="relative flex md:grid md:grid-cols-3 gap-4 md:gap-6 lg:gap-8 pt-2 pb-4 md:pb-2 md:pt-2 items-stretch max-w-6xl -mx-4 px-4 md:mx-auto md:px-0 overflow-x-auto md:overflow-visible snap-x snap-mandatory scroll-px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="relative flex md:grid md:grid-cols-3 gap-4 md:gap-6 lg:gap-8 pt-5 pb-4 md:pb-2 md:pt-5 items-stretch max-w-6xl -mx-4 px-4 md:mx-auto md:px-0 overflow-x-auto md:overflow-visible snap-x snap-mandatory scroll-px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
           {packages.map((pkg) => {
             const theme = getTheme(pkg);
@@ -127,28 +130,54 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
                 key={pkg.id}
                 className={`relative flex flex-col rounded-3xl bg-white border p-2.5 transition-all duration-300 md:hover:-translate-y-1 md:hover:shadow-xl group w-[84%] max-w-[340px] shrink-0 snap-center md:w-auto md:max-w-none md:shrink ${theme.card}`}
               >
-                {/* Image panel */}
-                <div className={`relative rounded-[20px] bg-gradient-to-br ${theme.panel} h-[150px] md:h-[180px] flex items-center justify-center overflow-hidden`}>
-                  <div className="absolute -bottom-12 -right-12 w-44 h-44 rounded-full bg-white/70 blur-2xl pointer-events-none" />
-                  <div className="absolute -top-10 -left-10 w-32 h-32 rounded-full bg-white/50 blur-2xl pointer-events-none" />
+                {/* Faint grid tucked into the bottom-right corner, fading toward the center */}
+                <div
+                  aria-hidden="true"
+                  className="absolute inset-0 rounded-[inherit] pointer-events-none [mask-image:radial-gradient(circle_at_100%_100%,black_0%,transparent_45%)]"
+                  style={{
+                    backgroundImage: `linear-gradient(to right, rgb(${theme.grid} / 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgb(${theme.grid} / 0.05) 1px, transparent 1px)`,
+                    backgroundSize: '18px 18px',
+                    backgroundPosition: 'right bottom',
+                  }}
+                />
 
-                  {ribbon && RibbonIcon && (
-                    <span className={`absolute top-3 left-3 z-20 inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm ${theme.badge}`}>
-                      <RibbonIcon className="w-3 h-3" strokeWidth={2.5} />
+                {/* Badge — centered on the card's top edge */}
+                {ribbon && RibbonIcon && (
+                  <div className="absolute inset-x-0 -top-3.5 z-30 flex justify-center pointer-events-none">
+                    <span className={`inline-flex items-center gap-1.5 whitespace-nowrap text-[11px] sm:text-xs font-bold px-3.5 py-1.5 rounded-full shadow-md ring-4 ring-white ${theme.badge}`}>
+                      <RibbonIcon className="w-3.5 h-3.5" strokeWidth={2.5} fill="currentColor" />
                       {ribbon.label}
                     </span>
-                  )}
+                  </div>
+                )}
+
+                {/* Image panel */}
+                <div className={`relative rounded-[20px] bg-gradient-to-br ${theme.panel} h-[190px] md:h-[230px] flex items-center justify-center overflow-hidden`}>
+                  {/* Subtle grid lines, faded toward the edges */}
+                  <div
+                    aria-hidden="true"
+                    className="absolute inset-0 pointer-events-none [mask-image:radial-gradient(ellipse_at_center,black_35%,transparent_80%)]"
+                    style={{
+                      backgroundImage: `linear-gradient(to right, rgb(${theme.grid} / 0.12) 1px, transparent 1px), linear-gradient(to bottom, rgb(${theme.grid} / 0.12) 1px, transparent 1px)`,
+                      backgroundSize: '22px 22px',
+                      backgroundPosition: 'center center',
+                    }}
+                  />
+                  <div className="absolute -bottom-12 -right-12 w-44 h-44 rounded-full bg-white/60 blur-2xl pointer-events-none" />
+                  <div className="absolute -top-10 -left-10 w-32 h-32 rounded-full bg-white/40 blur-2xl pointer-events-none" />
+                  {/* Soft floor shadow under the jar */}
+                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-32 md:w-40 h-4 rounded-[100%] bg-slate-900/10 blur-md pointer-events-none" />
 
                   <img
                     src={pkg.image}
                     alt={pkg.title}
-                    className="max-h-[120px] md:max-h-[150px] w-auto object-contain drop-shadow-xl transition-transform duration-500 group-hover:scale-105 select-none relative z-10 mt-4"
+                    className="max-h-[165px] md:max-h-[205px] w-auto object-contain drop-shadow-xl transition-transform duration-500 group-hover:scale-105 select-none relative z-10"
                     loading="lazy"
                   />
                 </div>
 
                 {/* Details */}
-                <div className="px-2.5 pt-4 pb-1.5 flex flex-col flex-1 gap-4">
+                <div className="relative z-10 px-2.5 pt-4 pb-1.5 flex flex-col flex-1 gap-4">
                   <div>
                     <h3 className="text-base sm:text-lg font-bold text-slate-900 leading-snug [font-family:var(--font-hind-siliguri),'Hind_Siliguri',sans-serif]">
                       {pkg.title}
