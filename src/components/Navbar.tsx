@@ -17,7 +17,12 @@ import {
   UserRound,
   LayoutDashboard,
   LogOut,
+  MapPin,
+  Search,
+  X,
 } from 'lucide-react';
+import { LocationSearch } from '@/src/components/LocationSearch';
+import { cn } from '@/src/lib/utils';
 import { useAuth } from '@/src/lib/auth';
 import { useSocket } from '@/src/lib/socket';
 import { ROLE_LABEL_BN, initialsOf } from '@/src/site/context';
@@ -172,6 +177,25 @@ function MobileAccountButton() {
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ onOpenOrder }) => {
+  // "Do you deliver to my area?" panel, opened from the search button.
+  const [searchOpen, setSearchOpen] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!searchOpen) return;
+    const onDown = (e: MouseEvent | TouchEvent) => {
+      if (!searchRef.current?.contains(e.target as Node)) setSearchOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setSearchOpen(false);
+    document.addEventListener('mousedown', onDown);
+    document.addEventListener('touchstart', onDown);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', onDown);
+      document.removeEventListener('touchstart', onDown);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [searchOpen]);
+
   return (
     <header className="sticky top-0 z-40 w-full bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-xs">
       {/* Top micro announcement bar */}
@@ -221,6 +245,63 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenOrder }) => {
 
         {/* Action Buttons */}
         <div className="flex items-center gap-2.5">
+          {/* Area search: icon on small screens, a search pill on large ones */}
+          <div ref={searchRef}>
+            <button
+              type="button"
+              onClick={() => setSearchOpen((o) => !o)}
+              aria-expanded={searchOpen}
+              aria-haspopup="dialog"
+              aria-label="এলাকা খুঁজুন"
+              className={cn(
+                'inline-flex h-10 items-center gap-2 rounded-xl border transition-colors',
+                'w-10 justify-center xl:w-auto xl:justify-start xl:px-3.5 xl:min-w-52',
+                searchOpen ? 'border-cyan-500 bg-cyan-50 text-cyan-700' : 'border-slate-200 bg-white text-slate-500 hover:border-cyan-300 hover:text-cyan-700'
+              )}
+            >
+              <Search className="w-4 h-4 shrink-0 text-cyan-600" />
+              <span className="hidden xl:inline text-sm">আপনার এলাকা খুঁজুন…</span>
+            </button>
+
+            {searchOpen && (
+              <div
+                role="dialog"
+                aria-label="ডেলিভারি এলাকা খুঁজুন"
+                className="absolute inset-x-0 top-full z-50 border-b border-slate-200 bg-white p-4 shadow-xl shadow-slate-900/10 animate-in fade-in sm:inset-x-auto sm:right-4 sm:mt-2 sm:w-[420px] sm:rounded-2xl sm:border lg:right-8"
+              >
+                <div className="mb-3 flex items-center justify-between gap-2">
+                  <p className="flex items-center gap-1.5 text-sm font-bold text-slate-800">
+                    <MapPin className="h-4 w-4 text-cyan-600" /> আপনার এলাকায় ডেলিভারি আছে কি?
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setSearchOpen(false)}
+                    aria-label="বন্ধ করুন"
+                    className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-700"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+                <LocationSearch
+                  variant="panel"
+                  autoFocus
+                  placeholder="বাংলা বা English-এ এলাকার নাম লিখুন…"
+                  onOpenOrder={() => {
+                    setSearchOpen(false);
+                    onOpenOrder();
+                  }}
+                />
+                <Link
+                  href="/#areas"
+                  onClick={() => setSearchOpen(false)}
+                  className="mt-3 inline-block text-xs font-semibold text-cyan-700 hover:underline"
+                >
+                  সব ডেলিভারি জোন দেখুন →
+                </Link>
+              </div>
+            )}
+          </div>
+
           {/* Hotline Call Button */}
           <a
             id="nav-call-btn"

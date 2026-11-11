@@ -88,3 +88,13 @@ export const areaKey = (name: string) =>
 
 /** "English" under a Bengali display name, if the two differ. */
 export const secondaryName = (l: { name: string; nameEn?: string }) => (l.nameEn && l.nameEn !== l.name ? l.nameEn : undefined);
+
+/**
+ * The location a visitor last picked in a "do you deliver here?" search, so the
+ * order form can start with it. Kept for the page session only.
+ */
+let pickedArea = '';
+export const setPickedArea = (name: string) => {
+  pickedArea = name;
+};
+export const getPickedArea = () => pickedArea;

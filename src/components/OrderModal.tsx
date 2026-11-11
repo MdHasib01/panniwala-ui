@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
 import { HOTLINE_NUMBER, HOTLINE_TEL, toBengaliNumber } from '@/src/data/packages';
-import { areaKey, useAreas } from '@/src/lib/areas-api';
+import { areaKey, getPickedArea, useAreas } from '@/src/lib/areas-api';
 import { LocationSelect } from '@/src/account/LocationSelect';
 import { usePackages } from '@/src/lib/packages-api';
 import { api } from '@/src/lib/api';
@@ -71,6 +71,15 @@ export const OrderModal: React.FC<OrderModalProps> = ({
       setPackageId(selectedPackage.id);
     }
   }, [selectedPackage]);
+
+  // A location just checked in a "do you deliver here?" search wins over the saved one.
+  useEffect(() => {
+    if (!isOpen) return;
+    const picked = getPickedArea();
+    const match = picked && areas.find((a) => areaKey(a) === areaKey(picked));
+    if (match) setArea(match);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, areaKeys]);
 
   // Signed-in customers: pre-fill their saved details (never overwrite what they typed).
   const { user } = useAuth();

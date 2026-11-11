@@ -4,6 +4,7 @@ import { Button } from '@/src/components/ui/button';
 import { HOTLINE_NUMBER, HOTLINE_TEL } from '@/src/data/packages';
 import heroImage from '@/src/assets/hero-image.png';
 import { Phone, ShoppingBag } from 'lucide-react';
+import { LocationSearch } from '@/src/components/LocationSearch';
 
 interface HeroProps {
   onOpenOrder: () => void;
@@ -50,6 +51,12 @@ export const Hero: React.FC<HeroProps> = ({ onOpenOrder }) => {
             <p className="text-base sm:text-lg text-slate-600 max-w-xl mx-auto lg:mx-0 leading-relaxed">
               RO ও UV ফিল্টারকৃত ল্যাব-পরীক্ষিত পানি, খুলনা শহরে ফ্রি হোম ডেলিভারি।
             </p>
+
+            {/* Delivery area check */}
+            <div className="max-w-xl mx-auto lg:mx-0 pt-1">
+              <p className="mb-2 text-xs sm:text-sm font-semibold text-slate-700">আপনার এলাকায় ডেলিভারি আছে কি না দেখে নিন</p>
+              <LocationSearch variant="hero" onOpenOrder={onOpenOrder} placeholder="এলাকার নাম লিখুন (যেমন: সোনাডাঙ্গা, Boyra...)" />
+            </div>
 
             {/* Primary CTAs with mobile-first tap sizes */}
             <div className="pt-1 sm:pt-2 flex flex-row items-stretch justify-center lg:justify-start gap-3">

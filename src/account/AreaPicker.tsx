@@ -331,14 +331,22 @@ export function AreaPicker({ id, value, onChange }: { id?: string; value: AreaSe
                     onMouseEnter={() => setActive(results.length)}
                     onClick={startDraft}
                     className={cn(
-                      'flex cursor-pointer items-center gap-3 border-t border-slate-100 px-3.5 py-2.5 text-sm font-semibold text-cyan-700',
-                      active === results.length && 'bg-cyan-50'
+                      'flex cursor-pointer flex-col gap-2 border-t border-slate-100 px-3.5 py-3 sm:flex-row sm:items-center sm:gap-3',
+                      active === results.length && 'bg-cyan-50/60'
                     )}
                   >
-                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-cyan-100">
-                      <Plus className="h-3.5 w-3.5" />
+                    <span className="min-w-0 flex-1 text-sm text-slate-600">
+                      <span className="font-semibold text-slate-800">“{q}”</span> তালিকায় খুঁজে পাচ্ছেন না?
                     </span>
-                    <span className="min-w-0 flex-1">“{q}” তালিকায় নেই? নতুন এলাকা হিসেবে যোগ করুন</span>
+                    <span
+                      className={cn(
+                        'inline-flex h-9 shrink-0 items-center justify-center gap-1.5 rounded-lg bg-cyan-600 px-4 text-sm font-bold text-white shadow-sm shadow-cyan-600/25 transition-colors hover:bg-cyan-700',
+                        active === results.length && 'ring-2 ring-cyan-500/30 ring-offset-1'
+                      )}
+                    >
+                      <Plus className="h-4 w-4" />
+                      এই এলাকা যোগ করুন
+                    </span>
                   </li>
                 )}
               </ul>
