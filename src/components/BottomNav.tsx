@@ -201,7 +201,7 @@ export const BottomNav: React.FC = () => {
               <span className="relative">
                 <tab.icon className="h-[22px] w-[22px]" strokeWidth={active ? 2.4 : 2} />
                 {!!tab.badge && tab.badge > 0 && (
-                  <span className="absolute -top-1.5 -right-2.5 min-w-4 rounded-full bg-rose-500 px-1 text-center text-[10px] leading-4 font-bold text-white ring-2 ring-white">
+                  <span className="absolute -top-1.5 -right-2.5 min-w-4 rounded-full bg-rose-500 px-1 text-center text-[10px] leading-4 font-bold font-hind text-white ring-2 ring-white">
                     {tab.badge}
                   </span>
                 )}

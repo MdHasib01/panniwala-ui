@@ -358,8 +358,8 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                           selectPackage(pkg.id);
                         }
                       }}
-                      className={`flex items-center gap-3 p-3 cursor-pointer transition-colors outline-none focus-visible:bg-slate-50 ${
-                        isSelected ? 'bg-cyan-50/60' : 'bg-white hover:bg-slate-50'
+                      className={`flex items-center gap-3 p-3 cursor-pointer transition-colors outline-none focus-visible:bg-slate-50 border-l-[3px] ${
+                        isSelected ? 'bg-cyan-50 border-l-cyan-600' : 'bg-white border-l-transparent hover:bg-slate-50'
                       }`}
                     >
                       <img
@@ -377,7 +377,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
 
                       {isSelected ? (
                         <div
-                          className="flex items-center shrink-0 rounded-xl border border-cyan-600 bg-white"
+                          className="flex items-center shrink-0 rounded-xl bg-cyan-600 text-white"
                           onClick={(e) => e.stopPropagation()}
                         >
                           <button
@@ -385,11 +385,11 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                             aria-label="পরিমাণ কমান"
                             disabled={quantity <= 1}
                             onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                            className="w-9 h-9 flex items-center justify-center text-cyan-700 hover:bg-cyan-50 rounded-l-xl disabled:text-slate-300 disabled:hover:bg-transparent transition-colors"
+                            className="w-9 h-9 flex items-center justify-center hover:bg-cyan-700 rounded-l-xl disabled:text-white/40 disabled:hover:bg-transparent transition-colors"
                           >
                             <Minus className="w-4 h-4" />
                           </button>
-                          <span className="w-8 text-center text-sm font-bold text-slate-900 tabular-nums" aria-live="polite">
+                          <span className="w-8 text-center text-sm font-bold tabular-nums" aria-live="polite">
                             {toBengaliNumber(quantity)}
                           </span>
                           <button
@@ -397,13 +397,13 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                             aria-label="পরিমাণ বাড়ান"
                             disabled={quantity >= MAX_QTY}
                             onClick={() => setQuantity((q) => Math.min(MAX_QTY, q + 1))}
-                            className="w-9 h-9 flex items-center justify-center text-cyan-700 hover:bg-cyan-50 rounded-r-xl disabled:text-slate-300 disabled:hover:bg-transparent transition-colors"
+                            className="w-9 h-9 flex items-center justify-center hover:bg-cyan-700 rounded-r-xl disabled:text-white/40 disabled:hover:bg-transparent transition-colors"
                           >
                             <Plus className="w-4 h-4" />
                           </button>
                         </div>
                       ) : (
-                        <span className="shrink-0 h-9 px-3.5 inline-flex items-center rounded-xl border border-slate-300 text-xs font-semibold text-slate-700">
+                        <span className="shrink-0 h-9 px-3.5 inline-flex items-center rounded-xl border border-cyan-600 text-xs font-semibold text-cyan-700">
                           বেছে নিন
                         </span>
                       )}
@@ -416,13 +416,13 @@ export const OrderModal: React.FC<OrderModalProps> = ({
               {currentPkg.depositRequired && (
                 <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
                   <span className="text-xs font-semibold text-slate-700">আপনার কাছে কি খালি জার আছে?</span>
-                  <div className="inline-flex rounded-xl border border-slate-200 p-0.5 bg-slate-50">
+                  <div className="inline-flex rounded-xl border border-slate-200 p-0.5 bg-white">
                     <button
                       type="button"
                       aria-pressed={hasEmptyJar}
                       onClick={() => setHasEmptyJar(true)}
                       className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
-                        hasEmptyJar ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500'
+                        hasEmptyJar ? 'bg-cyan-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
                       }`}
                     >
                       হ্যাঁ, আছে
@@ -432,7 +432,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                       aria-pressed={!hasEmptyJar}
                       onClick={() => setHasEmptyJar(false)}
                       className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
-                        !hasEmptyJar ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500'
+                        !hasEmptyJar ? 'bg-cyan-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
                       }`}
                     >
                       না, নতুন জার
