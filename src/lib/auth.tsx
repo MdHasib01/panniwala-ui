@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { api, setUnauthorizedHandler, tokenStore } from '@/src/lib/api';
-import type { User } from './models';
+import type { NewLocation, User } from './models';
 
 interface AuthResponse {
   token: string;
@@ -21,7 +21,7 @@ export interface SupplierRegisterInput extends RegisterInput {
   businessName: string;
   serviceAreas: string[];
   /** Areas not on the list yet — sent to the admin as requests. */
-  newAreas?: string[];
+  newAreas?: NewLocation[];
   tradeLicense?: string;
 }
 

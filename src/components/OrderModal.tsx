@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
 import { HOTLINE_NUMBER, HOTLINE_TEL, toBengaliNumber } from '@/src/data/packages';
-import { useAreas } from '@/src/lib/areas-api';
+import { areaKey, useAreas } from '@/src/lib/areas-api';
+import { LocationSelect } from '@/src/account/LocationSelect';
 import { usePackages } from '@/src/lib/packages-api';
 import { api } from '@/src/lib/api';
 import { useAuth } from '@/src/lib/auth';
@@ -48,12 +49,13 @@ export const OrderModal: React.FC<OrderModalProps> = ({
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const areas = useAreas();
-  const [area, setArea] = useState(areas[0] ?? '');
+  const [area, setArea] = useState('');
   // Keep the choice valid when the live list arrives or an area is removed.
+  const areaKeys = areas.map(areaKey).join('|');
   useEffect(() => {
-    if (areas.length && !areas.includes(area)) setArea(areas[0]);
+    if (area && !areas.some((a) => areaKey(a) === areaKey(area))) setArea('');
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [areas]);
+  }, [areaKeys]);
   const [address, setAddress] = useState('');
   const [deliverySlot, setDeliverySlot] = useState('আজকেই দ্রুততম ডেলিভারি (১ ঘণ্টার মধ্যে)');
   const [paymentMethod, setPaymentMethod] = useState<'cod' | 'bkash' | 'nagad'>('cod');
@@ -77,8 +79,9 @@ export const OrderModal: React.FC<OrderModalProps> = ({
     setName((v) => v || user.name);
     setPhone((v) => v || user.phone || '');
     setAddress((v) => v || user.address || '');
-    if (user.area && areas.includes(user.area)) setArea((v) => (v === areas[0] ? user.area! : v));
-  }, [isOpen, user, areas]);
+    if (user.area && areas.some((a) => areaKey(a) === areaKey(user.area!))) setArea((v) => v || user.area!);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, user, areaKeys]);
 
   if (!isOpen) return null;
 
@@ -100,6 +103,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
     } else if (!/^01[3-9]\d{8}$/.test(phone.replace(/[\s-]/g, ''))) {
       errs.phone = 'সঠিক ১১ ডিজিটের মোবাইল নম্বর দিন (যেমন: 017XXXXXXXX)';
     }
+    if (!area) errs.area = 'আপনার ডেলিভারি এলাকা নির্বাচন করুন';
     if (!address.trim()) {
       errs.address = 'বাসা/ফ্ল্যাট নং ও রাস্তার বিস্তারিত ঠিকানা দিন';
     }
@@ -455,18 +459,14 @@ export const OrderModal: React.FC<OrderModalProps> = ({
               {/* Delivery Area Dropdown */}
               <div className="space-y-1">
                 <label className="text-xs font-semibold text-slate-700">ডেলিভারি এলাকা নির্বাচন করুন *</label>
-                <select
+                <LocationSelect
                   id="order-area-select"
                   value={area}
-                  onChange={(e) => setArea(e.target.value)}
-                  className="w-full h-11 px-3.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-800 focus:outline-cyan-500"
-                >
-                  {areas.map((loc, idx) => (
-                    <option key={idx} value={loc}>
-                      {loc}
-                    </option>
-                  ))}
-                </select>
+                  onChange={setArea}
+                  placeholder="এলাকার নাম লিখে খুঁজুন (বাংলা / English)"
+                  className={errors.area ? '[&>button]:border-rose-500' : ''}
+                />
+                {errors.area && <p className="text-[11px] text-rose-500">{errors.area}</p>}
               </div>
 
               {/* Full Address */}

@@ -9,7 +9,6 @@ import { Button } from '@/src/admin/components/ui/button';
 import { Input } from '@/src/admin/components/ui/input';
 import { Label } from '@/src/admin/components/ui/label';
 import { Skeleton } from '@/src/admin/components/ui/skeleton';
-import { Checkbox } from '@/src/admin/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/src/admin/components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/src/admin/components/ui/dialog';
 import {
@@ -22,7 +21,8 @@ import {
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/src/admin/components/ui/table';
 import { cn } from '@/src/lib/utils';
 import { api } from '@/src/lib/api';
-import { invalidateAreas, useAreas } from '@/src/lib/areas-api';
+import { invalidateAreas } from '@/src/lib/areas-api';
+import { AdminLocationChecklist, AdminLocationSelect } from '../components/location-fields';
 import { AreaRequestDecider, AreaRequestHistory, pendingRequests, toAreaDecisions, type AreaDecisions } from '../components/area-requests';
 import { useAuth } from '@/src/lib/auth';
 import { useSocket, useSocketEvent } from '@/src/lib/socket';
@@ -51,7 +51,6 @@ export function UserDialog({
   const [form, setForm] = React.useState(blank);
   const [areas, setAreas] = React.useState<string[]>([]);
   const [decisions, setDecisions] = React.useState<AreaDecisions>({});
-  const areaOptions = useAreas();
   const [saving, setSaving] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
 
@@ -170,7 +169,7 @@ export function UserDialog({
               <>
                 <div className="grid gap-2">
                   <Label htmlFor="u-area">Area</Label>
-                  <Input id="u-area" value={form.area} onChange={text('area')} />
+                  <AdminLocationSelect id="u-area" value={form.area} onChange={(area) => setForm((f) => ({ ...f, area }))} />
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="u-address">Address</Label>
@@ -201,14 +200,7 @@ export function UserDialog({
               )}
               <div className="grid gap-2">
                 <Label>Service areas</Label>
-                <div className="grid max-h-40 gap-2 overflow-y-auto sm:grid-cols-2">
-                  {areaOptions.map((a) => (
-                    <label key={a} className="flex cursor-pointer items-center gap-2 text-sm">
-                      <Checkbox checked={areas.includes(a)} onCheckedChange={(v) => setAreas((p) => (v ? [...p, a] : p.filter((x) => x !== a)))} />
-                      {a}
-                    </label>
-                  ))}
-                </div>
+                <AdminLocationChecklist value={areas} onChange={setAreas} />
               </div>
               {(initial?.supplier?.areaRequests ?? []).some((r) => r.status !== 'pending') && (
                 <div className="grid gap-2">

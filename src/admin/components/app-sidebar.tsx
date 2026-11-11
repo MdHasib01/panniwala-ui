@@ -72,7 +72,7 @@ const NAV: { label: string; items: NavItem[] }[] = [
       { title: 'Packages', to: '/admin/packages', icon: PackageIcon, roles: ['admin'] },
       { title: 'Users', to: '/admin/users', icon: Users, roles: ['admin'] },
       { title: 'Suppliers', to: '/admin/suppliers', icon: Truck, roles: ['admin'], badge: 'suppliers' },
-      { title: 'Areas', to: '/admin/areas', icon: MapPin, roles: ['admin'], badge: 'areas' },
+      { title: 'Locations', to: '/admin/areas', icon: MapPin, roles: ['admin'], badge: 'areas' },
     ],
   },
   {

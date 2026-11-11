@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { Loader2, LogOut, Clock3, ShieldCheck } from 'lucide-react';
-import { useAreas } from '@/src/lib/areas-api';
 import { cn } from '@/src/lib/utils';
 import { api } from '@/src/lib/api';
 import { useAuth } from '@/src/lib/auth';
@@ -12,7 +11,8 @@ import type { AreaRequest, User } from '@/src/lib/models';
 import { authErrorBn, isBdPhone, normalizeBdPhone } from '@/src/lib/phone';
 import { ROLE_LABEL_BN, initialsOf } from '@/src/site/context';
 import { AccountHeader, AccountPage, Field, fieldClass } from './ui';
-import { AreaPicker, splitAreas } from './AreaPicker';
+import { AreaPicker, emptySelection, toAreaBody, type AreaSelection } from './AreaPicker';
+import { LocationSelect } from './LocationSelect';
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -71,8 +71,7 @@ function DetailsForm({ user }: { user: User }) {
     businessName: user.supplier?.businessName ?? '',
     tradeLicense: user.supplier?.tradeLicense ?? '',
   });
-  const [areas, setAreas] = useState<string[]>(user.supplier?.serviceAreas ?? []);
-  const areaOptions = useAreas();
+  const [areas, setAreas] = useState<AreaSelection>(emptySelection(user.supplier?.serviceAreas ?? []));
   const [saving, setSaving] = useState(false);
   const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => setForm((f) => ({ ...f, [k]: e.target.value }));
 
@@ -87,12 +86,12 @@ function DetailsForm({ user }: { user: User }) {
     setSaving(true);
     try {
       const body: Record<string, unknown> = { name: form.name, phone, email: form.email.trim() };
-      if (isSupplier) Object.assign(body, { businessName: form.businessName, tradeLicense: form.tradeLicense, ...splitAreas(areas, areaOptions) });
+      if (isSupplier) Object.assign(body, { businessName: form.businessName, tradeLicense: form.tradeLicense, ...toAreaBody(areas) });
       else Object.assign(body, { area: form.area, address: form.address });
       const { user: updated } = await api.patch<{ user: User }>('/auth/me', body);
       setUser(updated);
       // New areas became requests; keep only the approved ones selected.
-      if (isSupplier) setAreas(updated.supplier?.serviceAreas ?? []);
+      if (isSupplier) setAreas(emptySelection(updated.supplier?.serviceAreas ?? []));
       toast.success('প্রোফাইল সেভ হয়েছে');
     } catch (err) {
       toast.error(authErrorBn((err as Error).message));
@@ -120,10 +119,7 @@ function DetailsForm({ user }: { user: User }) {
             </Field>
           ) : (
             <Field label="এলাকা" htmlFor="p-area">
-              <select id="p-area" className={fieldClass} value={form.area} onChange={set('area')}>
-                <option value="">এলাকা নির্বাচন করুন</option>
-                {areaOptions.map((a) => <option key={a} value={a}>{a}</option>)}
-              </select>
+              <LocationSelect id="p-area" value={form.area} onChange={(area) => setForm((f) => ({ ...f, area }))} allowClear />
             </Field>
           )}
         </div>
@@ -132,7 +128,7 @@ function DetailsForm({ user }: { user: User }) {
             <Field label="ট্রেড লাইসেন্স নং" htmlFor="p-lic">
               <input id="p-lic" className={fieldClass} value={form.tradeLicense} onChange={set('tradeLicense')} />
             </Field>
-            <Field label="ডেলিভারি এলাকা" htmlFor="p-areas" hint="তালিকায় না থাকলে নতুন এলাকার নাম লিখে যোগ করুন">
+            <Field label="ডেলিভারি এলাকা" htmlFor="p-areas" hint="বাংলা বা ইংরেজিতে খুঁজুন; তালিকায় না থাকলে নতুন এলাকা যোগ করুন">
               <AreaPicker id="p-areas" value={areas} onChange={setAreas} />
             </Field>
             <AreaRequestHistory requests={user.supplier?.areaRequests ?? []} />

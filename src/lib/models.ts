@@ -31,21 +31,61 @@ export interface User {
 
 export type AreaRequestStatus = 'pending' | 'approved' | 'rejected';
 
+/** A delivery zone: a group of locations (GET /api/areas). */
+export interface Zone {
+  _id: string;
+  /** Display name: Bengali if set, otherwise English. */
+  name: string;
+  nameEn: string;
+  nameBn?: string;
+  minMinutes: number;
+  maxMinutes: number;
+  sortOrder: number;
+}
+
+/** A delivery location (GET /api/areas). Users and orders store its `name`. */
+export interface Location {
+  _id: string;
+  /** Display name: Bengali if set, otherwise English. */
+  name: string;
+  /** Missing only on locations created before English names were required. */
+  nameEn?: string;
+  nameBn?: string;
+  aliases: string[];
+  zone: string | null;
+  sortOrder: number;
+}
+
+/** A location that isn't on the list yet, proposed by a supplier. */
+export interface NewLocation {
+  nameEn: string;
+  nameBn?: string;
+  aliases?: string[];
+  zone?: string | null;
+}
+
 export interface AreaRequest {
   _id: string;
   name: string;
+  nameEn?: string;
+  nameBn?: string;
+  aliases?: string[];
+  zone?: string | null;
   status: AreaRequestStatus;
   requestedAt: string;
   decidedAt?: string;
 }
 
-/** A delivery area as the admin manages it (GET /api/areas/manage). */
-export interface ManagedArea {
-  _id: string;
-  name: string;
-  sortOrder: number;
+/** A location as the admin manages it (GET /api/areas/manage). */
+export interface ManagedArea extends Location {
   supplierCount: number;
   customerCount: number;
+  createdAt: string;
+}
+
+/** A zone as the admin manages it (GET /api/areas/manage). */
+export interface ManagedZone extends Zone {
+  areaCount: number;
   createdAt: string;
 }
 

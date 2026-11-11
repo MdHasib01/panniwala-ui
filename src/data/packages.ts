@@ -1,7 +1,6 @@
 import package1Img from '@/src/assets/package1.png';
 import package2Img from '@/src/assets/package2.png';
 import package4Img from '@/src/assets/package4.png';
-import defaultAreas from './areas.default.json';
 
 /**
  * Bundled artwork for the default packages, keyed by slug. The package data itself
@@ -13,11 +12,7 @@ export const PACKAGE_IMAGES: Record<string, string> = {
   'corporate-monthly': package4Img.src,
 };
 
-/**
- * Default delivery areas. The live list is managed by admins (GET /api/areas, see
- * src/lib/areas-api.ts); this copy seeds the database and is the offline fallback.
- */
-export const KHULNA_AREAS: string[] = defaultAreas;
+// Default delivery zones and locations: see src/data/locations.default.json and src/lib/areas-api.ts.
 
 
 export const HOTLINE_NUMBER = '০১৭০০-১২৩৪৫৬';

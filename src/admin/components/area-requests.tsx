@@ -4,6 +4,20 @@ import { Button } from '@/src/admin/components/ui/button';
 import { cn } from '@/src/lib/utils';
 import type { AreaRequest } from '@/src/lib/models';
 import { formatDate } from '../lib/format';
+import { useLocations } from '@/src/lib/areas-api';
+
+/** "English name · Zone" under a requested location's display name. */
+export function RequestDetails({ request }: { request: AreaRequest }) {
+  const { zones } = useLocations();
+  const zone = request.zone ? zones.find((z) => z._id === request.zone) : undefined;
+  const parts = [
+    request.nameEn && request.nameEn !== request.name ? request.nameEn : null,
+    request.aliases?.length ? `aka ${request.aliases.join(', ')}` : null,
+    zone ? zone.name : null,
+  ].filter(Boolean);
+  if (!parts.length) return null;
+  return <span className="text-muted-foreground block truncate text-xs font-normal no-underline">{parts.join(' · ')}</span>;
+}
 
 export type AreaDecision = 'approved' | 'rejected';
 export type AreaDecisions = Record<string, AreaDecision>;
@@ -43,7 +57,10 @@ export function AreaRequestDecider({
               d === 'rejected' && 'border-destructive/40 bg-destructive/5'
             )}
           >
-            <span className={cn('min-w-0 flex-1 truncate font-medium', d === 'rejected' && 'text-muted-foreground line-through')}>{r.name}</span>
+            <span className="min-w-0 flex-1">
+              <span className={cn('block truncate font-medium', d === 'rejected' && 'text-muted-foreground line-through')}>{r.name}</span>
+              <RequestDetails request={r} />
+            </span>
             {!compact && <span className="text-muted-foreground hidden shrink-0 text-xs sm:inline">{formatDate(r.requestedAt, false)}</span>}
             <Button
               type="button"

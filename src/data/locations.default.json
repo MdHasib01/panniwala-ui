@@ -1,0 +1,80 @@
+{
+  "zones": [
+    { "seedId": "z-sonadanga-boyra", "nameEn": "Sonadanga & Boyra Zone", "nameBn": "সোনাডাঙ্গা ও বয়রা জোন", "minMinutes": 25, "maxMinutes": 35 },
+    { "seedId": "z-khalishpur-daulatpur", "nameEn": "Khalishpur & Daulatpur Zone", "nameBn": "খালিশপুর ও দৌলতপুর জোন", "minMinutes": 30, "maxMinutes": 40 },
+    { "seedId": "z-sadar-rupsha", "nameEn": "Sadar & Rupsha Zone", "nameBn": "সদর ও রূপসা জোন", "minMinutes": 25, "maxMinutes": 35 },
+    { "seedId": "z-gollamari-ku", "nameEn": "Gollamari & Khulna University Zone", "nameBn": "গল্লামারী ও খুলনা বিশ্ববিদ্যালয় জোন", "minMinutes": 30, "maxMinutes": 40 },
+    { "seedId": "z-tutpara-labanchara", "nameEn": "Tutpara & Labanchara Zone", "nameBn": "টুটপাড়া ও লবণচরা জোন", "minMinutes": 30, "maxMinutes": 40 },
+    { "seedId": "z-deyana-maheshwarpasha", "nameEn": "Deyana & Maheshwarpasha Zone", "nameBn": "দেয়ানা ও মহেশ্বরপাশা জোন", "minMinutes": 35, "maxMinutes": 45 },
+    { "seedId": "z-atra-shiromoni", "nameEn": "Atra & Shiromoni Zone", "nameBn": "আটরা ও শিরোমণি জোন", "minMinutes": 40, "maxMinutes": 50 },
+    { "seedId": "z-arongghata-jogipol", "nameEn": "Arongghata & Jogipol Zone", "nameBn": "আড়ংঘাটা ও যোগীপোল জোন", "minMinutes": 40, "maxMinutes": 50 },
+    { "seedId": "z-phultala", "nameEn": "Phultala Zone", "nameBn": "ফুলতলা জোন", "minMinutes": 45, "maxMinutes": 60 },
+    { "seedId": "z-harintana-batiaghata", "nameEn": "Harintana & Batiaghata Zone", "nameBn": "হরিণটানা ও বটিয়াঘাটা জোন", "minMinutes": 40, "maxMinutes": 55 },
+    { "seedId": "z-rupsha-east-dighalia", "nameEn": "Rupsha (East) & Dighalia Zone", "nameBn": "রূপসা (পূর্ব) ও দিঘলিয়া জোন", "minMinutes": 45, "maxMinutes": 60 }
+  ],
+  "areas": [
+    { "seedId": "a-sonadanga-ra", "zone": "z-sonadanga-boyra", "nameEn": "Sonadanga R/A (Phase 1 & 2)", "nameBn": "সোনাডাঙ্গা আবাসিক (১ম ও ২য় ফেজ)", "aliases": ["Sonadanga", "Shonadanga", "সোনাডাঙ্গা"] },
+    { "seedId": "a-boyra-mujgunni", "zone": "z-sonadanga-boyra", "nameEn": "Boyra & Mujgunni", "nameBn": "বয়রা ও মুজগুন্নি", "aliases": ["Boyra", "বয়রা", "Boira", "Mujgunni", "বয়রা বাজার"] },
+    { "seedId": "a-boikali", "zone": "z-sonadanga-boyra", "nameEn": "Boikali", "nameBn": "বৈকালী", "aliases": ["Boikali Mor"] },
+    { "seedId": "a-rayermohol", "zone": "z-sonadanga-boyra", "nameEn": "Rayermohol", "nameBn": "রায়েরমহল", "aliases": ["Rayer Mahal"] },
+    { "seedId": "a-gobarchaka", "zone": "z-sonadanga-boyra", "nameEn": "Gobarchaka", "nameBn": "গোবরচাকা", "aliases": ["Gobor Chaka"] },
+    { "seedId": "a-sheikhpara", "zone": "z-sonadanga-boyra", "nameEn": "Sheikhpara", "nameBn": "শেখপাড়া", "aliases": ["Shekhpara"] },
+    { "seedId": "a-khulna-medical", "zone": "z-sonadanga-boyra", "nameEn": "Khulna Medical College Area", "nameBn": "খুলনা মেডিকেল কলেজ এলাকা", "aliases": ["KMC", "Medical"] },
+
+    { "seedId": "a-khalishpur-housing", "zone": "z-khalishpur-daulatpur", "nameEn": "Khalishpur Housing Estate", "nameBn": "খালিশপুর হাউজিং এস্টেট", "aliases": ["Khalishpur", "খালিশপুর"] },
+    { "seedId": "a-bidc-road", "zone": "z-khalishpur-daulatpur", "nameEn": "BIDC Road", "nameBn": "বিআইডিসি রোড", "aliases": ["B.I.D.C Road"] },
+    { "seedId": "a-daulatpur-fulbarigate", "zone": "z-khalishpur-daulatpur", "nameEn": "Daulatpur & Fulbarigate", "nameBn": "দৌলতপুর ও ফুলবাড়ীগেট", "aliases": ["Daulatpur", "Doulatpur", "Fulbarigate", "Phulbarigate", "দৌলতপুর"] },
+    { "seedId": "a-kuet-teligati", "zone": "z-khalishpur-daulatpur", "nameEn": "KUET & Teligati", "nameBn": "কুয়েট ও তেলিগাতী এলাকা", "aliases": ["KUET", "Teligati", "কুয়েট"] },
+    { "seedId": "a-notun-rasta", "zone": "z-khalishpur-daulatpur", "nameEn": "Notun Rasta Mor", "nameBn": "নতুন রাস্তা মোড়", "aliases": ["New Road Mor"] },
+    { "seedId": "a-goalkhali", "zone": "z-khalishpur-daulatpur", "nameEn": "Goalkhali", "nameBn": "গোয়ালখালী", "aliases": ["Goyalkhali"] },
+    { "seedId": "a-peoples-mor", "zone": "z-khalishpur-daulatpur", "nameEn": "Peoples Mor", "nameBn": "পিপলস মোড়", "aliases": ["People's Mor"] },
+
+    { "seedId": "a-shibbari-kda", "zone": "z-sadar-rupsha", "nameEn": "Shibbari Mor & KDA Avenue", "nameBn": "শিববাড়ি মোড় ও কেডিএ এভিনিউ", "aliases": ["Shibbari", "KDA Avenue", "শিববাড়ি"] },
+    { "seedId": "a-royal-shantidham", "zone": "z-sadar-rupsha", "nameEn": "Royal Mor & Shantidham Mor", "nameBn": "রয়্যাল মোড় ও শান্তিধাম মোড়", "aliases": ["Royal Mor", "Shantidham"] },
+    { "seedId": "a-nirala", "zone": "z-sadar-rupsha", "nameEn": "Nirala R/A", "nameBn": "নিরালা আবাসিক এলাকা", "aliases": ["Nirala", "নিরালা"] },
+    { "seedId": "a-moylapota", "zone": "z-sadar-rupsha", "nameEn": "Moylapota & Ahsan Ahmed Road", "nameBn": "ময়লাপোতা ও আহসান আহমেদ রোড", "aliases": ["Moylapota", "Ahsan Ahmed Road", "ময়লাপোতা"] },
+    { "seedId": "a-dakbangla", "zone": "z-sadar-rupsha", "nameEn": "Dakbangla & Picture Palace", "nameBn": "ডাকবাংলা ও পিকচার প্যালেস", "aliases": ["Dak Bangla", "Picture Palace"] },
+    { "seedId": "a-rupsha-ghat", "zone": "z-sadar-rupsha", "nameEn": "Rupsha & Rupsha Ghat", "nameBn": "রূপসা ও রূপসা ঘাট", "aliases": ["Rupsa", "Rupsha Ghat", "রূপসা ঘাট"] },
+    { "seedId": "a-boro-bazar", "zone": "z-sadar-rupsha", "nameEn": "Notun Bazar & Boro Bazar", "nameBn": "নতুন বাজার ও বড় বাজার", "aliases": ["Boro Bazar", "Bara Bazar", "New Market"] },
+    { "seedId": "a-khan-jahan-ali-road", "zone": "z-sadar-rupsha", "nameEn": "Khan Jahan Ali Road", "nameBn": "খান জাহান আলী রোড", "aliases": ["KJA Road", "Khanjahan Ali Road"] },
+    { "seedId": "a-sat-rasta", "zone": "z-sadar-rupsha", "nameEn": "Sat Rasta Mor", "nameBn": "সাত রাস্তা মোড়", "aliases": ["Satrasta"] },
+    { "seedId": "a-babu-khan-road", "zone": "z-sadar-rupsha", "nameEn": "Babu Khan Road", "nameBn": "বাবু খান রোড", "aliases": ["Babukhan Road"] },
+    { "seedId": "a-hazi-mohsin-road", "zone": "z-sadar-rupsha", "nameEn": "Hazi Mohsin Road", "nameBn": "হাজী মহসিন রোড", "aliases": ["Haji Mohsin Road"] },
+
+    { "seedId": "a-gollamari", "zone": "z-gollamari-ku", "nameEn": "Gollamari & Zero Point", "nameBn": "গল্লামারী ও জিরো পয়েন্ট", "aliases": ["Gollamari", "Zero Point", "Golamari", "গল্লামারী"] },
+    { "seedId": "a-khulna-university", "zone": "z-gollamari-ku", "nameEn": "Khulna University", "nameBn": "খুলনা বিশ্ববিদ্যালয়", "aliases": ["KU", "খুবি"] },
+    { "seedId": "a-sachibunia", "zone": "z-gollamari-ku", "nameEn": "Sachibunia", "nameBn": "সাচিবুনিয়া", "aliases": ["Sachibuniya"] },
+    { "seedId": "a-banorgati", "zone": "z-gollamari-ku", "nameEn": "Banorgati", "nameBn": "বানরগাতী", "aliases": ["Banargati"] },
+    { "seedId": "a-mohammadnagar", "zone": "z-gollamari-ku", "nameEn": "Mohammadnagar", "nameBn": "মোহাম্মদনগর", "aliases": ["Muhammadnagar"] },
+
+    { "seedId": "a-tutpara", "zone": "z-tutpara-labanchara", "nameEn": "Tutpara", "nameBn": "টুটপাড়া", "aliases": ["Tootpara"] },
+    { "seedId": "a-labanchara", "zone": "z-tutpara-labanchara", "nameEn": "Labanchara", "nameBn": "লবণচরা", "aliases": ["Lobonchora"] },
+    { "seedId": "a-mistripara", "zone": "z-tutpara-labanchara", "nameEn": "Mistripara", "nameBn": "মিস্ত্রিপাড়া", "aliases": ["Mistri Para"] },
+    { "seedId": "a-baghmara", "zone": "z-tutpara-labanchara", "nameEn": "Baghmara", "nameBn": "বাগমারা", "aliases": ["Bagmara"] },
+    { "seedId": "a-customs-ghat", "zone": "z-tutpara-labanchara", "nameEn": "Customs Ghat", "nameBn": "কাস্টমস ঘাট", "aliases": ["Custom Ghat"] },
+
+    { "seedId": "a-deyana", "zone": "z-deyana-maheshwarpasha", "nameEn": "Deyana", "nameBn": "দেয়ানা", "aliases": ["Deana", "Dewana"] },
+    { "seedId": "a-maheshwarpasha", "zone": "z-deyana-maheshwarpasha", "nameEn": "Maheshwarpasha", "nameBn": "মহেশ্বরপাশা", "aliases": ["Moheshwarpasha"] },
+    { "seedId": "a-pabla", "zone": "z-deyana-maheshwarpasha", "nameEn": "Pabla", "nameBn": "পাবলা", "aliases": [] },
+    { "seedId": "a-mirerdanga", "zone": "z-deyana-maheshwarpasha", "nameEn": "Mirerdanga", "nameBn": "মীরেরডাঙ্গা", "aliases": ["Mirer Danga"] },
+
+    { "seedId": "a-atra", "zone": "z-atra-shiromoni", "nameEn": "Atra", "nameBn": "আটরা", "aliases": ["Atra Industrial Area"] },
+    { "seedId": "a-gilatola", "zone": "z-atra-shiromoni", "nameEn": "Gilatola", "nameBn": "গিলাতলা", "aliases": ["Gilatala"] },
+    { "seedId": "a-shiromoni", "zone": "z-atra-shiromoni", "nameEn": "Shiromoni", "nameBn": "শিরোমণি", "aliases": ["Shiromani"] },
+
+    { "seedId": "a-arongghata", "zone": "z-arongghata-jogipol", "nameEn": "Arongghata", "nameBn": "আড়ংঘাটা", "aliases": ["Aranghata"] },
+    { "seedId": "a-jogipol", "zone": "z-arongghata-jogipol", "nameEn": "Jogipol", "nameBn": "যোগীপোল", "aliases": ["Jogipole"] },
+
+    { "seedId": "a-phultala", "zone": "z-phultala", "nameEn": "Phultala Bazar", "nameBn": "ফুলতলা বাজার", "aliases": ["Fultala", "Phultala"] },
+    { "seedId": "a-damodar", "zone": "z-phultala", "nameEn": "Damodar", "nameBn": "দামোদর", "aliases": [] },
+
+    { "seedId": "a-harintana", "zone": "z-harintana-batiaghata", "nameEn": "Harintana", "nameBn": "হরিণটানা", "aliases": ["Horintana"] },
+    { "seedId": "a-batiaghata", "zone": "z-harintana-batiaghata", "nameEn": "Batiaghata", "nameBn": "বটিয়াঘাটা", "aliases": ["Botiaghata"] },
+    { "seedId": "a-jalma", "zone": "z-harintana-batiaghata", "nameEn": "Jalma", "nameBn": "জলমা", "aliases": [] },
+
+    { "seedId": "a-rupsha-upazila", "zone": "z-rupsha-east-dighalia", "nameEn": "Rupsha Upazila", "nameBn": "রূপসা উপজেলা", "aliases": ["Rupsha East", "Rupsha Bridge"] },
+    { "seedId": "a-alaipur", "zone": "z-rupsha-east-dighalia", "nameEn": "Alaipur", "nameBn": "আলাইপুর", "aliases": [] },
+    { "seedId": "a-dighalia", "zone": "z-rupsha-east-dighalia", "nameEn": "Dighalia", "nameBn": "দিঘলিয়া", "aliases": ["Digholia"] },
+    { "seedId": "a-senhati", "zone": "z-rupsha-east-dighalia", "nameEn": "Senhati", "nameBn": "সেনহাটি", "aliases": [] }
+  ]
+}
