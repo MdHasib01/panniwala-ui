@@ -6,6 +6,16 @@ import heroImage from '@/src/assets/hero-image.png';
 import { Phone, ShoppingBag } from 'lucide-react';
 import { LocationSearch } from '@/src/components/LocationSearch';
 
+// Rising bubbles around the hero jar: horizontal position, size, duration, start delay, rise height.
+const HERO_BUBBLES = [
+  { x: '14%', s: '10px', d: '7s', delay: '0s', rise: '-240px' },
+  { x: '26%', s: '6px', d: '5.5s', delay: '2.2s', rise: '-200px' },
+  { x: '48%', s: '8px', d: '6.5s', delay: '4s', rise: '-280px' },
+  { x: '68%', s: '12px', d: '8s', delay: '1s', rise: '-300px' },
+  { x: '82%', s: '7px', d: '6s', delay: '3.2s', rise: '-220px' },
+  { x: '90%', s: '5px', d: '5s', delay: '5s', rise: '-180px' },
+];
+
 interface HeroProps {
   onOpenOrder: () => void;
 }
@@ -110,20 +120,43 @@ export const Hero: React.FC<HeroProps> = ({ onOpenOrder }) => {
           <div className="lg:col-span-5 relative flex items-center justify-center">
             
             {/* Ambient Water Aura Glow */}
-            <div className="absolute w-72 h-72 sm:w-96 sm:h-96 bg-gradient-to-tr from-cyan-400/25 via-sky-300/20 to-blue-500/15 rounded-full blur-3xl -z-10 scale-95 pointer-events-none" />
+            <div className="hero-aura absolute w-72 h-72 sm:w-96 sm:h-96 bg-gradient-to-tr from-cyan-400/25 via-sky-300/20 to-blue-500/15 rounded-full blur-3xl -z-10 pointer-events-none" />
 
             {/* Hero Image Container - Seamless floating display without any square border */}
             <div className="relative w-full max-w-sm sm:max-w-md lg:max-w-lg flex items-center justify-center py-0 sm:py-4">
-              
-              {/* Main Hero Image from asset */}
-              <Image
-                src={heroSrc}
-                alt="পানি ওয়ালা ১০০% বিশুদ্ধ খাবার পানি"
-                preload
-                sizes="(min-width: 1024px) 512px, (min-width: 640px) 448px, 384px"
-                className="w-full h-auto max-h-[520px] object-contain drop-shadow-2xl transition-transform duration-700 hover:scale-[1.03] select-none"
+
+              {/* Soft ground shadow that shrinks as the jar rises */}
+              <div
+                aria-hidden="true"
+                className="hero-ground-shadow absolute bottom-1 sm:bottom-3 left-1/2 w-3/5 h-5 rounded-[50%] bg-sky-900/25 blur-md pointer-events-none"
               />
 
+              {/* Rising bubbles */}
+              <div aria-hidden="true" className="absolute inset-0 pointer-events-none">
+                {HERO_BUBBLES.map((b, i) => (
+                  <span
+                    key={i}
+                    className="hero-bubble"
+                    style={{ '--x': b.x, '--s': b.s, '--d': b.d, '--delay': b.delay, '--rise': b.rise } as React.CSSProperties}
+                  />
+                ))}
+              </div>
+
+              {/* Floating jar + glossy sheen clipped to the image's own shape */}
+              <div className="hero-float relative w-full transition-[scale] duration-700 hover:scale-[1.03]">
+                <Image
+                  src={heroSrc}
+                  alt="পানি ওয়ালা ১০০% বিশুদ্ধ খাবার পানি"
+                  preload
+                  sizes="(min-width: 1024px) 512px, (min-width: 640px) 448px, 384px"
+                  className="block w-full h-auto max-h-[520px] object-contain drop-shadow-2xl select-none"
+                />
+                <div
+                  aria-hidden="true"
+                  className="hero-sheen absolute inset-0 pointer-events-none"
+                  style={{ maskImage: `url(${heroSrc.src})`, WebkitMaskImage: `url(${heroSrc.src})` }}
+                />
+              </div>
 
             </div>
 
