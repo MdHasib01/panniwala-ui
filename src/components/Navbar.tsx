@@ -329,16 +329,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenOrder }) => {
             )}
           </div>
 
-          {/* Hotline Call Button */}
-          <a
-            id="nav-call-btn"
-            href={`tel:${HOTLINE_TEL}`}
-            className="hidden lg:inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 transition-colors border border-slate-200"
-          >
-            <Phone className="w-3.5 h-3.5 text-cyan-600" />
-            <span className="font-bold font-hind">{HOTLINE_NUMBER}</span>
-          </a>
-
           {/* Order CTA Button (on mobile it lives in the bottom nav) */}
           <Button
             id="nav-order-now-btn"

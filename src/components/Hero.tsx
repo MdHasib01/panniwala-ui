@@ -90,7 +90,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenOrder }) => {
                 className="btn-shine flex-1 sm:flex-none bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-sm sm:text-base shadow-lg shadow-cyan-600/30 hover:shadow-cyan-600/40 px-3 sm:px-8 py-3.5 rounded-xl transition-all"
               >
                 <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5 sm:mr-1 shrink-0" />
-                <span>অর্ডার করুন — ৳৪০</span>
+                <span>অর্ডার করুন</span>
               </Button>
 
               {/* Direct Call CTA */}
