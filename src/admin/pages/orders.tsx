@@ -273,6 +273,11 @@ function OrderSheet({
                 <span className={cn(order.paymentStatus === 'paid' ? 'text-emerald-600 dark:text-emerald-400' : 'text-muted-foreground')}>
                   {order.paymentStatus}
                 </span>
+                {order.transactionId && (
+                  <span className="block">
+                    TrxID <span className="font-mono font-semibold select-all">{order.transactionId}</span>
+                  </span>
+                )}
               </DetailRow>
               {order.notes && <DetailRow icon={StickyNote} label="Notes">{order.notes}</DetailRow>}
               {!isSupplier && order.supplier && (

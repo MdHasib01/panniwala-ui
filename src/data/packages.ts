@@ -19,6 +19,9 @@ export const HOTLINE_NUMBER = '০১৭০০-১২৩৪৫৬';
 export const HOTLINE_TEL = '+8801700123456';
 export const WHATSAPP_NUMBER = '8801700123456';
 
+// TODO: replace with the real bKash personal/merchant number customers Send Money to.
+export const BKASH_NUMBER = '01700123456';
+
 // TODO: replace with the real social media page URLs
 export const SOCIAL_LINKS = {
   facebook: 'https://facebook.com/paniwala',

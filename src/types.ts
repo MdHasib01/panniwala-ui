@@ -32,6 +32,7 @@ export interface CustomerDetails {
   address: string;
   deliverySlot: string;
   paymentMethod: 'cod' | 'bkash' | 'nagad';
+  transactionId?: string;
   notes?: string;
 }
 

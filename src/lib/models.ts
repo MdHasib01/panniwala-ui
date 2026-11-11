@@ -131,6 +131,7 @@ export interface Order {
   deliverySlot?: string;
   paymentMethod: PaymentMethod;
   paymentStatus: PaymentStatus;
+  transactionId?: string;
   notes?: string;
   status: OrderStatus;
   supplier?: (Pick<User, '_id' | 'name' | 'phone' | 'email'> & { supplier?: { businessName?: string } }) | null;
