@@ -145,11 +145,11 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
                 {/* Details */}
                 <div className="px-2.5 pt-4 pb-1.5 flex flex-col flex-1 gap-4">
                   <div>
-                    <h3 className="text-base sm:text-lg font-bold text-slate-900 leading-snug">
+                    <h3 className="text-base sm:text-lg font-bold text-slate-900 leading-snug [font-family:var(--font-hind-siliguri),'Hind_Siliguri',sans-serif]">
                       {pkg.title}
                     </h3>
                     <div className="flex items-baseline gap-1.5 mt-1.5">
-                      <span className="text-3xl font-black text-slate-900 tracking-tight font-sans">
+                      <span className="text-3xl font-bold text-slate-900 tracking-tight [font-family:var(--font-hind-siliguri),'Hind_Siliguri',sans-serif]">
                         ৳{toBengaliNumber(pkg.price)}
                       </span>
                       <span className="text-xs text-slate-500 font-medium">/ {pkg.unit}</span>

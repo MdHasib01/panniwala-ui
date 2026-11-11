@@ -3,6 +3,11 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@theme {
+  --font-sans: var(--font-hind-siliguri), 'Hind Siliguri', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-hind: var(--font-hind-siliguri), 'Hind Siliguri', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
 @layer base {
   * {
     font-family: var(--font-hind-siliguri), 'Hind Siliguri', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
