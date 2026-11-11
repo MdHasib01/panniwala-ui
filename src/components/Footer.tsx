@@ -1,17 +1,19 @@
 import React from 'react';
+import Link from 'next/link';
+import { BrandLogo } from '@/src/components/BrandLogo';
 import {
   HOTLINE_NUMBER,
   HOTLINE_TEL,
   WHATSAPP_NUMBER,
   SOCIAL_LINKS,
 } from '@/src/data/packages';
-import { Phone } from 'lucide-react';
+import { ArrowUpRight, MapPin, MessageCircle, Phone } from 'lucide-react';
 
 const navLinks = [
-  { label: 'প্যাকেজ', href: '#packages' },
-  { label: 'সার্ভিস এরিয়া', href: '#areas' },
-  { label: 'রিভিউ', href: '#reviews' },
-  { label: 'প্রশ্নোত্তর', href: '#faq' },
+  { label: 'প্যাকেজ', href: '/#packages' },
+  { label: 'সার্ভিস এরিয়া', href: '/#areas' },
+  { label: 'রিভিউ', href: '/#reviews' },
+  { label: 'প্রশ্নোত্তর', href: '/#faq' },
 ];
 
 const socials = [
@@ -43,49 +45,88 @@ const socials = [
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="hidden md:block bg-slate-900 text-slate-400 text-xs py-5 border-t border-slate-800">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-          <nav className="flex flex-wrap justify-center gap-x-5 gap-y-2">
+    <footer className="relative hidden overflow-hidden border-t border-slate-800 bg-slate-950 text-slate-400 md:block">
+      <div aria-hidden="true" className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-400/70 to-transparent" />
+      <div aria-hidden="true" className="pointer-events-none absolute -left-24 -top-40 h-80 w-80 rounded-full bg-cyan-500/5 blur-3xl" />
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-[1.4fr_0.8fr_1fr] gap-8 py-10 lg:gap-16 lg:py-12">
+          <div>
+            <Link href="/" aria-label="পানি ওয়ালা হোম" className="inline-flex rounded-xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-300">
+              <BrandLogo size="lg" inverse />
+            </Link>
+            <p className="mt-4 max-w-xs text-sm leading-7 text-slate-400">
+              বাসা ও অফিসের জন্য নিরাপদ ও বিশুদ্ধ খাবার পানি। খুলনা শহরে আপনার দরজায় পৌঁছে দিই।
+            </p>
+            <div className="mt-5 flex items-center gap-2.5">
+              {socials.map((s) => (
+                <a
+                  key={s.label}
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={s.label}
+                  title={s.label}
+                  className={`flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-slate-300 transition-colors hover:border-transparent hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-300 ${s.hover}`}
+                >
+                  <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current" aria-hidden="true">
+                    <path d={s.path} />
+                  </svg>
+                </a>
+              ))}
+            </div>
+          </div>
+
+          <nav aria-label="ফুটার নেভিগেশন" className="pt-2">
+            <h3 className="mb-4 text-base font-semibold text-white">প্রয়োজনীয় লিংক</h3>
+            <ul className="space-y-1">
             {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className="hover:text-cyan-400 transition-colors"
-              >
-                {link.label}
-              </a>
+              <li key={link.href}>
+                <Link
+                  href={link.href}
+                  className="group inline-flex items-center gap-2 rounded-md py-2 text-sm transition-colors hover:text-cyan-300 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-300"
+                >
+                  {link.label}
+                  <ArrowUpRight aria-hidden="true" className="h-3.5 w-3.5 text-slate-600 transition-colors group-hover:text-cyan-300" />
+                </Link>
+              </li>
             ))}
+            </ul>
           </nav>
 
-          <div className="flex items-center gap-2">
-            {socials.map((s) => (
-              <a
-                key={s.label}
-                href={s.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={s.label}
-                title={s.label}
-                className={`w-8 h-8 flex items-center justify-center rounded-full bg-slate-800 text-slate-300 hover:text-white transition-colors ${s.hover}`}
-              >
-                <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current" aria-hidden="true">
-                  <path d={s.path} />
-                </svg>
-              </a>
-            ))}
+          <div className="pt-2">
+            <h3 className="mb-5 text-base font-semibold text-white">যোগাযোগ করুন</h3>
+            <a
+              href={`tel:${HOTLINE_TEL}`}
+              className="group inline-flex items-center gap-3 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-300"
+            >
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-cyan-400/15 bg-cyan-400/10 text-cyan-300">
+                <Phone aria-hidden="true" className="h-4 w-4" />
+              </span>
+              <span>
+                <span className="block text-xs text-slate-400">অর্ডার ও সহায়তা</span>
+                <span className="mt-1 block font-hind text-base font-semibold text-white transition-colors group-hover:text-cyan-300">{HOTLINE_NUMBER}</span>
+              </span>
+            </a>
+            <p className="mt-5 flex items-center gap-2 text-sm">
+              <MapPin aria-hidden="true" className="h-4 w-4 shrink-0 text-cyan-300" />
+              খুলনা শহরে হোম ডেলিভারি
+            </p>
+            <a
+              href={`https://wa.me/${WHATSAPP_NUMBER}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-4 inline-flex items-center gap-2 rounded-md py-2 text-sm text-slate-300 transition-colors hover:text-cyan-300 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-300"
+            >
+              <MessageCircle aria-hidden="true" className="h-4 w-4" />
+              WhatsApp-এ কথা বলুন
+              <ArrowUpRight aria-hidden="true" className="h-3.5 w-3.5" />
+            </a>
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-2 pt-4 border-t border-slate-800 text-center">
+        <div className="flex items-center justify-between gap-4 border-t border-white/10 py-5 text-xs">
           <p>© {new Date().getFullYear()} পানি ওয়ালা। সর্বস্বত্ব সংরক্ষিত।</p>
-          <a
-            href={`tel:${HOTLINE_TEL}`}
-            className="flex items-center gap-1.5 text-white font-semibold hover:text-cyan-400 transition-colors"
-          >
-            <Phone className="w-3.5 h-3.5 text-cyan-400" />
-            {HOTLINE_NUMBER}
-          </a>
+          <p className="text-slate-500">বিশুদ্ধ পানিতে, সুস্থ প্রতিদিন।</p>
         </div>
       </div>
     </footer>

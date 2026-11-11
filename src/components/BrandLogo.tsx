@@ -5,11 +5,13 @@ import defaultLogo from '@/src/assets/logo.png';
 interface BrandLogoProps {
   size?: 'sm' | 'md' | 'lg';
   className?: string;
+  inverse?: boolean;
 }
 
 export const BrandLogo: React.FC<BrandLogoProps> = ({
   size = 'md',
   className = '',
+  inverse = false,
 }) => {
   const logoSrc = defaultLogo;
 
@@ -38,11 +40,11 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
       <div className="flex flex-col">
         <div className="flex items-center gap-1.5">
           <span
-            className={`font-bold tracking-tight text-slate-900 leading-none ${textSizes[size]}`}
+            className={`font-bold tracking-tight leading-none ${inverse ? 'text-white' : 'text-slate-900'} ${textSizes[size]}`}
           >
-            পানি <span className="text-cyan-600">ওয়ালা</span>
+            পানি <span className={inverse ? 'text-cyan-300' : 'text-cyan-600'}>ওয়ালা</span>
           </span>
-          <span className="inline-block px-1.5 py-0.5 text-[9px] font-semibold bg-cyan-100 text-cyan-800 rounded-md">
+          <span className={`inline-block px-1.5 py-0.5 text-[9px] font-semibold rounded-md ${inverse ? 'bg-cyan-400/10 text-cyan-200 ring-1 ring-cyan-300/20' : 'bg-cyan-100 text-cyan-800'}`}>
             BD
           </span>
         </div>
