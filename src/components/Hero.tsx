@@ -6,14 +6,15 @@ import heroImage from '@/src/assets/hero-image.png';
 import { Phone, ShoppingBag } from 'lucide-react';
 import { LocationSearch } from '@/src/components/LocationSearch';
 
-// Rising bubbles around the hero jar: horizontal position, size, duration, start delay, rise height.
+// Round bubbles that rise from the bottom of the hero jar and fade out.
+// x/y = start position (% of the image box), s = size, d = cycle length,
+// delay = start offset, travel = rise height. Each bubble is visible for
+// ~55% of its cycle and rests for the remainder, so they stay sparse.
 const HERO_BUBBLES = [
-  { x: '14%', s: '10px', d: '7s', delay: '0s', rise: '-240px' },
-  { x: '26%', s: '6px', d: '5.5s', delay: '2.2s', rise: '-200px' },
-  { x: '48%', s: '8px', d: '6.5s', delay: '4s', rise: '-280px' },
-  { x: '68%', s: '12px', d: '8s', delay: '1s', rise: '-300px' },
-  { x: '82%', s: '7px', d: '6s', delay: '3.2s', rise: '-220px' },
-  { x: '90%', s: '5px', d: '5s', delay: '5s', rise: '-180px' },
+  { x: '16%', y: '84%', s: '10px', d: '12s', delay: '0s', travel: '-240px' },
+  { x: '62%', y: '86%', s: '7px', d: '10s', delay: '2.5s', travel: '-220px' },
+  { x: '84%', y: '80%', s: '12px', d: '14s', delay: '5s', travel: '-280px' },
+  { x: '36%', y: '88%', s: '8px', d: '11s', delay: '7.5s', travel: '-260px' },
 ];
 
 interface HeroProps {
@@ -132,12 +133,12 @@ export const Hero: React.FC<HeroProps> = ({ onOpenOrder }) => {
               />
 
               {/* Rising bubbles */}
-              <div aria-hidden="true" className="absolute inset-0 pointer-events-none">
+              <div aria-hidden="true" className="absolute inset-0 z-10 pointer-events-none">
                 {HERO_BUBBLES.map((b, i) => (
                   <span
                     key={i}
                     className="hero-bubble"
-                    style={{ '--x': b.x, '--s': b.s, '--d': b.d, '--delay': b.delay, '--rise': b.rise } as React.CSSProperties}
+                    style={{ '--x': b.x, '--y': b.y, '--s': b.s, '--d': b.d, '--delay': b.delay, '--travel': b.travel } as React.CSSProperties}
                   />
                 ))}
               </div>
