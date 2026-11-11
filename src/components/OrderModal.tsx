@@ -9,23 +9,22 @@ import { usePackages } from '@/src/lib/packages-api';
 import { api } from '@/src/lib/api';
 import { useAuth } from '@/src/lib/auth';
 import Link from 'next/link';
-import { WaterPackage, CustomerDetails, ConfirmedOrder } from '@/src/types';
+import { WaterPackage, ConfirmedOrder } from '@/src/types';
 import { Button } from '@/src/components/ui/button';
 import { Input } from '@/src/components/ui/input';
-import { Card, CardHeader, CardTitle, CardContent } from '@/src/components/ui/card';
-import {
-  X,
-  Plus,
-  Minus,
-  CheckCircle2,
-  Phone,
-  Truck,
-  ShieldCheck,
-  MapPin,
-  Clock,
-  Sparkles,
-  CreditCard
-} from 'lucide-react';
+import bkashLogo from '@/src/assets/bkash-logo.svg';
+import { X, Plus, Minus, Check, CircleCheck, Phone, Truck, Banknote, Lock, Info } from 'lucide-react';
+
+/** Matches the server's per-order quantity limit. */
+const MAX_QTY = 100;
+
+type PaymentMethod = 'cod' | 'bkash' | 'nagad';
+
+const PAYMENT_LABEL: Record<PaymentMethod, string> = {
+  cod: 'ক্যাশ অন ডেলিভারি',
+  bkash: 'বিকাশ',
+  nagad: 'নগদ',
+};
 
 interface OrderModalProps {
   isOpen: boolean;
@@ -58,7 +57,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
   }, [areaKeys]);
   const [address, setAddress] = useState('');
   const [deliverySlot, setDeliverySlot] = useState('আজকেই দ্রুততম ডেলিভারি (১ ঘণ্টার মধ্যে)');
-  const [paymentMethod, setPaymentMethod] = useState<'cod' | 'bkash' | 'nagad'>('cod');
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('cod');
   const [notes, setNotes] = useState('');
 
   // Form error state
@@ -96,6 +95,13 @@ export const OrderModal: React.FC<OrderModalProps> = ({
 
   const currentPkg =
     packages.find((p) => p.id === packageId) || packages[0];
+
+  // An order holds one package; switching rows starts the new one at 1.
+  const selectPackage = (id: string) => {
+    if (id === packageId) return;
+    setPackageId(id);
+    setQuantity(1);
+  };
 
   // Pricing math
   const itemsCost = currentPkg.price * quantity;
@@ -169,15 +175,14 @@ export const OrderModal: React.FC<OrderModalProps> = ({
 
       setConfirmedOrder(newOrder);
 
-      // Trigger Confetti!
       try {
         confetti({
           particleCount: 80,
           spread: 70,
           origin: { y: 0.6 },
         });
-      } catch (err) {
-        // fallback
+      } catch {
+        // confetti is decorative only
       }
     } catch (err) {
       setErrors({
@@ -195,6 +200,22 @@ export const OrderModal: React.FC<OrderModalProps> = ({
     onClose();
   };
 
+  const paymentOptionClass = (active: boolean) =>
+    `relative cursor-pointer p-3 rounded-xl border flex items-center gap-3 text-left transition-colors ${
+      active
+        ? 'border-cyan-600 bg-cyan-50/50 ring-1 ring-cyan-600'
+        : 'border-slate-200 bg-white hover:border-slate-300'
+    }`;
+
+  const radioDot = (active: boolean) => (
+    <span
+      className={`ml-auto w-5 h-5 shrink-0 rounded-full border flex items-center justify-center transition-colors ${
+        active ? 'bg-cyan-600 border-cyan-600 text-white' : 'border-slate-300 bg-white'
+      }`}
+    >
+      {active && <Check className="w-3 h-3" strokeWidth={3} />}
+    </span>
+  );
 
   return (
     <div
@@ -202,28 +223,25 @@ export const OrderModal: React.FC<OrderModalProps> = ({
       className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-sm overflow-y-auto"
     >
       <div className="relative w-full max-w-xl my-8 bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-        
+
         {/* Modal Top Header */}
-        <div className="flex items-center justify-between p-5 sm:p-6 bg-gradient-to-r from-cyan-600 to-sky-700 text-white">
-          <div className="flex items-center gap-2.5">
-            <div className="w-10 h-10 rounded-2xl bg-white/20 flex items-center justify-center backdrop-blur-xs">
-              <Truck className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <h3 className="text-lg sm:text-xl font-bold leading-tight">
-                {confirmedOrder ? 'অর্ডার সফলভাবে গ্রহণ করা হয়েছে!' : 'দ্রুত খাবার পানি অর্ডার করুন'}
-              </h3>
-              <p className="text-xs text-cyan-100 mt-0.5">
-                {confirmedOrder
-                  ? 'আপনার অর্ডার আইডি: ' + confirmedOrder.orderId
-                  : 'ডোরস্টেপে ফ্রি ডেলিভারি • দ্রুততম সার্ভিস'}
-              </p>
-            </div>
+        <div className="flex items-start justify-between gap-3 px-5 sm:px-7 pt-5 sm:pt-6 pb-4 border-b border-slate-200">
+          <div>
+            <h3 className="text-lg sm:text-xl font-bold leading-tight text-slate-900">
+              {confirmedOrder ? 'অর্ডার সফলভাবে গ্রহণ করা হয়েছে' : 'পানি অর্ডার করুন'}
+            </h3>
+            <p className="text-xs text-slate-500 mt-1">
+              {confirmedOrder
+                ? 'অর্ডার আইডি: ' + confirmedOrder.orderId
+                : 'ডোরস্টেপে ফ্রি ডেলিভারি'}
+            </p>
           </div>
           <button
             id="close-order-modal-btn"
+            type="button"
+            aria-label="বন্ধ করুন"
             onClick={handleClose}
-            className="p-2 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+            className="p-2 -mr-2 -mt-1 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -233,16 +251,14 @@ export const OrderModal: React.FC<OrderModalProps> = ({
         {confirmedOrder ? (
           /* SUCCESS STATE */
           <div className="p-6 sm:p-8 space-y-6 text-center">
-            <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto ring-8 ring-emerald-50">
-              <CheckCircle2 className="w-9 h-9" />
-            </div>
+            <CircleCheck className="w-14 h-14 text-emerald-600 mx-auto" strokeWidth={1.75} />
 
             <div className="space-y-1.5">
               <h4 className="text-2xl font-bold text-slate-900">
                 ধন্যবাদ, {confirmedOrder.customer.name}!
               </h4>
               <p className="text-sm text-slate-600 max-w-md mx-auto">
-                আপনার পানির অর্ডারটি গৃহীত হয়েছে। আমাদের ডেলিভারি টিম কিছুক্ষণের মধ্যেই আপনার নম্বরে কল দিয়ে কনফার্ম করবে।
+                আপনার পানির অর্ডারটি গৃহীত হয়েছে। আমাদের ডেলিভারি টিম কিছুক্ষণের মধ্যেই আপনার নম্বরে কল দিয়ে কনফার্ম করবে।
               </p>
             </div>
 
@@ -255,7 +271,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
               <div className="flex justify-between text-slate-600">
                 <span>নির্বাচিত প্যাকেজ</span>
                 <span className="font-medium text-slate-900">
-                  {confirmedOrder.item.packageTitle} ({confirmedOrder.item.quantity} টি)
+                  {confirmedOrder.item.packageTitle} ({toBengaliNumber(confirmedOrder.item.quantity)} টি)
                 </span>
               </div>
               <div className="flex justify-between text-slate-600">
@@ -266,12 +282,12 @@ export const OrderModal: React.FC<OrderModalProps> = ({
               </div>
               <div className="flex justify-between text-slate-600">
                 <span>পেমেন্ট মেথড</span>
-                <span className="font-medium text-emerald-700">
-                  {confirmedOrder.customer.paymentMethod === 'cod' ? 'ক্যাশ অন ডেলিভারি' : 'বিকাশ / নগদ'}
+                <span className="font-medium text-slate-900">
+                  {PAYMENT_LABEL[confirmedOrder.customer.paymentMethod]}
                 </span>
               </div>
               <div className="flex justify-between pt-2 border-t border-slate-200 text-base font-bold text-slate-900">
-                <span>সর্বমোট প্রদেয়</span>
+                <span>সর্বমোট প্রদেয়</span>
                 <span className="text-cyan-700">৳{toBengaliNumber(confirmedOrder.item.totalPrice)}</span>
               </div>
             </div>
@@ -280,16 +296,16 @@ export const OrderModal: React.FC<OrderModalProps> = ({
             <div className="flex flex-col items-center gap-3">
               <a
                 href={`tel:${HOTLINE_TEL}`}
-                className="w-full py-3.5 px-5 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-md shadow-cyan-600/20 transition-colors"
+                className="w-full py-3.5 px-5 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-sm flex items-center justify-center gap-2 transition-colors"
               >
-                <Phone className="w-4 h-4 text-white" />
+                <Phone className="w-4 h-4" />
                 <span>হটলাইনে যোগাযোগ করুন: {HOTLINE_NUMBER}</span>
               </a>
               {user?.role === 'user' ? (
                 <Link
                   href="/orders"
                   onClick={handleClose}
-                  className="w-full py-3.5 px-5 rounded-xl bg-white border border-cyan-200 text-cyan-800 font-bold text-sm flex items-center justify-center gap-2 hover:bg-cyan-50 transition-colors"
+                  className="w-full py-3.5 px-5 rounded-xl bg-white border border-slate-300 text-slate-800 font-bold text-sm flex items-center justify-center gap-2 hover:bg-slate-50 transition-colors"
                 >
                   <Truck className="w-4 h-4" />
                   <span>আমার অর্ডার — লাইভ ট্র্যাক করুন</span>
@@ -306,6 +322,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
             </div>
 
             <button
+              type="button"
               onClick={handleClose}
               className="text-xs text-slate-500 hover:text-slate-800 underline underline-offset-2"
             >
@@ -315,130 +332,134 @@ export const OrderModal: React.FC<OrderModalProps> = ({
         ) : (
           /* ORDER FORM STATE */
           <form onSubmit={handleOrderSubmit} className="p-5 sm:p-7 space-y-6 max-h-[80vh] overflow-y-auto">
-            
-            {/* Step 1: Choose Package */}
-            <div className="space-y-2.5">
-              <label className="text-xs font-bold uppercase tracking-wider text-slate-600">
-                ১. প্যাকেজ নির্বাচন করুন
-              </label>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+
+            {/* Step 1: Package list — the selected row carries its own quantity stepper */}
+            <section className="space-y-2.5">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-600">
+                ১. প্যাকেজ ও পরিমাণ
+              </h4>
+              <ul
+                role="radiogroup"
+                aria-label="প্যাকেজ"
+                className="divide-y divide-slate-200 rounded-2xl border border-slate-200 overflow-hidden"
+              >
                 {packages.map((pkg) => {
                   const isSelected = pkg.id === packageId;
                   return (
-                    <div
+                    <li
                       key={pkg.id}
-                      onClick={() => setPackageId(pkg.id)}
-                      className={`cursor-pointer p-3 rounded-2xl border transition-all text-left flex items-center gap-2.5 ${
-                        isSelected
-                          ? 'border-cyan-600 bg-cyan-50/70 ring-2 ring-cyan-500/20 shadow-xs'
-                          : 'border-slate-200 hover:border-slate-300 bg-white'
+                      role="radio"
+                      aria-checked={isSelected}
+                      tabIndex={0}
+                      onClick={() => selectPackage(pkg.id)}
+                      onKeyDown={(e) => {
+                        if (e.target === e.currentTarget && (e.key === 'Enter' || e.key === ' ')) {
+                          e.preventDefault();
+                          selectPackage(pkg.id);
+                        }
+                      }}
+                      className={`flex items-center gap-3 p-3 cursor-pointer transition-colors outline-none focus-visible:bg-slate-50 ${
+                        isSelected ? 'bg-cyan-50/60' : 'bg-white hover:bg-slate-50'
                       }`}
                     >
                       <img
                         src={pkg.image}
                         alt={pkg.title}
-                        className="w-12 h-12 object-contain shrink-0 rounded-xl bg-slate-50 p-0.5"
+                        className="w-14 h-14 object-contain shrink-0 rounded-xl bg-white border border-slate-100 p-1"
                       />
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between gap-1">
-                          <span className="text-xs font-bold text-slate-900 leading-snug truncate">
-                            {pkg.title}
-                          </span>
-                          <span className="text-xs font-extrabold text-cyan-700 shrink-0">
-                            ৳{toBengaliNumber(pkg.price)}
-                          </span>
-                        </div>
-                        <p className="text-[11px] text-slate-500 mt-0.5 line-clamp-1">
-                          {pkg.volume}
+                        <p className="text-sm font-semibold text-slate-900 leading-snug truncate">{pkg.title}</p>
+                        <p className="text-xs text-slate-500 mt-0.5 truncate">
+                          <span className="font-bold text-cyan-700">৳{toBengaliNumber(pkg.price)}</span>
+                          <span> / {pkg.unit} · {pkg.volume}</span>
                         </p>
                       </div>
-                    </div>
+
+                      {isSelected ? (
+                        <div
+                          className="flex items-center shrink-0 rounded-xl border border-cyan-600 bg-white"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <button
+                            type="button"
+                            aria-label="পরিমাণ কমান"
+                            disabled={quantity <= 1}
+                            onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                            className="w-9 h-9 flex items-center justify-center text-cyan-700 hover:bg-cyan-50 rounded-l-xl disabled:text-slate-300 disabled:hover:bg-transparent transition-colors"
+                          >
+                            <Minus className="w-4 h-4" />
+                          </button>
+                          <span className="w-8 text-center text-sm font-bold text-slate-900 tabular-nums" aria-live="polite">
+                            {toBengaliNumber(quantity)}
+                          </span>
+                          <button
+                            type="button"
+                            aria-label="পরিমাণ বাড়ান"
+                            disabled={quantity >= MAX_QTY}
+                            onClick={() => setQuantity((q) => Math.min(MAX_QTY, q + 1))}
+                            className="w-9 h-9 flex items-center justify-center text-cyan-700 hover:bg-cyan-50 rounded-r-xl disabled:text-slate-300 disabled:hover:bg-transparent transition-colors"
+                          >
+                            <Plus className="w-4 h-4" />
+                          </button>
+                        </div>
+                      ) : (
+                        <span className="shrink-0 h-9 px-3.5 inline-flex items-center rounded-xl border border-slate-300 text-xs font-semibold text-slate-700">
+                          বেছে নিন
+                        </span>
+                      )}
+                    </li>
                   );
                 })}
-              </div>
-            </div>
+              </ul>
 
-            {/* Step 2: Quantity & Empty Jar Options */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-2xl bg-slate-50/80 border border-slate-200">
-              
-              {/* Quantity Counter */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-700">পরিমাণ (সংখ্যা)</label>
-                <div className="flex items-center gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="w-10 h-10 rounded-xl bg-white border border-slate-300 flex items-center justify-center text-slate-700 hover:bg-slate-100 active:scale-95 transition-all shadow-xs"
-                  >
-                    <Minus className="w-4 h-4" />
-                  </button>
-                  <span className="text-lg font-bold text-slate-900 w-8 text-center">
-                    {toBengaliNumber(quantity)}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => setQuantity(quantity + 1)}
-                    className="w-10 h-10 rounded-xl bg-white border border-slate-300 flex items-center justify-center text-slate-700 hover:bg-slate-100 active:scale-95 transition-all shadow-xs"
-                  >
-                    <Plus className="w-4 h-4" />
-                  </button>
-                  <span className="text-xs text-slate-500 font-medium ml-1">
-                    টি {currentPkg.unit}
-                  </span>
-                </div>
-              </div>
-
-              {/* Empty Jar Switch (if package requires deposit) */}
-              {currentPkg.depositRequired ? (
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-700">আপনার কাছে কি খালি জার আছে?</label>
-                  <div className="flex items-center gap-2">
+              {/* The empty-jar question only matters for packages that take a deposit */}
+              {currentPkg.depositRequired && (
+                <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+                  <span className="text-xs font-semibold text-slate-700">আপনার কাছে কি খালি জার আছে?</span>
+                  <div className="inline-flex rounded-xl border border-slate-200 p-0.5 bg-slate-50">
                     <button
                       type="button"
+                      aria-pressed={hasEmptyJar}
                       onClick={() => setHasEmptyJar(true)}
-                      className={`flex-1 py-2 px-2.5 rounded-xl text-xs font-semibold border transition-all ${
-                        hasEmptyJar
-                          ? 'bg-cyan-600 text-white border-cyan-600 shadow-xs'
-                          : 'bg-white text-slate-700 border-slate-200'
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+                        hasEmptyJar ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500'
                       }`}
                     >
-                      হ্যাঁ, আছে (৳০)
+                      হ্যাঁ, আছে
                     </button>
                     <button
                       type="button"
+                      aria-pressed={!hasEmptyJar}
                       onClick={() => setHasEmptyJar(false)}
-                      className={`flex-1 py-2 px-2.5 rounded-xl text-xs font-semibold border transition-all ${
-                        !hasEmptyJar
-                          ? 'bg-amber-600 text-white border-amber-600 shadow-xs'
-                          : 'bg-white text-slate-700 border-slate-200'
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+                        !hasEmptyJar ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500'
                       }`}
                     >
-                      না, নতুন (+৳{toBengaliNumber(currentPkg.depositAmount)})
+                      না, নতুন জার
                     </button>
                   </div>
                   {!hasEmptyJar && (
-                    <p className="text-[10px] text-amber-700 mt-1">
-                      *নতুন জারের জন্য ৳{toBengaliNumber(currentPkg.depositAmount)} জামানত (জার ফেরত দিলে এই টাকা ফেরত পাবেন)
+                    <p className="w-full flex items-start gap-1.5 text-[11px] text-slate-500">
+                      <Info className="w-3.5 h-3.5 mt-px shrink-0" />
+                      <span>
+                        প্রতি নতুন জারে ৳{toBengaliNumber(currentPkg.depositAmount)} জামানত — জার ফেরত দিলে টাকা ফেরত পাবেন।
+                      </span>
                     </p>
                   )}
                 </div>
-              ) : (
-                <div className="flex items-center text-xs text-emerald-700 bg-emerald-50/70 p-3 rounded-xl border border-emerald-200/60">
-                  <span>✓ এই প্যাকেজে কোনো খালি জারের প্রয়োজন নেই!</span>
-                </div>
               )}
-            </div>
+            </section>
 
-            {/* Step 3: Customer Details */}
-            <div className="space-y-3 pt-1">
-              <label className="text-xs font-bold uppercase tracking-wider text-slate-600">
+            {/* Step 2: Customer Details */}
+            <section className="space-y-3">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-600">
                 ২. ডেলিভারি তথ্য দিন
-              </label>
+              </h4>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {/* Name */}
                 <div className="space-y-1">
-                  <label className="text-xs font-semibold text-slate-700">আপনার পূর্ণ নাম *</label>
+                  <label htmlFor="order-name-input" className="text-xs font-semibold text-slate-700">আপনার পূর্ণ নাম *</label>
                   <Input
                     id="order-name-input"
                     type="text"
@@ -452,7 +473,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
 
                 {/* Phone */}
                 <div className="space-y-1">
-                  <label className="text-xs font-semibold text-slate-700">মোবাইল নম্বর *</label>
+                  <label htmlFor="order-phone-input" className="text-xs font-semibold text-slate-700">মোবাইল নম্বর *</label>
                   <Input
                     id="order-phone-input"
                     type="tel"
@@ -480,7 +501,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
 
               {/* Full Address */}
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-700">বিস্তারিত ঠিকানা (বাসা/ফ্ল্যাট, রোড, তলা) *</label>
+                <label htmlFor="order-address-input" className="text-xs font-semibold text-slate-700">বিস্তারিত ঠিকানা (বাসা/ফ্ল্যাট, রোড, তলা) *</label>
                 <textarea
                   id="order-address-input"
                   rows={2}
@@ -496,14 +517,15 @@ export const OrderModal: React.FC<OrderModalProps> = ({
 
               {/* Delivery Timing Slot */}
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-700">ডেলিভারির সময়</label>
+                <label htmlFor="order-slot-select" className="text-xs font-semibold text-slate-700">ডেলিভারির সময়</label>
                 <select
+                  id="order-slot-select"
                   value={deliverySlot}
                   onChange={(e) => setDeliverySlot(e.target.value)}
                   className="w-full h-10 px-3.5 rounded-xl border border-slate-200 bg-white text-xs text-slate-800 focus:outline-cyan-500"
                 >
-                  <option value="আজকেই দ্রুততম ডেলিভারি (১ ঘণ্টার মধ্যে)">⚡ আজকেই দ্রুততম ডেলিভারি (১ ঘণ্টার মধ্যে)</option>
-                  <option value="আজ সন্ধ্যায় (৬টা - ৯টা)">আজ সন্ধ্যায় (৬টা - ৯টা)</option>
+                  <option value="আজকেই দ্রুততম ডেলিভারি (১ ঘণ্টার মধ্যে)">আজকেই দ্রুততম ডেলিভারি (১ ঘণ্টার মধ্যে)</option>
+                  <option value="আজ সন্ধ্যায় (৬টা - ৯টা)">আজ সন্ধ্যায় (৬টা - ৯টা)</option>
                   <option value="আগামীকাল সকাল (৯টা - ১২টা)">আগামীকাল সকাল (৯টা - ১২টা)</option>
                   <option value="আগামীকাল দুপুর (২টা - ৫টা)">আগামীকাল দুপুর (২টা - ৫টা)</option>
                 </select>
@@ -511,53 +533,63 @@ export const OrderModal: React.FC<OrderModalProps> = ({
 
               {/* Payment Method */}
               <div className="space-y-1.5 pt-1">
-                <label className="text-xs font-semibold text-slate-700">পেমেন্ট মেথড</label>
-                <div className="grid grid-cols-2 gap-2">
-                  <div
+                <span className="text-xs font-semibold text-slate-700">পেমেন্ট মেথড</span>
+                <div role="radiogroup" aria-label="পেমেন্ট মেথড" className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    role="radio"
+                    aria-checked={paymentMethod === 'cod'}
                     onClick={() => setPaymentMethod('cod')}
-                    className={`cursor-pointer p-3 rounded-xl border flex items-center gap-2 text-xs font-semibold transition-all ${
-                      paymentMethod === 'cod'
-                        ? 'border-cyan-600 bg-cyan-50/70 text-cyan-950 ring-2 ring-cyan-500/20'
-                        : 'border-slate-200 bg-white text-slate-700'
-                    }`}
+                    className={paymentOptionClass(paymentMethod === 'cod')}
                   >
-                    <span className="w-2.5 h-2.5 rounded-full bg-cyan-600" />
-                    <span>ক্যাশ অন ডেলিভারি</span>
-                  </div>
-                  <div
+                    <span className="w-14 h-10 shrink-0 rounded-lg border border-slate-200 bg-white flex items-center justify-center text-slate-700">
+                      <Banknote className="w-6 h-6" strokeWidth={1.75} />
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block text-sm font-semibold text-slate-900">ক্যাশ অন ডেলিভারি</span>
+                      <span className="block text-[11px] text-slate-500">পানি হাতে পেয়ে টাকা দিন</span>
+                    </span>
+                    {radioDot(paymentMethod === 'cod')}
+                  </button>
+
+                  <button
+                    type="button"
+                    role="radio"
+                    aria-checked={paymentMethod === 'bkash'}
                     onClick={() => setPaymentMethod('bkash')}
-                    className={`cursor-pointer p-3 rounded-xl border flex items-center gap-2 text-xs font-semibold transition-all ${
-                      paymentMethod === 'bkash'
-                        ? 'border-pink-600 bg-pink-50/70 text-pink-950 ring-2 ring-pink-500/20'
-                        : 'border-slate-200 bg-white text-slate-700'
-                    }`}
+                    className={paymentOptionClass(paymentMethod === 'bkash')}
                   >
-                    <span className="w-2.5 h-2.5 rounded-full bg-pink-600" />
-                    <span>বিকাশ / নগদ পেমেন্ট</span>
-                  </div>
+                    <span className="w-14 h-10 shrink-0 rounded-lg border border-slate-200 bg-white flex items-center justify-center px-1.5">
+                      <img src={bkashLogo.src} alt="বিকাশ" className="max-h-7 w-auto object-contain" />
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block text-sm font-semibold text-slate-900">বিকাশ</span>
+                      <span className="block text-[11px] text-slate-500">বিকাশে পেমেন্ট করুন</span>
+                    </span>
+                    {radioDot(paymentMethod === 'bkash')}
+                  </button>
                 </div>
               </div>
-
-            </div>
+            </section>
 
             {/* Price Summary Breakdown */}
-            <div className="p-4 rounded-2xl bg-cyan-50/60 border border-cyan-200/80 space-y-1.5 text-xs">
+            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-1.5 text-xs">
               <div className="flex justify-between text-slate-600">
                 <span>পানির মূল্য ({toBengaliNumber(quantity)} টি × ৳{toBengaliNumber(currentPkg.price)})</span>
                 <span className="font-semibold text-slate-800">৳{toBengaliNumber(itemsCost)}</span>
               </div>
               {totalDeposit > 0 && (
-                <div className="flex justify-between text-amber-800">
-                  <span>নতুন জার ডিপোজিট ({toBengaliNumber(quantity)} টি × ৳{toBengaliNumber(currentPkg.depositAmount)})</span>
-                  <span className="font-semibold">৳{toBengaliNumber(totalDeposit)}</span>
+                <div className="flex justify-between text-slate-600">
+                  <span>নতুন জার জামানত ({toBengaliNumber(quantity)} টি × ৳{toBengaliNumber(currentPkg.depositAmount)})</span>
+                  <span className="font-semibold text-slate-800">৳{toBengaliNumber(totalDeposit)}</span>
                 </div>
               )}
-              <div className="flex justify-between text-emerald-700 font-medium">
+              <div className="flex justify-between text-slate-600">
                 <span>হোম ডেলিভারি চার্জ</span>
-                <span className="font-bold">ফ্রি (৳০)</span>
+                <span className="font-semibold text-emerald-700">ফ্রি</span>
               </div>
-              <div className="flex justify-between pt-2 border-t border-cyan-200 text-sm font-bold text-slate-900">
-                <span>সর্বমোট প্রদেয় বিল</span>
+              <div className="flex justify-between pt-2 border-t border-slate-200 text-sm font-bold text-slate-900">
+                <span>সর্বমোট প্রদেয় বিল</span>
                 <span className="text-base text-cyan-800">৳{toBengaliNumber(grandTotal)}</span>
               </div>
             </div>
@@ -573,7 +605,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
               id="confirm-order-submit-btn"
               type="submit"
               disabled={isSubmitting}
-              className="btn-shine w-full h-13 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-base shadow-lg shadow-cyan-600/30 active:scale-[0.99]"
+              className="w-full h-13 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-base active:scale-[0.99]"
             >
               {isSubmitting ? (
                 <span>অর্ডার প্রসেস হচ্ছে...</span>
@@ -582,8 +614,9 @@ export const OrderModal: React.FC<OrderModalProps> = ({
               )}
             </Button>
 
-            <p className="text-[11px] text-center text-slate-500">
-              🔒 আপনার সকল তথ্য গোপন রাখা হবে • কোনো অগ্রিম পেমেন্টের ঝুঁকি নেই
+            <p className="flex items-center justify-center gap-1.5 text-[11px] text-slate-500">
+              <Lock className="w-3 h-3" />
+              <span>আপনার সকল তথ্য গোপন রাখা হবে • কোনো অগ্রিম পেমেন্টের ঝুঁকি নেই</span>
             </p>
 
           </form>
