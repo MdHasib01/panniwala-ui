@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { SectionHeader } from '@/src/components/SectionHeader';
 import { Star, CheckCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 import { toBengaliNumber } from '@/src/data/packages';
@@ -6,32 +6,50 @@ import { toBengaliNumber } from '@/src/data/packages';
 export const Testimonials: React.FC = () => {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
 
-  const handleScroll = () => {
+  const updateScrollState = useCallback(() => {
     const el = scrollerRef.current;
     if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 4);
+    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
+
+    // Active card = the one whose left edge is closest to the scroller's visible start.
     const cards = Array.from(el.children) as HTMLElement[];
-    const center = el.scrollLeft + el.clientWidth / 2;
+    const start = el.scrollLeft + parseFloat(getComputedStyle(el).scrollPaddingLeft || '0');
     let closest = 0;
     let minDist = Infinity;
     cards.forEach((card, i) => {
-      const dist = Math.abs(card.offsetLeft + card.offsetWidth / 2 - center);
+      const dist = Math.abs(card.offsetLeft - start);
       if (dist < minDist) {
         minDist = dist;
         closest = i;
       }
     });
     setActiveIndex(closest);
+  }, []);
+
+  useEffect(() => {
+    updateScrollState();
+    window.addEventListener('resize', updateScrollState);
+    return () => window.removeEventListener('resize', updateScrollState);
+  }, [updateScrollState]);
+
+  const scrollByCard = (direction: 1 | -1) => {
+    const el = scrollerRef.current;
+    const card = el?.firstElementChild as HTMLElement | null;
+    if (!el || !card) return;
+    const gap = parseFloat(getComputedStyle(el).columnGap) || 0;
+    el.scrollBy({ left: direction * (card.offsetWidth + gap), behavior: 'smooth' });
   };
 
   const scrollToCard = (index: number) => {
     const el = scrollerRef.current;
     const card = el?.children[index] as HTMLElement | undefined;
     if (!el || !card) return;
-    el.scrollTo({
-      left: card.offsetLeft - (el.clientWidth - card.offsetWidth) / 2,
-      behavior: 'smooth',
-    });
+    const padding = parseFloat(getComputedStyle(el).scrollPaddingLeft || '0');
+    el.scrollTo({ left: card.offsetLeft - padding, behavior: 'smooth' });
   };
 
   const reviews = [
@@ -100,37 +118,37 @@ export const Testimonials: React.FC = () => {
           className="mb-4 sm:mb-6"
         />
 
-        {/* Mobile: horizontal snap carousel · md+: grid */}
+        {/* Horizontal snap scroller on all screen sizes (same as the location zones) */}
         <div className="relative">
-        {activeIndex > 0 && (
+        {canScrollLeft && (
           <button
             type="button"
             aria-label="আগের রিভিউ"
-            onClick={() => scrollToCard(activeIndex - 1)}
-            className="md:hidden absolute -left-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/95 border border-slate-200 shadow-lg flex items-center justify-center text-slate-700 active:bg-sky-50 active:text-sky-700"
+            onClick={() => scrollByCard(-1)}
+            className="absolute left-0 sm:-left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white border border-slate-200 shadow-md flex items-center justify-center text-slate-700 hover:bg-cyan-50 hover:text-cyan-700 hover:border-cyan-200 transition-colors"
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
         )}
-        {activeIndex < reviews.length - 1 && (
+        {canScrollRight && (
           <button
             type="button"
             aria-label="পরের রিভিউ"
-            onClick={() => scrollToCard(activeIndex + 1)}
-            className="md:hidden absolute -right-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/95 border border-slate-200 shadow-lg flex items-center justify-center text-slate-700 active:bg-sky-50 active:text-sky-700"
+            onClick={() => scrollByCard(1)}
+            className="absolute right-0 sm:-right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white border border-slate-200 shadow-md flex items-center justify-center text-slate-700 hover:bg-cyan-50 hover:text-cyan-700 hover:border-cyan-200 transition-colors"
           >
             <ChevronRight className="w-5 h-5" />
           </button>
         )}
         <div
           ref={scrollerRef}
-          onScroll={handleScroll}
-          className="flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 items-stretch -mx-4 px-4 pb-4 md:mx-0 md:px-0 md:pb-0 overflow-x-auto md:overflow-visible snap-x snap-mandatory scroll-px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          onScroll={updateScrollState}
+          className="flex gap-4 sm:gap-6 items-stretch overflow-x-auto snap-x snap-mandatory scroll-smooth pb-2 -mx-4 px-4 scroll-px-4 sm:mx-0 sm:px-0 sm:scroll-px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
           {reviews.map((rev, idx) => (
             <div
               key={idx}
-              className="bg-slate-50/90 rounded-2xl p-6 border border-slate-200/80 flex flex-col justify-between hover:shadow-lg transition-all w-[84%] max-w-[340px] shrink-0 snap-center md:w-auto md:max-w-none md:shrink"
+              className="bg-slate-50/90 rounded-2xl p-6 border border-slate-200/80 flex flex-col justify-between hover:shadow-lg transition-all shrink-0 snap-start w-[85%] sm:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-3rem)/3)]"
             >
               <div className="space-y-3">
                 <div className="flex items-center gap-1 text-amber-400">
