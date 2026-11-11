@@ -31,8 +31,6 @@ type FormState = {
   unit: string;
   iconName: IconName;
   features: string;
-  depositRequired: boolean;
-  depositAmount: string;
   popular: boolean;
   bestValue: boolean;
   image: string;
@@ -50,8 +48,6 @@ const EMPTY: FormState = {
   unit: '',
   iconName: 'droplets',
   features: '',
-  depositRequired: false,
-  depositAmount: '0',
   popular: false,
   bestValue: false,
   image: '',
@@ -69,8 +65,6 @@ const toForm = (p: Package): FormState => ({
   unit: p.unit ?? '',
   iconName: p.iconName,
   features: (p.features ?? []).join('\n'),
-  depositRequired: p.depositRequired,
-  depositAmount: String(p.depositAmount ?? 0),
   popular: !!p.popular,
   bestValue: !!p.bestValue,
   image: p.image ?? '',
@@ -123,8 +117,8 @@ function PackageDialog({
       unit: form.unit,
       iconName: form.iconName,
       features: form.features.split('\n').map((s) => s.trim()).filter(Boolean),
-      depositRequired: form.depositRequired,
-      depositAmount: form.depositRequired ? Number(form.depositAmount || 0) : 0,
+      depositRequired: false,
+      depositAmount: 0,
       popular: form.popular,
       bestValue: form.bestValue,
       image: form.image,
@@ -207,18 +201,11 @@ function PackageDialog({
               <Label htmlFor="sortOrder">Display order</Label>
               <Input id="sortOrder" type="number" value={form.sortOrder} onChange={text('sortOrder')} />
             </div>
-            {form.depositRequired && (
-              <div className="grid gap-2">
-                <Label htmlFor="depositAmount">Jar deposit (৳)</Label>
-                <Input id="depositAmount" type="number" min={0} value={form.depositAmount} onChange={text('depositAmount')} />
-              </div>
-            )}
           </div>
 
           <div className="grid gap-3 rounded-xl border p-4 sm:grid-cols-2">
             {([
               ['isActive', 'Visible on website'],
-              ['depositRequired', 'Requires jar deposit'],
               ['popular', 'Mark as popular'],
               ['bestValue', 'Mark as best value'],
             ] as const).map(([key, label]) => (
@@ -321,7 +308,6 @@ export function PackagesPage() {
                   {p.regularPrice ? <span className="text-muted-foreground text-sm line-through">{formatCurrency(p.regularPrice)}</span> : null}
                   {p.unit && <span className="text-muted-foreground text-sm">/ {p.unit}</span>}
                 </div>
-                {p.depositRequired && <p className="text-muted-foreground text-xs">Jar deposit {formatCurrency(p.depositAmount)} if no empty jar</p>}
                 <ul className="grid gap-1.5 text-sm">
                   {p.features.map((f) => (
                     <li key={f} className="flex gap-2"><Check className="text-primary mt-0.5 size-4 shrink-0" /> {f}</li>

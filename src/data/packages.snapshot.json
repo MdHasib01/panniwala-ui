@@ -14,8 +14,8 @@
       "ল্যাবটেস্টেড, ব্যাক্টেরিয়া মুক্ত পানি",
       "ফ্রি হোম ডেলিভারি"
     ],
-    "depositRequired": true,
-    "depositAmount": 100,
+    "depositRequired": false,
+    "depositAmount": 0,
     "iconName": "droplets",
     "image": "",
     "isActive": true,
@@ -58,8 +58,8 @@
       "নিয়মিত ও দ্রুত ডেলিভারি",
       "কাস্টম মাসিক বিলিং"
     ],
-    "depositRequired": true,
-    "depositAmount": 100,
+    "depositRequired": false,
+    "depositAmount": 0,
     "iconName": "building",
     "image": "",
     "isActive": true,

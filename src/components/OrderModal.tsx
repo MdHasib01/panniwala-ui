@@ -27,7 +27,6 @@ import {
   Truck,
   Banknote,
   Lock,
-  Info,
   Copy,
   ClipboardPaste,
   ArrowLeft,
@@ -143,10 +142,8 @@ export const OrderModal: React.FC<OrderModalProps> = ({
 
   // Pricing math
   const itemsCost = currentPkg.price * quantity;
-  const depositPerJar = currentPkg.depositRequired && !hasEmptyJar ? currentPkg.depositAmount : 0;
-  const totalDeposit = depositPerJar * quantity;
   const deliveryCharge = 0; // Free delivery!
-  const grandTotal = itemsCost + totalDeposit + deliveryCharge;
+  const grandTotal = itemsCost + deliveryCharge;
 
   const validate = () => {
     const errs: { [key: string]: string } = {};
@@ -665,8 +662,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                 })}
               </ul>
 
-              {/* The empty-jar question only matters for packages that take a deposit */}
-              {currentPkg.depositRequired && (
+              {/* Let the delivery team know whether a jar is available for exchange. */}
                 <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
                   <span className="text-xs font-semibold text-slate-700">আপনার কাছে কি খালি জার আছে?</span>
                   <div className="inline-flex rounded-xl border border-slate-200 p-0.5 bg-white">
@@ -689,16 +685,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                       না, নতুন জার
                     </button>
                   </div>
-                  {!hasEmptyJar && (
-                    <p className="w-full flex items-start gap-1.5 text-[11px] text-slate-500">
-                      <Info className="w-3.5 h-3.5 mt-px shrink-0" />
-                      <span>
-                        প্রতি নতুন জারে ৳{toBengaliNumber(currentPkg.depositAmount)} জামানত — জার ফেরত দিলে টাকা ফেরত পাবেন।
-                      </span>
-                    </p>
-                  )}
                 </div>
-              )}
             </section>
 
             {/* Step 2: Customer Details */}
@@ -827,12 +814,6 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                 <span>পানির মূল্য ({toBengaliNumber(quantity)} টি × ৳{toBengaliNumber(currentPkg.price)})</span>
                 <span className="font-semibold text-slate-800">৳{toBengaliNumber(itemsCost)}</span>
               </div>
-              {totalDeposit > 0 && (
-                <div className="flex justify-between text-slate-600">
-                  <span>নতুন জার জামানত ({toBengaliNumber(quantity)} টি × ৳{toBengaliNumber(currentPkg.depositAmount)})</span>
-                  <span className="font-semibold text-slate-800">৳{toBengaliNumber(totalDeposit)}</span>
-                </div>
-              )}
               <div className="flex justify-between text-slate-600">
                 <span>হোম ডেলিভারি চার্জ</span>
                 <span className="font-semibold text-emerald-700">ফ্রি</span>
