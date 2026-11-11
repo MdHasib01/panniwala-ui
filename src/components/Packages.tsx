@@ -141,11 +141,11 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
                   }}
                 />
 
-                {/* Badge — centered on the card's top edge */}
+                {/* Badge — on the card's top edge, aligned left */}
                 {ribbon && RibbonIcon && (
-                  <div className="absolute inset-x-0 -top-3.5 z-30 flex justify-center pointer-events-none">
-                    <span className={`inline-flex items-center gap-1.5 whitespace-nowrap text-[11px] sm:text-xs font-bold px-3.5 py-1.5 rounded-full shadow-md ring-4 ring-white ${theme.badge}`}>
-                      <RibbonIcon className="w-3.5 h-3.5" strokeWidth={2.5} fill="currentColor" />
+                  <div className="absolute inset-x-0 -top-3 z-30 flex justify-start pl-5 pointer-events-none">
+                    <span className={`inline-flex items-center gap-1.5 h-6 whitespace-nowrap text-[11px] font-semibold tracking-wide px-3 rounded-full shadow-sm ${theme.badge}`}>
+                      <RibbonIcon className="w-3 h-3" strokeWidth={2.5} fill="currentColor" />
                       {ribbon.label}
                     </span>
                   </div>
