@@ -7,6 +7,7 @@ import { Packages } from '@/src/components/Packages';
 import { ServiceAreaChecker } from '@/src/components/ServiceAreaChecker';
 import { Testimonials } from '@/src/components/Testimonials';
 import { Faq } from '@/src/components/Faq';
+import { MugdhoTribute } from '@/src/components/MugdhoTribute';
 import { useSite } from '@/src/site/context';
 
 export default function HomePage() {
@@ -30,6 +31,9 @@ export default function HomePage() {
 
       {/* Frequently Asked Questions */}
       <Faq />
+
+      {/* In remembrance of Mir Mugdho, immediately before the site footer. */}
+      <MugdhoTribute />
     </>
   );
 }
