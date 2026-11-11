@@ -28,14 +28,14 @@ export const PurityProcess: React.FC = () => {
     },
     {
       num: '৩',
-      title: 'রিভার্স অসমোসিস (RO) মেমব্রেন',
+      title: 'উন্নত মেমব্রেন পরিশোধন',
       desc: '০.০০০১ মাইক্রন মেমব্রেনের মাধ্যমে ক্ষতিকর ভারী ধাতু যেমন আর্সেনিক, সীসা ও লবণ দূর করে।',
       icon: Microscope,
     },
     {
       num: '৪',
-      title: 'আল্ট্রাভায়োলেট (UV) স্টেরিলাইজার',
-      desc: 'উচ্চ ক্ষমতার UV রশ্মির মাধ্যমে পানিতে থাকা ক্ষতিকর ব্যাকটেরিয়া ও ভাইরাসের ডিএনএ ধ্বংস করে।',
+      title: 'জীবাণুমুক্তকরণ',
+      desc: 'আধুনিক জীবাণুনাশক প্রযুক্তির মাধ্যমে পানিতে থাকা ক্ষতিকর ব্যাকটেরিয়া ও ভাইরাস ধ্বংস করে।',
       icon: Sparkles,
     },
     {
@@ -104,7 +104,7 @@ export const PurityProcess: React.FC = () => {
                 <ShieldCheck className="w-6 h-6 text-white" />
               </div>
               <h3 className="text-lg font-bold mb-2">
-                ল্যাবরেটরি টেস্টেড ও BSTI অনুমোদিত
+                নিরাপদ ও বিশুদ্ধ পানির বিশ্বস্ত সরবরাহ
               </h3>
               <p className="text-xs text-cyan-100 leading-relaxed">
                 প্রতিদিন ডেলিভারির পূর্বে আমাদের ইন-হাউজ ল্যাবে পানির TDS, pH ও মাইক্রোবায়োলজি টেস্ট সম্পন্ন করা হয়।
@@ -112,7 +112,7 @@ export const PurityProcess: React.FC = () => {
             </div>
 
             <div className="pt-4 mt-4 border-t border-white/20 flex items-center justify-between text-xs font-semibold">
-              <span>স্ট্যান্ডার্ড BDS-1414</span>
+              <span>মান নিয়ন্ত্রণ পরীক্ষা</span>
               <span className="bg-white text-cyan-900 px-2 py-0.5 rounded-md text-[10px]">
                 PASS
               </span>

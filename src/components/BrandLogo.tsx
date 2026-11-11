@@ -46,9 +46,6 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
             BD
           </span>
         </div>
-        <span className="text-[11px] text-slate-500 font-medium tracking-normal mt-0.5">
-          নিরাপদ ও বিশুদ্ধ পানির বিশ্বস্ত সরবরাহ
-        </span>
       </div>
     </div>
   );

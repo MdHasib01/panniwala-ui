@@ -24,7 +24,7 @@ export const QuickStats: React.FC = () => {
     {
       icon: ShieldCheck,
       value: '১০০% বিশুদ্ধ',
-      label: 'BSTI অনুমোদিত মান',
+      label: 'নিরাপদ ও বিশ্বস্ত সরবরাহ',
       desc: 'প্রতি ব্যাচ ল্যাব দ্বারা পরীক্ষিত',
     },
   ];

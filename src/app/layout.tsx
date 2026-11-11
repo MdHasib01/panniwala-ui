@@ -28,7 +28,7 @@ const SITE_URL = (
 const SITE_NAME = 'পানি ওয়ালা';
 const TITLE = 'পানি ওয়ালা | ১০০% বিশুদ্ধ ও নিরাপদ খাবার পানি — খুলনায় হোম ডেলিভারি';
 const DESCRIPTION =
-  'RO ও UV ফিল্টারকৃত ল্যাব-পরীক্ষিত বিশুদ্ধ খাবার পানি। বাসা-বাড়ি ও অফিসে ২০ লিটার জার মাত্র ৳৪০ — খুলনা শহরে ফ্রি হোম ডেলিভারি।';
+  'নিরাপদ ও বিশুদ্ধ পানির বিশ্বস্ত সরবরাহ। বাসা-বাড়ি ও অফিসে ২০ লিটার জার মাত্র ৳৪০ — খুলনা শহরে ফ্রি হোম ডেলিভারি।';
 
 // og:image / twitter:image come from app/opengraph-image.jpg + twitter-image.jpg
 // (generated from the hero image by scripts/generate-og-image.mjs).

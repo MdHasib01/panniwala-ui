@@ -49,7 +49,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenOrder }) => {
 
             {/* Subtitle */}
             <p className="text-base sm:text-lg text-slate-600 max-w-xl mx-auto lg:mx-0 leading-relaxed">
-              RO ও UV ফিল্টারকৃত ল্যাব-পরীক্ষিত পানি, খুলনা শহরে ফ্রি হোম ডেলিভারি।
+              নিরাপদ ও বিশুদ্ধ পানির বিশ্বস্ত সরবরাহ, খুলনা শহরে ফ্রি হোম ডেলিভারি।
             </p>
 
             {/* Delivery area check */}
