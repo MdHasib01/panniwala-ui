@@ -17,7 +17,12 @@ import {
   Loader2,
   StickyNote,
   ShoppingBag,
+  AlertTriangle,
+  Wand2,
+  Fingerprint,
 } from 'lucide-react';
+import { Badge } from '@/src/admin/components/ui/badge';
+import { Switch } from '@/src/admin/components/ui/switch';
 import { Card } from '@/src/admin/components/ui/card';
 import { Input } from '@/src/admin/components/ui/input';
 import { Button } from '@/src/admin/components/ui/button';
@@ -41,9 +46,50 @@ import {
   formatDate,
   timeAgo,
 } from '../lib/format';
-import type { Order, OrderStatus, Paginated, PaymentStatus, User } from '@/src/lib/models';
+import type { AssignmentMethod, Order, OrderStatus, Paginated, PaymentStatus, User } from '@/src/lib/models';
 
 const PAGE_SIZE = 15;
+
+const ASSIGNMENT_LABEL: Record<AssignmentMethod, string> = {
+  locked: "Customer's permanent supplier",
+  auto_area: 'Auto · serves area',
+  auto_zone_time: 'Auto · zone & time',
+  admin: 'Manual',
+};
+
+/** Admin switch: auto-select a supplier for new customers' orders. */
+function AutoAssignToggle() {
+  const { data, setData } = useFetch<{ settings: { autoAssign: boolean } }>('/settings/dispatch');
+  const [saving, setSaving] = React.useState(false);
+  useSocketEvent<{ autoAssign: boolean }>('settings:dispatch', (settings) => setData({ settings }));
+  const on = !!data?.settings.autoAssign;
+
+  const toggle = async (next: boolean) => {
+    setSaving(true);
+    try {
+      const res = await api.patch<{ settings: { autoAssign: boolean } }>('/settings/dispatch', { autoAssign: next });
+      setData(res);
+      toast.success(next ? 'Auto-select is on' : 'Auto-select is off');
+    } catch (err) {
+      toast.error((err as Error).message);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <label
+      className="bg-card flex cursor-pointer items-center gap-3 rounded-lg border px-3 py-2"
+      title="New customers' orders go to a supplier serving their area (or available in their zone at the chosen time), whoever has the fewest orders that day. Returning customers always get their permanent supplier."
+    >
+      <div className="grid leading-tight">
+        <span className="text-sm font-medium">Auto-select supplier</span>
+        <span className="text-muted-foreground text-xs">{on ? 'New customers are assigned instantly' : 'Off: assign new customers manually'}</span>
+      </div>
+      <Switch checked={on} disabled={!data || saving} onCheckedChange={toggle} />
+    </label>
+  );
+}
 
 function supplierLabel(o: Order) {
   return o.supplier?.supplier?.businessName || o.supplier?.name;
@@ -109,6 +155,13 @@ function OrderSheet({
   const closed = order.status === 'delivered' || order.status === 'cancelled';
   const subtotal = order.item.unitPrice * order.item.quantity;
 
+  // Suppliers who list the customer's area first.
+  const areaKey = order.customer.area.trim().toLowerCase();
+  const servesArea = (s: User) => !!s.supplier?.serviceAreas?.some((a) => a.trim().toLowerCase() === areaKey);
+  const sortedSuppliers = [...suppliers].sort((a, b) => Number(servesArea(b)) - Number(servesArea(a)));
+  const permanent = order.customerRef?.supplier ?? null;
+  const permanentLabel = permanent ? permanent.supplier?.businessName || permanent.name : '';
+
   return (
     <Sheet open onOpenChange={onOpenChange}>
       <SheetContent className="w-full gap-0 overflow-y-auto sm:max-w-lg">
@@ -144,7 +197,28 @@ function OrderSheet({
                 </Select>
               </div>
               <div className="grid gap-2">
-                <Label>Supplier</Label>
+                <div className="flex items-center justify-between gap-2">
+                  <Label>Supplier</Label>
+                  {order.assignment?.method && order.supplier && (
+                    <Badge variant="secondary" className="font-normal">{ASSIGNMENT_LABEL[order.assignment.method]}</Badge>
+                  )}
+                </div>
+                {!order.supplier && order.assignment?.flag === 'locked_supplier_unavailable' && (
+                  <div className="flex gap-2 rounded-lg border border-red-300 bg-red-50 p-2.5 text-xs text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-300">
+                    <AlertTriangle className="mt-0.5 size-3.5 shrink-0" />
+                    <span>
+                      This customer's permanent supplier
+                      {permanent ? ` (${permanentLabel}${permanent.status !== 'active' ? `, ${permanent.status ?? 'removed'}` : ''})` : ''} is not
+                      active, so the order was not assigned automatically. Pick a supplier below; it becomes their new permanent supplier.
+                    </span>
+                  </div>
+                )}
+                {!order.supplier && order.assignment?.flag === 'no_match' && (
+                  <div className="flex gap-2 rounded-lg border border-amber-300 bg-amber-50 p-2.5 text-xs text-amber-800 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-300">
+                    <AlertTriangle className="mt-0.5 size-3.5 shrink-0" />
+                    <span>Auto-select found no supplier serving this area, or available in this zone at this time.</span>
+                  </div>
+                )}
                 <Select
                   value={order.supplier?._id ?? 'none'}
                   disabled={!!busy || closed}
@@ -160,10 +234,12 @@ function OrderSheet({
                     {order.supplier && !suppliers.some((s) => s._id === order.supplier!._id) && (
                       <SelectItem value={order.supplier._id}>{supplierLabel(order)}</SelectItem>
                     )}
-                    {suppliers.map((s) => (
+                    {sortedSuppliers.map((s) => (
                       <SelectItem key={s._id} value={s._id}>
                         {s.supplier?.businessName || s.name}
-                        {s.supplier?.serviceAreas?.length ? (
+                        {servesArea(s) ? (
+                          <span className="ml-1 text-xs text-emerald-600 dark:text-emerald-400">· serves {order.customer.area}</span>
+                        ) : s.supplier?.serviceAreas?.length ? (
                           <span className="text-muted-foreground ml-1 text-xs">· {s.supplier.serviceAreas.slice(0, 2).join(', ')}</span>
                         ) : null}
                       </SelectItem>
@@ -171,6 +247,22 @@ function OrderSheet({
                   </SelectContent>
                 </Select>
                 {suppliers.length === 0 && <p className="text-muted-foreground text-xs">No active suppliers yet — approve one under Suppliers.</p>}
+                {!closed && (
+                  <p className="text-muted-foreground text-xs">
+                    Changing this also changes the customer's permanent supplier, so their future orders go to the same supplier.
+                  </p>
+                )}
+                {!order.supplier && !closed && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="justify-self-start"
+                    disabled={!!busy}
+                    onClick={() => run('auto', () => api.post(`/orders/${order._id}/auto-assign`), 'Supplier auto-selected')}
+                  >
+                    {busy === 'auto' ? <Loader2 className="animate-spin" /> : <Wand2 />} Auto-select supplier
+                  </Button>
+                )}
               </div>
               <div className="grid gap-2">
                 <Label>Payment</Label>
@@ -286,6 +378,28 @@ function OrderSheet({
                   {order.supplier.phone && <span className="text-muted-foreground"> · {order.supplier.phone}</span>}
                 </DetailRow>
               )}
+              {isAdmin && order.customerRef && (
+                <DetailRow icon={Fingerprint} label="Customer identity">
+                  {permanent ? (
+                    <>
+                      Permanent supplier: <span className="font-medium">{permanentLabel}</span>
+                      <span className="text-muted-foreground">
+                        {' '}
+                        · set {order.customerRef.supplierSetBy === 'admin' ? 'by admin' : 'by auto-select'}
+                        {order.customerRef.supplierSetAt && ` ${timeAgo(order.customerRef.supplierSetAt)}`}
+                      </span>
+                    </>
+                  ) : (
+                    <span className="text-muted-foreground">No permanent supplier yet</span>
+                  )}
+                  <span className="text-muted-foreground block text-xs">
+                    {order.user ? 'Signed in' : 'Guest'}
+                    {order.customerRef.phones.length > 0 && ` · phones ${order.customerRef.phones.join(', ')}`}
+                    {order.clientIp && ` · IP ${order.clientIp}`}
+                    {order.deviceId && ` · device ${order.deviceId.slice(0, 8)}`}
+                  </span>
+                </DetailRow>
+              )}
             </div>
           </div>
 
@@ -357,7 +471,8 @@ export function OrdersPage() {
     limit: PAGE_SIZE,
     status: status === 'all' ? undefined : status,
     search: debouncedSearch,
-    supplier: isAdmin && supplierFilter !== 'all' ? supplierFilter : undefined,
+    supplier: isAdmin && supplierFilter !== 'all' && supplierFilter !== 'flagged' ? supplierFilter : undefined,
+    flag: isAdmin && supplierFilter === 'flagged' ? 'locked_supplier_unavailable' : undefined,
   });
 
   const { data: supplierData } = useFetch<Paginated<User>>(isAdmin ? '/users' : null, {
@@ -435,6 +550,7 @@ export function OrdersPage() {
               ? 'Orders assigned to you. Update the status as you deliver.'
               : 'Every order you placed while signed in.'
         }
+        actions={isAdmin ? <AutoAssignToggle /> : undefined}
       />
 
       <Card className="gap-0 overflow-hidden py-0">
@@ -466,6 +582,7 @@ export function OrdersPage() {
                 <SelectContent>
                   <SelectItem value="all">All suppliers</SelectItem>
                   <SelectItem value="none">Unassigned</SelectItem>
+                  <SelectItem value="flagged">Permanent supplier inactive</SelectItem>
                   {suppliers.map((s) => (
                     <SelectItem key={s._id} value={s._id}>
                       {s.supplier?.businessName || s.name}
@@ -521,7 +638,14 @@ export function OrdersPage() {
                       </TableCell>
                       {isAdmin && (
                         <TableCell className="hidden xl:table-cell">
-                          {supplierLabel(o) ?? <span className="text-muted-foreground">Unassigned</span>}
+                          {supplierLabel(o) ??
+                            (o.assignment?.flag === 'locked_supplier_unavailable' ? (
+                              <span className="inline-flex items-center gap-1 text-red-600 dark:text-red-400">
+                                <AlertTriangle className="size-3.5" /> Needs supplier
+                              </span>
+                            ) : (
+                              <span className="text-muted-foreground">Unassigned</span>
+                            ))}
                         </TableCell>
                       )}
                       <TableCell>

@@ -4,6 +4,8 @@
  * next.config.ts), so the base URL is empty. Set NEXT_PUBLIC_API_URL when the API
  * lives on another origin — it is inlined into the client bundle at build time.
  */
+import { getDeviceId } from './device';
+
 export const API_URL: string = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, '') || '';
 
 const TOKEN_KEY = 'pw_token';
@@ -57,6 +59,7 @@ export const setUnauthorizedHandler = (fn: (() => void) | null) => {
 
 async function request<T>(method: string, path: string, body?: unknown, query?: Query): Promise<T> {
   const token = tokenStore.get();
+  const deviceId = getDeviceId();
   let res: Response;
   try {
     res = await fetch(`${API_URL}/api${path}${buildQuery(query)}`, {
@@ -64,6 +67,7 @@ async function request<T>(method: string, path: string, body?: unknown, query?: 
       headers: {
         ...(body !== undefined ? { 'Content-Type': 'application/json' } : {}),
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...(deviceId ? { 'X-Device-Id': deviceId } : {}),
       },
       body: body !== undefined ? JSON.stringify(body) : undefined,
     });

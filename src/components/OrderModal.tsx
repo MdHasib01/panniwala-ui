@@ -9,6 +9,8 @@ import { usePackages } from '@/src/lib/packages-api';
 import { api } from '@/src/lib/api';
 import { useAuth } from '@/src/lib/auth';
 import { loadSavedDetails, saveDetails } from '@/src/lib/saved-details';
+import { rememberGuestOrder } from '@/src/lib/device';
+import { DELIVERY_SLOTS, type DeliverySlotOption } from '@/src/lib/delivery-windows';
 import type { User } from '@/src/lib/models';
 import Link from 'next/link';
 import { WaterPackage, ConfirmedOrder } from '@/src/types';
@@ -80,7 +82,9 @@ export const OrderModal: React.FC<OrderModalProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [areaKeys]);
   const [address, setAddress] = useState('');
-  const [deliverySlot, setDeliverySlot] = useState('আজকেই দ্রুততম ডেলিভারি (১ ঘণ্টার মধ্যে)');
+  const [slotKey, setSlotKey] = useState<DeliverySlotOption['key']>(DELIVERY_SLOTS[0].key);
+  const slot = DELIVERY_SLOTS.find((s) => s.key === slotKey) ?? DELIVERY_SLOTS[0];
+  const deliverySlot = slot.label;
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('cod');
   const [notes, setNotes] = useState('');
 
@@ -217,6 +221,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
         hasEmptyJar,
         customer,
         deliverySlot,
+        delivery: { day: slot.day, window: slot.window },
         paymentMethod,
         transactionId: trxId,
         notes: notes || undefined,
@@ -224,6 +229,8 @@ export const OrderModal: React.FC<OrderModalProps> = ({
 
       // Remember these details for the next order (device + profile).
       saveDetails(customer);
+      // A guest's order stays tracked on this device until they sign in.
+      if (!user) rememberGuestOrder(order.orderNumber, customer.phone);
       if (updatedUser) setUser(updatedUser);
 
       const newOrder: ConfirmedOrder = {
@@ -763,14 +770,13 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                 <label htmlFor="order-slot-select" className="text-xs font-semibold text-slate-700">ডেলিভারির সময়</label>
                 <select
                   id="order-slot-select"
-                  value={deliverySlot}
-                  onChange={(e) => setDeliverySlot(e.target.value)}
+                  value={slotKey}
+                  onChange={(e) => setSlotKey(e.target.value as DeliverySlotOption['key'])}
                   className="w-full h-10 px-3.5 rounded-xl border border-slate-200 bg-white text-xs text-slate-800 focus:outline-cyan-500"
                 >
-                  <option value="আজকেই দ্রুততম ডেলিভারি (১ ঘণ্টার মধ্যে)">আজকেই দ্রুততম ডেলিভারি (১ ঘণ্টার মধ্যে)</option>
-                  <option value="আজ সন্ধ্যায় (৬টা - ৯টা)">আজ সন্ধ্যায় (৬টা - ৯টা)</option>
-                  <option value="আগামীকাল সকাল (৯টা - ১২টা)">আগামীকাল সকাল (৯টা - ১২টা)</option>
-                  <option value="আগামীকাল দুপুর (২টা - ৫টা)">আগামীকাল দুপুর (২টা - ৫টা)</option>
+                  {DELIVERY_SLOTS.map((s) => (
+                    <option key={s.key} value={s.key}>{s.label}</option>
+                  ))}
                 </select>
               </div>
 

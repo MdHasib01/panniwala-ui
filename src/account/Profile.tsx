@@ -7,7 +7,8 @@ import { Loader2, LogOut, Clock3, ShieldCheck } from 'lucide-react';
 import { cn } from '@/src/lib/utils';
 import { api } from '@/src/lib/api';
 import { useAuth } from '@/src/lib/auth';
-import type { AreaRequest, User } from '@/src/lib/models';
+import type { AreaRequest, User, ZoneAvailability } from '@/src/lib/models';
+import { AvailabilityPicker } from './AvailabilityPicker';
 import { authErrorBn, isBdPhone, normalizeBdPhone } from '@/src/lib/phone';
 import { ROLE_LABEL_BN, initialsOf } from '@/src/site/context';
 import { AccountHeader, AccountPage, Field, fieldClass } from './ui';
@@ -146,6 +147,44 @@ function DetailsForm({ user }: { user: User }) {
   );
 }
 
+/** A supplier's delivery times per zone, used to auto-assign orders from areas they don't list. */
+function AvailabilityForm({ user }: { user: User }) {
+  const { setUser } = useAuth();
+  const [value, setValue] = useState<ZoneAvailability[]>(user.supplier?.availability ?? []);
+  const [saving, setSaving] = useState(false);
+
+  const onSave = async () => {
+    setSaving(true);
+    try {
+      const { user: updated } = await api.patch<{ user: User }>('/auth/me', { availability: value });
+      setUser(updated);
+      setValue(updated.supplier?.availability ?? []);
+      toast.success('ডেলিভারির সময় সেভ হয়েছে');
+    } catch (err) {
+      toast.error((err as Error).message);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <Section title="ডেলিভারির সময় (জোন অনুযায়ী)">
+      <p className="mb-4 text-sm text-slate-500">
+        যেসব জোনে নির্দিষ্ট এলাকা ছাড়াও ডেলিভারি দিতে পারবেন, সেগুলো ও কোন সময়ে পারবেন তা বাছাই করুন। গ্রাহক সেই সময়ে অর্ডার করলে অর্ডারটি আপনাকে দেওয়া হতে পারে।
+      </p>
+      <AvailabilityPicker value={value} onChange={setValue} />
+      <button
+        type="button"
+        onClick={onSave}
+        disabled={saving}
+        className="mt-4 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-cyan-600 font-bold text-white hover:bg-cyan-700 disabled:opacity-60 sm:w-auto sm:px-8"
+      >
+        {saving && <Loader2 className="h-4.5 w-4.5 animate-spin" />} সময় সেভ করুন
+      </button>
+    </Section>
+  );
+}
+
 function PasswordForm() {
   const [current, setCurrent] = useState('');
   const [next, setNext] = useState('');
@@ -209,6 +248,7 @@ export default function ProfilePage() {
         </div>
 
         <DetailsForm user={user} />
+        {user.role === 'supplier' && <AvailabilityForm user={user} />}
         <PasswordForm />
 
         <button

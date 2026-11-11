@@ -29,7 +29,8 @@ import { useSocket, useSocketEvent } from '@/src/lib/socket';
 import { useDebounced, useFetch } from '@/src/lib/use-fetch';
 import { EmptyState, PageHeader, Pagination, RoleBadge, UserAvatar, UserStatusBadge, useConfirm } from '../components/shared';
 import { formatDate } from '../lib/format';
-import type { Conversation, Paginated, Role, User, UserStatus } from '@/src/lib/models';
+import type { Conversation, Paginated, Role, User, UserStatus, ZoneAvailability } from '@/src/lib/models';
+import { AvailabilityPicker } from '@/src/account/AvailabilityPicker';
 
 /* ------------------------------ User dialog ------------------------------ */
 
@@ -50,6 +51,7 @@ export function UserDialog({
   const blank = { name: '', email: '', phone: '', password: '', role: defaultRole, status: 'active' as UserStatus, address: '', area: '', businessName: '', tradeLicense: '' };
   const [form, setForm] = React.useState(blank);
   const [areas, setAreas] = React.useState<string[]>([]);
+  const [availability, setAvailability] = React.useState<ZoneAvailability[]>([]);
   const [decisions, setDecisions] = React.useState<AreaDecisions>({});
   const [saving, setSaving] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
@@ -72,9 +74,11 @@ export function UserDialog({
         tradeLicense: initial.supplier?.tradeLicense ?? '',
       });
       setAreas(initial.supplier?.serviceAreas ?? []);
+      setAvailability(initial.supplier?.availability ?? []);
     } else {
       setForm(blank);
       setAreas([]);
+      setAvailability([]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, initial]);
@@ -100,6 +104,7 @@ export function UserDialog({
       body.businessName = form.businessName;
       body.tradeLicense = form.tradeLicense;
       body.serviceAreas = areas;
+      body.availability = availability;
       if (Object.keys(decisions).length) body.areaDecisions = toAreaDecisions(decisions);
     }
     try {
@@ -201,6 +206,13 @@ export function UserDialog({
               <div className="grid gap-2">
                 <Label>Service areas</Label>
                 <AdminLocationChecklist value={areas} onChange={setAreas} />
+              </div>
+              <div className="grid gap-2">
+                <Label>Zone availability</Label>
+                <p className="text-muted-foreground -mt-1 text-xs">
+                  Auto-select uses this when no supplier lists the customer's exact area: the order can go to this supplier if it is in one of these zones at a time and day ticked here.
+                </p>
+                <AvailabilityPicker value={availability} onChange={setAvailability} lang="en" />
               </div>
               {(initial?.supplier?.areaRequests ?? []).some((r) => r.status !== 'pending') && (
                 <div className="grid gap-2">

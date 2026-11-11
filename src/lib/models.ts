@@ -19,6 +19,8 @@ export interface User {
     tradeLicense?: string;
     /** Areas the supplier asked to add; kept as history after a decision. */
     areaRequests?: AreaRequest[];
+    /** When the supplier can deliver anywhere in a zone. */
+    availability?: ZoneAvailability[];
   };
   lastSeenAt?: string;
   createdAt: string;
@@ -30,6 +32,20 @@ export interface User {
 }
 
 export type AreaRequestStatus = 'pending' | 'approved' | 'rejected';
+
+/** Delivery windows (Bangladesh time) shared by suppliers' availability and customers' orders. */
+export type SupplierWindow = 'morning' | 'afternoon' | 'evening';
+export type DeliveryWindow = 'express' | SupplierWindow;
+
+export interface ZoneAvailability {
+  zone: string;
+  windows: SupplierWindow[];
+  /** 0 = Sunday … 6 = Saturday */
+  days: number[];
+}
+
+export type AssignmentMethod = 'locked' | 'auto_area' | 'auto_zone_time' | 'admin';
+export type AssignmentFlag = 'locked_supplier_unavailable' | 'no_match';
 
 /** A delivery zone: a group of locations (GET /api/areas). */
 export interface Zone {
@@ -134,7 +150,22 @@ export interface Order {
   transactionId?: string;
   notes?: string;
   status: OrderStatus;
-  supplier?: (Pick<User, '_id' | 'name' | 'phone' | 'email'> & { supplier?: { businessName?: string } }) | null;
+  supplier?: (Pick<User, '_id' | 'name' | 'phone' | 'email' | 'status'> & { supplier?: { businessName?: string } }) | null;
+  /** How the supplier was chosen, and why an order was left unassigned. */
+  assignment?: { method?: AssignmentMethod; at?: string; flag?: AssignmentFlag | null };
+  delivery?: { date?: string; window?: DeliveryWindow };
+  zone?: string;
+  /** Admin only: the person behind the order (shared by their guest and signed-in orders). */
+  customerRef?: {
+    _id: string;
+    phones: string[];
+    supplier?: (Pick<User, '_id' | 'name' | 'phone' | 'status'> & { supplier?: { businessName?: string } }) | null;
+    supplierSetBy?: 'auto' | 'admin';
+    supplierSetAt?: string;
+  } | null;
+  deviceId?: string;
+  clientIp?: string;
+  userAgent?: string;
   history: OrderHistoryEntry[];
   createdAt: string;
   updatedAt: string;

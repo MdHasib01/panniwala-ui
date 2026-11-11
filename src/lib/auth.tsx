@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import { api, setUnauthorizedHandler, tokenStore } from '@/src/lib/api';
+import { clearGuestOrders } from '@/src/lib/device';
 import type { NewLocation, User } from './models';
 
 interface AuthResponse {
@@ -87,6 +88,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const accept = React.useCallback(({ token, user }: AuthResponse) => {
     tokenStore.set(token);
+    // The server has moved this device's guest orders onto the account.
+    if (user.role === 'user') clearGuestOrders();
     setUser(user);
     setToken(token);
     return user;

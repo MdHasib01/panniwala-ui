@@ -10,7 +10,8 @@ import { Input } from '@/src/admin/components/ui/input';
 import { Skeleton } from '@/src/admin/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/src/admin/components/ui/table';
 import { api } from '@/src/lib/api';
-import { invalidateAreas } from '@/src/lib/areas-api';
+import { invalidateAreas, useLocations } from '@/src/lib/areas-api';
+import { describeAvailability } from '@/src/lib/delivery-windows';
 import { useSocket, useSocketEvent } from '@/src/lib/socket';
 import { useDebounced, useFetch } from '@/src/lib/use-fetch';
 import { EmptyState, PageHeader, Pagination, UserAvatar, UserStatusBadge } from '../components/shared';
@@ -112,6 +113,8 @@ function PendingApprovals({ onChanged }: { onChanged: () => void }) {
 
 export function SuppliersPage() {
   const { onlineIds } = useSocket();
+  const { zones } = useLocations();
+  const zoneName = (id: string) => zones.find((z) => z._id === id)?.nameEn ?? 'Removed zone';
   const [search, setSearch] = React.useState('');
   const [page, setPage] = React.useState(1);
   const debounced = useDebounced(search);
@@ -183,6 +186,15 @@ export function SuppliersPage() {
                         {(s.supplier?.serviceAreas?.length ?? 0) > 3 && <Badge variant="outline">+{s.supplier!.serviceAreas!.length - 3}</Badge>}
                         {!s.supplier?.serviceAreas?.length && <span className="text-muted-foreground text-sm">—</span>}
                       </div>
+                      {(s.supplier?.availability?.length ?? 0) > 0 && (
+                        <p className="text-muted-foreground mt-1 flex items-center gap-1 text-xs">
+                          <Clock3 className="size-3 shrink-0" />
+                          <span className="truncate" title={s.supplier!.availability!.map((a) => `${zoneName(a.zone)}: ${describeAvailability(a.windows, a.days)}`).join('\n')}>
+                            {s.supplier!.availability!.length} zone{s.supplier!.availability!.length > 1 ? 's' : ''} ·{' '}
+                            {s.supplier!.availability!.map((a) => zoneName(a.zone)).join(', ')}
+                          </span>
+                        </p>
+                      )}
                     </TableCell>
                     <TableCell className="hidden sm:table-cell"><UserStatusBadge status={s.status} /></TableCell>
                     <TableCell className="hidden text-right tabular-nums md:table-cell">{s.deliveredCount ?? 0} / {s.assignedCount ?? 0}</TableCell>
