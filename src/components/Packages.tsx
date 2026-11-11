@@ -6,6 +6,8 @@ import { Button } from '@/src/components/ui/button';
 import { SectionHeader } from '@/src/components/SectionHeader';
 import {
   CircleCheck,
+  Star,
+  Zap,
   ArrowRight,
   ChevronLeft,
   ChevronRight
@@ -113,7 +115,12 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
         >
           {packages.map((pkg) => {
             const theme = getTheme(pkg);
-            const ribbon = pkg.popular ? '★ সবচেয়ে জনপ্রিয়' : pkg.bestValue ? '⚡ সেরা ভ্যালু' : null;
+            const ribbon = pkg.popular
+              ? { icon: Star, label: 'সবচেয়ে জনপ্রিয়' }
+              : pkg.bestValue
+                ? { icon: Zap, label: 'সেরা ভ্যালু' }
+                : null;
+            const RibbonIcon = ribbon?.icon;
 
             return (
               <div
@@ -125,9 +132,10 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
                   <div className="absolute -bottom-12 -right-12 w-44 h-44 rounded-full bg-white/70 blur-2xl pointer-events-none" />
                   <div className="absolute -top-10 -left-10 w-32 h-32 rounded-full bg-white/50 blur-2xl pointer-events-none" />
 
-                  {ribbon && (
-                    <span className={`absolute top-3 left-3 z-20 inline-flex items-center text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm ${theme.badge}`}>
-                      {ribbon}
+                  {ribbon && RibbonIcon && (
+                    <span className={`absolute top-3 left-3 z-20 inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm ${theme.badge}`}>
+                      <RibbonIcon className="w-3 h-3" strokeWidth={2.5} />
+                      {ribbon.label}
                     </span>
                   )}
 
