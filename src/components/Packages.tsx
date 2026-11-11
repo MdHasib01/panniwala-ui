@@ -78,7 +78,7 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
   };
 
   return (
-    <section id="packages" className="pt-6 sm:pt-8 pb-10 sm:pb-14 bg-slate-50/70 relative">
+    <section id="packages" className="pt-6 sm:pt-8 pb-10 sm:pb-14 bg-slate-50/70 relative isolate">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Section Header */}
