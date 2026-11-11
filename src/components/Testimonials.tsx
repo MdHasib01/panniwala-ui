@@ -37,7 +37,7 @@ export const Testimonials: React.FC = () => {
   const reviews = [
     {
       name: 'তানভীর আহমেদ',
-      role: 'অ্যাডমিন ম্যানেজার, কেডিএ এভিনিউ',
+      role: 'অফিসের গ্রাহক',
       text: 'আমাদের অফিসে প্রতিদিন প্রায় ৬টি করে জার লাগে। পানি ওয়ালার সবচেয়ে বড় সুবিধা হলো সময়মতো ডেলিভারি এবং জারগুলো দেখতেও অত্যন্ত ঝকঝকে ও পরিষ্কার। স্বাদ শতভাগ প্রাকৃতিক।',
       rating: 5,
       area: 'কেডিএ এভিনিউ, খুলনা',
@@ -54,15 +54,6 @@ export const Testimonials: React.FC = () => {
       initials: 'সা',
     },
     {
-      name: 'ইঞ্জিনিয়ার রেজওয়ানুল হক',
-      role: 'সফটওয়্যার আর্কিটেক্ট',
-      text: 'ইলেকট্রিক পাম্পের কম্বো অফারটি নিয়েছিলাম। এক চার্জে অনায়াসে ৪টি জার চলে যায়। বারবার জার উল্টানোর ঝামেলা থেকে মুক্তি পেয়েছি। কাস্টমার সার্ভিসও অসাধারণ!',
-      rating: 5,
-      area: 'বয়রা, খুলনা',
-      avatarBg: 'bg-cyan-600',
-      initials: 'রে',
-    },
-    {
       name: 'মাহফুজুর রহমান',
       role: 'ক্যাফে ও রেস্টুরেন্ট ওনার',
       text: 'ফুড অ্যান্ড বেভারেজ বিজনেসে পানির পিউরিটি সবচেয়ে জরুরি। পানি ওয়ালা আমাদের নিয়মিত সাপ্লাই দেয়। তাদের নিরাপদ ও বিশুদ্ধ পানির বিশ্বস্ত সরবরাহ আমাদের মানসিক শান্তি দিয়েছে।',
@@ -70,6 +61,33 @@ export const Testimonials: React.FC = () => {
       area: 'খালিশপুর, খুলনা',
       avatarBg: 'bg-indigo-600',
       initials: 'মা',
+    },
+    {
+      name: 'বাসার গ্রাহক',
+      role: 'পরিবারের জন্য পানি',
+      text: 'বাসার জন্য ২০ লিটারের জার নেওয়াটা বেশ সুবিধাজনক। ভারী জার বহনের চিন্তা নেই, দরজায় পানি পৌঁছে যায়। পরিবারের দৈনন্দিন পানির ব্যবস্থা এখন অনেক সহজ।',
+      rating: 5,
+      area: 'সোনাডাঙ্গা, খুলনা',
+      avatarBg: 'bg-teal-600',
+      initials: 'বা',
+    },
+    {
+      name: 'অফিসের গ্রাহক',
+      role: 'অফিসে পানি সরবরাহ',
+      text: 'অফিসে নিয়মিত পানির প্রয়োজন হয়। এক জায়গা থেকে জার নেওয়ার সুবিধায় বারবার নতুন সরবরাহকারী খুঁজতে হয় না। অর্ডার দেওয়া এবং যোগাযোগ করাও সহজ।',
+      rating: 5,
+      area: 'কেডিএ এভিনিউ, খুলনা',
+      avatarBg: 'bg-sky-600',
+      initials: 'অ',
+    },
+    {
+      name: 'নিয়মিত গ্রাহক',
+      role: 'নিয়মিত জার রিফিল',
+      text: 'পানি শেষ হওয়ার আগেই নতুন জারের অর্ডার দিই। খালি জার বদলে ভর্তি জার নেওয়ার ব্যবস্থা বেশ সহজ। ব্যস্ত দিনের মধ্যে পানির জন্য আলাদা সময় বের করতে হয় না।',
+      rating: 5,
+      area: 'বয়রা, খুলনা',
+      avatarBg: 'bg-violet-600',
+      initials: 'নি',
     },
   ];
 
@@ -107,7 +125,7 @@ export const Testimonials: React.FC = () => {
         <div
           ref={scrollerRef}
           onScroll={handleScroll}
-          className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 items-stretch -mx-4 px-4 pb-4 md:mx-0 md:px-0 md:pb-0 overflow-x-auto md:overflow-visible snap-x snap-mandatory scroll-px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 items-stretch -mx-4 px-4 pb-4 md:mx-0 md:px-0 md:pb-0 overflow-x-auto md:overflow-visible snap-x snap-mandatory scroll-px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
           {reviews.map((rev, idx) => (
             <div
