@@ -49,29 +49,11 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
     });
   };
 
-  const getTheme = (pkg: WaterPackage) => {
-    if (pkg.popular) {
-      return {
-        card: 'border-sky-200 shadow-lg shadow-sky-500/10 ring-1 ring-sky-300/50',
-        panel: 'from-sky-100 via-cyan-50 to-white',
-        badge: 'bg-sky-600 text-white shadow-sky-600/30',
-        grid: '2 132 199',
-      };
-    }
-    if (pkg.bestValue) {
-      return {
-        card: 'border-emerald-200 shadow-lg shadow-emerald-500/10 ring-1 ring-emerald-300/50',
-        panel: 'from-emerald-100 via-teal-50 to-white',
-        badge: 'bg-emerald-600 text-white shadow-emerald-600/30',
-        grid: '5 150 105',
-      };
-    }
-    return {
-      card: 'border-slate-200 shadow-sm hover:border-slate-300',
-      panel: 'from-slate-100 via-slate-50 to-white',
-      badge: 'bg-slate-900 text-white shadow-slate-900/20',
-      grid: '71 85 105',
-    };
+  const theme = {
+    card: 'border-sky-200 shadow-lg shadow-sky-500/10 ring-1 ring-sky-300/50',
+    panel: 'from-sky-100 via-cyan-50 to-white',
+    badge: 'bg-sky-600 text-white shadow-sky-600/30',
+    grid: '2 132 199',
   };
 
   return (
@@ -113,7 +95,6 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
           className="relative flex md:grid md:grid-cols-3 gap-4 md:gap-6 lg:gap-8 pt-5 pb-4 md:pb-2 md:pt-5 items-stretch max-w-6xl -mx-4 px-4 md:mx-auto md:px-0 overflow-x-auto md:overflow-visible snap-x snap-mandatory scroll-px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
           {packages.map((pkg) => {
-            const theme = getTheme(pkg);
             const ribbon = pkg.popular
               ? { icon: Star, label: 'সবচেয়ে জনপ্রিয়' }
               : pkg.bestValue
