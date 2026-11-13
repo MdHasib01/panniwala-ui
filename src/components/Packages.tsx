@@ -27,6 +27,7 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
     card: 'border-sky-200 shadow-sm',
     panel: 'from-sky-100 via-cyan-50 to-white',
     badge: 'bg-sky-600 text-white shadow-sky-600/30',
+    grid: '2 132 199',
   };
 
   return (
@@ -79,6 +80,17 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
                 key={pkg.id}
                 className={`relative flex flex-col rounded-3xl bg-white border w-[84%] max-w-[340px] shrink-0 snap-center md:w-auto md:max-w-none md:shrink ${theme.card}`}
               >
+                {/* Static grid in the bottom-right corner of every card. */}
+                <div
+                  aria-hidden="true"
+                  className="absolute inset-0 rounded-[inherit] pointer-events-none [mask-image:radial-gradient(circle_at_100%_100%,black_0%,transparent_45%)]"
+                  style={{
+                    backgroundImage: `linear-gradient(to right, rgb(${theme.grid} / 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgb(${theme.grid} / 0.05) 1px, transparent 1px)`,
+                    backgroundSize: '18px 18px',
+                    backgroundPosition: 'right bottom',
+                  }}
+                />
+
                 {/* Badge — on the card's top edge, aligned left */}
                 {ribbon && RibbonIcon && (
                   <div className="absolute inset-x-0 -top-3 z-30 flex justify-start pl-5 pointer-events-none">
@@ -91,6 +103,16 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
 
                 {/* Image panel */}
                 <div className={`relative rounded-t-[23px] bg-gradient-to-br ${theme.panel} h-[190px] md:h-[230px] flex items-center justify-center overflow-hidden`}>
+                  {/* Static grid behind the package artwork. */}
+                  <div
+                    aria-hidden="true"
+                    className="absolute inset-0 pointer-events-none [mask-image:radial-gradient(ellipse_at_center,black_35%,transparent_80%)]"
+                    style={{
+                      backgroundImage: `linear-gradient(to right, rgb(${theme.grid} / 0.12) 1px, transparent 1px), linear-gradient(to bottom, rgb(${theme.grid} / 0.12) 1px, transparent 1px)`,
+                      backgroundSize: '22px 22px',
+                      backgroundPosition: 'center center',
+                    }}
+                  />
                   <Image
                     src={pkg.image}
                     alt={pkg.title}

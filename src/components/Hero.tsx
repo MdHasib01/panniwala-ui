@@ -15,6 +15,20 @@ export const Hero: React.FC<HeroProps> = ({ onOpenOrder }) => {
 
   return (
     <section id="hero" className="relative overflow-hidden pt-6 sm:pt-14 pb-6 sm:pb-14 lg:py-20 bg-gradient-to-b from-cyan-50/60 via-sky-50/30 to-white">
+      {/* Static grid, softly faded toward the section edges. */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 pointer-events-none opacity-[0.35]"
+        style={{
+          backgroundImage:
+            'linear-gradient(to right, rgba(8,145,178,0.18) 1px, transparent 1px), linear-gradient(to bottom, rgba(8,145,178,0.18) 1px, transparent 1px)',
+          backgroundSize: '44px 44px',
+          backgroundPosition: 'center top',
+          maskImage: 'radial-gradient(ellipse 75% 70% at 50% 35%, #000 40%, transparent 100%)',
+          WebkitMaskImage: 'radial-gradient(ellipse 75% 70% at 50% 35%, #000 40%, transparent 100%)',
+        }}
+      />
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-10 lg:gap-12 items-center">
           
