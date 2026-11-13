@@ -56,7 +56,6 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
         panel: 'from-sky-100 via-cyan-50 to-white',
         badge: 'bg-sky-600 text-white shadow-sky-600/30',
         grid: '2 132 199',
-        button: 'btn-shine [--shine-glow:2_132_199] bg-sky-600 hover:bg-sky-700 text-white shadow-md shadow-sky-500/25',
       };
     }
     if (pkg.bestValue) {
@@ -65,7 +64,6 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
         panel: 'from-emerald-100 via-teal-50 to-white',
         badge: 'bg-emerald-600 text-white shadow-emerald-600/30',
         grid: '5 150 105',
-        button: 'btn-shine [--shine-glow:5_150_105] bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-600/25',
       };
     }
     return {
@@ -73,7 +71,6 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
       panel: 'from-slate-100 via-slate-50 to-white',
       badge: 'bg-slate-900 text-white shadow-slate-900/20',
       grid: '71 85 105',
-      button: 'btn-shine [--shine-glow:15_23_42] bg-slate-900 hover:bg-slate-800 text-white shadow-sm',
     };
   };
 
@@ -201,7 +198,7 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
                   <Button
                     id={`order-package-${pkg.id}`}
                     onClick={() => onSelectPackage(pkg)}
-                    className={`mt-auto w-full h-12 rounded-2xl font-bold text-sm transition-all flex items-center justify-between pl-5 pr-1.5 ${theme.button}`}
+                    className="mt-auto w-full h-12 rounded-2xl font-bold text-sm transition-all flex items-center justify-between pl-5 pr-1.5 btn-shine [--shine-glow:2_132_199] bg-sky-600 hover:bg-sky-700 text-white shadow-md shadow-sky-500/25"
                   >
                     <span>অর্ডার নিশ্চিত করুন</span>
                     <span className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center transition-transform duration-300 group-hover:translate-x-0.5">
