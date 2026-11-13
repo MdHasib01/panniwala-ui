@@ -1,57 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React from 'react';
+import { useCarousel } from '@/src/lib/use-carousel';
 import { SectionHeader } from '@/src/components/SectionHeader';
 import { Star, CheckCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 import { toBengaliNumber } from '@/src/data/packages';
 
 export const Testimonials: React.FC = () => {
-  const scrollerRef = useRef<HTMLDivElement>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(false);
-
-  const updateScrollState = useCallback(() => {
-    const el = scrollerRef.current;
-    if (!el) return;
-    setCanScrollLeft(el.scrollLeft > 4);
-    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
-
-    // Active card = the one whose left edge is closest to the scroller's visible start.
-    const cards = Array.from(el.children) as HTMLElement[];
-    const start = el.scrollLeft + parseFloat(getComputedStyle(el).scrollPaddingLeft || '0');
-    let closest = 0;
-    let minDist = Infinity;
-    cards.forEach((card, i) => {
-      const dist = Math.abs(card.offsetLeft - start);
-      if (dist < minDist) {
-        minDist = dist;
-        closest = i;
-      }
-    });
-    setActiveIndex(closest);
-  }, []);
-
-  useEffect(() => {
-    updateScrollState();
-    window.addEventListener('resize', updateScrollState);
-    return () => window.removeEventListener('resize', updateScrollState);
-  }, [updateScrollState]);
-
-  const scrollByCard = (direction: 1 | -1) => {
-    const el = scrollerRef.current;
-    const card = el?.firstElementChild as HTMLElement | null;
-    if (!el || !card) return;
-    const gap = parseFloat(getComputedStyle(el).columnGap) || 0;
-    el.scrollBy({ left: direction * (card.offsetWidth + gap), behavior: 'smooth' });
-  };
-
-  const scrollToCard = (index: number) => {
-    const el = scrollerRef.current;
-    const card = el?.children[index] as HTMLElement | undefined;
-    if (!el || !card) return;
-    const padding = parseFloat(getComputedStyle(el).scrollPaddingLeft || '0');
-    el.scrollTo({ left: card.offsetLeft - padding, behavior: 'smooth' });
-  };
-
   const reviews = [
     {
       name: 'তানভীর আহমেদ',
@@ -109,6 +62,8 @@ export const Testimonials: React.FC = () => {
     },
   ];
 
+  const { scrollerRef, activeIndex, canScrollLeft, canScrollRight, scrollByCard, scrollToCard } = useCarousel(reviews.length);
+
   return (
     <section id="reviews" className="pt-6 sm:pt-8 pb-16 sm:pb-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -142,13 +97,12 @@ export const Testimonials: React.FC = () => {
         )}
         <div
           ref={scrollerRef}
-          onScroll={updateScrollState}
-          className="flex gap-4 sm:gap-6 items-stretch overflow-x-auto snap-x snap-mandatory scroll-smooth pb-2 -mx-4 px-4 scroll-px-4 sm:mx-0 sm:px-0 sm:scroll-px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="flex gap-4 sm:gap-6 items-stretch overflow-x-auto snap-x snap-mandatory scroll-smooth motion-reduce:scroll-auto pb-2 -mx-4 px-4 scroll-px-4 sm:mx-0 sm:px-0 sm:scroll-px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
           {reviews.map((rev, idx) => (
             <div
               key={idx}
-              className="bg-slate-50/90 rounded-2xl p-6 border border-slate-200/80 flex flex-col justify-between hover:shadow-lg transition-all shrink-0 snap-start w-[85%] sm:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-3rem)/3)]"
+              className="bg-slate-50/90 rounded-2xl p-6 border border-slate-200/80 flex flex-col justify-between shrink-0 snap-start w-[85%] sm:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-3rem)/3)]"
             >
               <div className="space-y-3">
                 <div className="flex items-center gap-1 text-amber-400">
@@ -191,7 +145,7 @@ export const Testimonials: React.FC = () => {
               type="button"
               aria-label={`রিভিউ ${toBengaliNumber(i + 1)}`}
               onClick={() => scrollToCard(i)}
-              className={`h-2 rounded-full transition-all duration-300 ${
+              className={`h-2 rounded-full ${
                 activeIndex === i ? 'w-6 bg-sky-600' : 'w-2 bg-slate-300'
               }`}
             />

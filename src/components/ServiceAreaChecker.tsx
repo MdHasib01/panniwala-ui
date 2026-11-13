@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useMemo, useState } from 'react';
+import { useCarousel } from '@/src/lib/use-carousel';
 import { SectionHeader } from '@/src/components/SectionHeader';
 import { MapPin, Clock, ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
 import { HOTLINE_NUMBER, HOTLINE_TEL, toBengaliNumber } from '@/src/data/packages';
@@ -28,30 +29,7 @@ export const ServiceAreaChecker: React.FC<{ onOpenOrder: () => void }> = ({ onOp
     [areas, zones]
   );
 
-  const scrollerRef = useRef<HTMLDivElement>(null);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(false);
-
-  const updateScrollState = useCallback(() => {
-    const el = scrollerRef.current;
-    if (!el) return;
-    setCanScrollLeft(el.scrollLeft > 4);
-    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
-  }, []);
-
-  useEffect(() => {
-    updateScrollState();
-    window.addEventListener('resize', updateScrollState);
-    return () => window.removeEventListener('resize', updateScrollState);
-  }, [updateScrollState, zoneCards.length]);
-
-  const scrollByCard = (direction: 1 | -1) => {
-    const el = scrollerRef.current;
-    const card = el?.firstElementChild as HTMLElement | null;
-    if (!el || !card) return;
-    const gap = parseFloat(getComputedStyle(el).columnGap) || 0;
-    el.scrollBy({ left: direction * (card.offsetWidth + gap), behavior: 'smooth' });
-  };
+  const { scrollerRef, canScrollLeft, canScrollRight, scrollByCard } = useCarousel(zoneCards.length);
 
   return (
     <section id="areas" className="pt-6 sm:pt-8 pb-16 sm:pb-24 bg-slate-50/70 border-t border-slate-200/70">
@@ -79,7 +57,7 @@ export const ServiceAreaChecker: React.FC<{ onOpenOrder: () => void }> = ({ onOp
             </button>
           </div>
           {showAll && (
-            <div className="mt-3 space-y-3 animate-in fade-in">
+            <div className="mt-3 space-y-3">
               {groups.map(({ zone, areas: list }) => (
                 <div key={zone?._id ?? 'none'}>
                   <p className="mb-1.5 text-center text-[11px] font-bold text-slate-500">{zone?.name ?? 'অন্যান্য এলাকা'}</p>
@@ -127,8 +105,7 @@ export const ServiceAreaChecker: React.FC<{ onOpenOrder: () => void }> = ({ onOp
 
           <div
             ref={scrollerRef}
-            onScroll={updateScrollState}
-            className="flex gap-4 sm:gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-2 -mx-4 px-4 scroll-px-4 sm:mx-0 sm:px-0 sm:scroll-px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            className="flex gap-4 sm:gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth motion-reduce:scroll-auto pb-2 -mx-4 px-4 scroll-px-4 sm:mx-0 sm:px-0 sm:scroll-px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           >
           {zoneCards.map((zone) => (
             <div
