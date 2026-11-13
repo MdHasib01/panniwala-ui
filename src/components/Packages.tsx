@@ -1,4 +1,5 @@
-import React, { useRef, useState } from 'react';
+import React from 'react';
+import { useCarousel } from '@/src/lib/use-carousel';
 import { toBengaliNumber } from '@/src/data/packages';
 import { usePackages } from '@/src/lib/packages-api';
 import { WaterPackage } from '@/src/types';
@@ -19,41 +20,12 @@ interface PackagesProps {
 
 export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
   const packages = usePackages();
-  const scrollerRef = useRef<HTMLDivElement>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
-
-  const handleScroll = () => {
-    const el = scrollerRef.current;
-    if (!el) return;
-    const cards = Array.from(el.children) as HTMLElement[];
-    const center = el.scrollLeft + el.clientWidth / 2;
-    let closest = 0;
-    let minDist = Infinity;
-    cards.forEach((card, i) => {
-      const dist = Math.abs(card.offsetLeft + card.offsetWidth / 2 - center);
-      if (dist < minDist) {
-        minDist = dist;
-        closest = i;
-      }
-    });
-    setActiveIndex(closest);
-  };
-
-  const scrollToCard = (index: number) => {
-    const el = scrollerRef.current;
-    const card = el?.children[index] as HTMLElement | undefined;
-    if (!el || !card) return;
-    el.scrollTo({
-      left: card.offsetLeft - (el.clientWidth - card.offsetWidth) / 2,
-      behavior: 'smooth',
-    });
-  };
+  const { scrollerRef, activeIndex, scrollToCard } = useCarousel(packages.length, 'center');
 
   const theme = {
-    card: 'border-sky-200 shadow-lg shadow-sky-500/10 ring-1 ring-sky-300/50',
+    card: 'border-sky-200 shadow-sm',
     panel: 'from-sky-100 via-cyan-50 to-white',
     badge: 'bg-sky-600 text-white shadow-sky-600/30',
-    grid: '2 132 199',
   };
 
   return (
@@ -91,8 +63,7 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
         )}
         <div
           ref={scrollerRef}
-          onScroll={handleScroll}
-          className="relative flex md:grid md:grid-cols-3 gap-4 md:gap-6 lg:gap-8 pt-5 pb-4 md:pb-2 md:pt-5 items-stretch max-w-6xl -mx-4 px-4 md:mx-auto md:px-0 overflow-x-auto md:overflow-visible snap-x snap-mandatory scroll-px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="relative flex md:grid md:grid-cols-3 gap-4 md:gap-6 lg:gap-8 pt-5 pb-4 md:pb-2 md:pt-5 items-stretch max-w-6xl -mx-4 px-4 md:mx-auto md:px-0 overflow-x-auto md:overflow-visible snap-x snap-mandatory scroll-smooth motion-reduce:scroll-auto scroll-px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
           {packages.map((pkg) => {
             const ribbon = pkg.popular
@@ -105,19 +76,8 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
             return (
               <div
                 key={pkg.id}
-                className={`relative flex flex-col rounded-3xl bg-white border transition-all duration-300 md:hover:-translate-y-1 md:hover:shadow-xl group w-[84%] max-w-[340px] shrink-0 snap-center md:w-auto md:max-w-none md:shrink ${theme.card}`}
+                className={`relative flex flex-col rounded-3xl bg-white border w-[84%] max-w-[340px] shrink-0 snap-center md:w-auto md:max-w-none md:shrink ${theme.card}`}
               >
-                {/* Faint grid tucked into the bottom-right corner, fading toward the center */}
-                <div
-                  aria-hidden="true"
-                  className="absolute inset-0 rounded-[inherit] pointer-events-none [mask-image:radial-gradient(circle_at_100%_100%,black_0%,transparent_45%)]"
-                  style={{
-                    backgroundImage: `linear-gradient(to right, rgb(${theme.grid} / 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgb(${theme.grid} / 0.05) 1px, transparent 1px)`,
-                    backgroundSize: '18px 18px',
-                    backgroundPosition: 'right bottom',
-                  }}
-                />
-
                 {/* Badge — on the card's top edge, aligned left */}
                 {ribbon && RibbonIcon && (
                   <div className="absolute inset-x-0 -top-3 z-30 flex justify-start pl-5 pointer-events-none">
@@ -130,26 +90,12 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
 
                 {/* Image panel */}
                 <div className={`relative rounded-t-[23px] bg-gradient-to-br ${theme.panel} h-[190px] md:h-[230px] flex items-center justify-center overflow-hidden`}>
-                  {/* Subtle grid lines, faded toward the edges */}
-                  <div
-                    aria-hidden="true"
-                    className="absolute inset-0 pointer-events-none [mask-image:radial-gradient(ellipse_at_center,black_35%,transparent_80%)]"
-                    style={{
-                      backgroundImage: `linear-gradient(to right, rgb(${theme.grid} / 0.12) 1px, transparent 1px), linear-gradient(to bottom, rgb(${theme.grid} / 0.12) 1px, transparent 1px)`,
-                      backgroundSize: '22px 22px',
-                      backgroundPosition: 'center center',
-                    }}
-                  />
-                  <div className="absolute -bottom-12 -right-12 w-44 h-44 rounded-full bg-white/60 blur-2xl pointer-events-none" />
-                  <div className="absolute -top-10 -left-10 w-32 h-32 rounded-full bg-white/40 blur-2xl pointer-events-none" />
-                  {/* Soft floor shadow under the jar */}
-                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-32 md:w-40 h-4 rounded-[100%] bg-slate-900/10 blur-md pointer-events-none" />
-
                   <img
                     src={pkg.image}
                     alt={pkg.title}
-                    className="max-h-[165px] md:max-h-[205px] w-auto object-contain drop-shadow-xl transition-transform duration-500 group-hover:scale-105 select-none relative z-10"
+                    className="max-h-[165px] md:max-h-[205px] w-auto object-contain select-none"
                     loading="lazy"
+                    decoding="async"
                   />
                 </div>
 
@@ -179,10 +125,10 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
                   <Button
                     id={`order-package-${pkg.id}`}
                     onClick={() => onSelectPackage(pkg)}
-                    className="mt-auto w-full h-12 rounded-2xl font-bold text-sm transition-all flex items-center justify-between pl-5 pr-1.5 btn-shine [--shine-glow:2_132_199] bg-sky-600 hover:bg-sky-700 text-white shadow-md shadow-sky-500/25"
+                    className="mt-auto w-full h-12 rounded-2xl font-bold text-sm transition-colors flex items-center justify-between pl-5 pr-1.5 bg-sky-600 hover:bg-sky-700 text-white shadow-sm"
                   >
                     <span>অর্ডার নিশ্চিত করুন</span>
-                    <span className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center transition-transform duration-300 group-hover:translate-x-0.5">
+                    <span className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center">
                       <ArrowRight className="w-4 h-4" />
                     </span>
                   </Button>
@@ -201,7 +147,7 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
               type="button"
               aria-label={`প্যাকেজ ${toBengaliNumber(i + 1)}`}
               onClick={() => scrollToCard(i)}
-              className={`h-2 rounded-full transition-all duration-300 ${
+              className={`h-2 rounded-full ${
                 activeIndex === i ? 'w-6 bg-sky-600' : 'w-2 bg-slate-300'
               }`}
             />

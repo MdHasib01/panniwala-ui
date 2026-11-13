@@ -6,17 +6,6 @@ import heroImage from '@/src/assets/hero-image.png';
 import { Phone, ShoppingBag } from 'lucide-react';
 import { LocationSearch } from '@/src/components/LocationSearch';
 
-// Round bubbles that rise from the bottom of the hero jar and fade out.
-// x/y = start position (% of the image box), s = size, d = cycle length,
-// delay = start offset, travel = rise height. Each bubble is visible for
-// ~55% of its cycle and rests for the remainder, so they stay sparse.
-const HERO_BUBBLES = [
-  { x: '16%', y: '84%', s: '10px', d: '12s', delay: '0s', travel: '-240px' },
-  { x: '62%', y: '86%', s: '7px', d: '10s', delay: '2.5s', travel: '-220px' },
-  { x: '84%', y: '80%', s: '12px', d: '14s', delay: '5s', travel: '-280px' },
-  { x: '36%', y: '88%', s: '8px', d: '11s', delay: '7.5s', travel: '-260px' },
-];
-
 interface HeroProps {
   onOpenOrder: () => void;
 }
@@ -26,23 +15,6 @@ export const Hero: React.FC<HeroProps> = ({ onOpenOrder }) => {
 
   return (
     <section id="hero" className="relative overflow-hidden pt-6 sm:pt-14 pb-6 sm:pb-14 lg:py-20 bg-gradient-to-b from-cyan-50/60 via-sky-50/30 to-white">
-      {/* Background soft ambient water waves */}
-      <div className="absolute top-0 inset-x-0 h-96 bg-[radial-gradient(ellipse_80%_60%_at_50%_-20%,rgba(6,182,212,0.18),rgba(255,255,255,0))] pointer-events-none" />
-
-      {/* Subtle grid overlay, faded out toward the edges */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 pointer-events-none opacity-[0.35] mix-blend-multiply"
-        style={{
-          backgroundImage:
-            'linear-gradient(to right, rgba(8,145,178,0.18) 1px, transparent 1px), linear-gradient(to bottom, rgba(8,145,178,0.18) 1px, transparent 1px)',
-          backgroundSize: '44px 44px',
-          backgroundPosition: 'center top',
-          maskImage: 'radial-gradient(ellipse 75% 70% at 50% 35%, #000 40%, transparent 100%)',
-          WebkitMaskImage: 'radial-gradient(ellipse 75% 70% at 50% 35%, #000 40%, transparent 100%)',
-        }}
-      />
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-10 lg:gap-12 items-center">
           
@@ -63,7 +35,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenOrder }) => {
               নিরাপদ ও বিশুদ্ধ পানির বিশ্বস্ত সরবরাহ, খুলনা শহরে{' '}
               <span className="relative inline-block mx-1 -rotate-6 text-xl sm:text-2xl font-extrabold text-slate-900 leading-none align-middle">
                 ফ্রি
-                {/* Rough hand-drawn underline that draws in a loop */}
+                {/* Static hand-drawn underline */}
                 <svg
                   aria-hidden="true"
                   viewBox="0 0 120 22"
@@ -72,7 +44,6 @@ export const Hero: React.FC<HeroProps> = ({ onOpenOrder }) => {
                   fill="none"
                 >
                   <path
-                    className="scribble-draw"
                     pathLength={1}
                     d="M4 13 C 26 6, 56 4, 84 8 S 112 12, 116 6 M 14 17 C 40 12, 72 11, 106 15"
                     stroke="currentColor"
@@ -98,7 +69,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenOrder }) => {
                 id="hero-order-cta"
                 size="lg"
                 onClick={onOpenOrder}
-                className="btn-shine flex-1 sm:flex-none bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-sm sm:text-base shadow-lg shadow-cyan-600/30 hover:shadow-cyan-600/40 px-3 sm:px-8 py-3.5 rounded-xl transition-all"
+                className="flex-1 sm:flex-none bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-sm sm:text-base shadow-sm px-3 sm:px-8 py-3.5 rounded-xl transition-colors"
               >
                 <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5 sm:mr-1 shrink-0" />
                 <span>অর্ডার করুন</span>
@@ -108,7 +79,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenOrder }) => {
               <a
                 id="hero-call-cta"
                 href={`tel:${HOTLINE_TEL}`}
-                className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-3 sm:px-6 py-3.5 rounded-xl border-2 border-slate-300 hover:border-cyan-600 bg-white text-slate-800 hover:text-cyan-700 font-bold text-sm shadow-xs transition-all whitespace-nowrap"
+                className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-3 sm:px-6 py-3.5 rounded-xl border-2 border-slate-300 hover:border-cyan-600 bg-white text-slate-800 hover:text-cyan-700 font-bold text-sm shadow-xs transition-colors whitespace-nowrap"
               >
                 <Phone className="w-4 h-4 text-cyan-600 shrink-0" />
                 <span>কল করুন<span className="hidden sm:inline">: {HOTLINE_NUMBER}</span></span>
@@ -117,48 +88,16 @@ export const Hero: React.FC<HeroProps> = ({ onOpenOrder }) => {
             </div>
           </div>
 
-          {/* Right Column: Hero Visual Showcase without square border */}
+          {/* Static hero image */}
           <div className="lg:col-span-5 relative flex items-center justify-center">
-            
-            {/* Ambient Water Aura Glow */}
-            <div className="hero-aura absolute w-72 h-72 sm:w-96 sm:h-96 bg-gradient-to-tr from-cyan-400/25 via-sky-300/20 to-blue-500/15 rounded-full blur-3xl -z-10 pointer-events-none" />
-
-            {/* Hero Image Container - Seamless floating display without any square border */}
             <div className="relative w-full max-w-sm sm:max-w-md lg:max-w-lg flex items-center justify-center py-0 sm:py-4">
-
-              {/* Soft ground shadow that shrinks as the jar rises */}
-              <div
-                aria-hidden="true"
-                className="hero-ground-shadow absolute bottom-1 sm:bottom-3 left-1/2 w-3/5 h-5 rounded-[50%] bg-sky-900/25 blur-md pointer-events-none"
-              />
-
-              {/* Rising bubbles */}
-              <div aria-hidden="true" className="absolute inset-0 z-10 pointer-events-none">
-                {HERO_BUBBLES.map((b, i) => (
-                  <span
-                    key={i}
-                    className="hero-bubble"
-                    style={{ '--x': b.x, '--y': b.y, '--s': b.s, '--d': b.d, '--delay': b.delay, '--travel': b.travel } as React.CSSProperties}
-                  />
-                ))}
-              </div>
-
-              {/* Floating jar + glossy sheen clipped to the image's own shape */}
-              <div className="hero-float relative w-full transition-[scale] duration-700 hover:scale-[1.03]">
                 <Image
                   src={heroSrc}
                   alt="পানি ওয়ালা ১০০% বিশুদ্ধ খাবার পানি"
                   preload
                   sizes="(min-width: 1024px) 512px, (min-width: 640px) 448px, 384px"
-                  className="block w-full h-auto max-h-[520px] object-contain drop-shadow-2xl select-none"
+                  className="block w-full h-auto max-h-[520px] object-contain select-none"
                 />
-                <div
-                  aria-hidden="true"
-                  className="hero-sheen absolute inset-0 pointer-events-none"
-                  style={{ maskImage: `url(${heroSrc.src})`, WebkitMaskImage: `url(${heroSrc.src})` }}
-                />
-              </div>
-
             </div>
 
           </div>
