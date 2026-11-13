@@ -10,20 +10,20 @@ export function MugdhoTribute() {
       id="remembering-mugdho"
       lang="bn"
       aria-labelledby="mugdho-heading"
-      className="relative isolate overflow-hidden border-t border-stone-200/80 bg-[#f7f7f2] py-7 sm:py-9"
+      className="relative isolate overflow-hidden border-t border-stone-200/80 bg-[#f7f7f2] pt-7 pb-16 sm:py-9"
     >
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 select-none">
         <Image
           src={fallingDrops}
           alt=""
-          sizes="(min-width: 1024px) 300px, (min-width: 640px) 220px, 144px"
-          className="absolute right-0 top-0 h-auto w-36 opacity-70 sm:w-[220px] sm:opacity-80 lg:w-[300px]"
+          sizes="(min-width: 1024px) 300px, (min-width: 640px) 220px, 112px"
+          className="absolute right-0 top-0 h-auto w-28 opacity-60 sm:w-[220px] sm:opacity-80 lg:w-[300px]"
         />
         <Image
           src={redSplash}
           alt=""
-          sizes="(min-width: 1024px) 380px, (min-width: 640px) 280px, 176px"
-          className="absolute bottom-0 left-0 h-auto w-44 opacity-40 sm:w-[280px] sm:opacity-50 lg:w-[380px]"
+          sizes="(min-width: 1024px) 380px, (min-width: 640px) 280px, 160px"
+          className="absolute bottom-0 left-0 h-auto w-40 opacity-40 sm:w-[280px] sm:opacity-50 lg:w-[380px]"
         />
       </div>
 
