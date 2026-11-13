@@ -208,7 +208,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenOrder }) => {
   }, [searchOpen]);
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-xs">
+    <header className="sticky top-0 z-40 w-full bg-white border-b border-slate-200/80 shadow-xs">
       {/* Top micro announcement bar */}
       {isBannerVisible && (
         <div className="bg-gradient-to-r from-cyan-900 via-cyan-800 to-sky-900 text-white text-[12px] font-medium py-1.5 px-4">

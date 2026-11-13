@@ -135,11 +135,11 @@ export const BottomNav: React.FC = () => {
       {size.w > 0 && (
         <svg
           aria-hidden
-          className="pointer-events-none absolute inset-0 h-full w-full overflow-visible drop-shadow-[0_-3px_12px_rgba(15,23,42,0.10)]"
+          className="pointer-events-none absolute inset-0 h-full w-full overflow-visible"
           viewBox={`0 0 ${size.w} ${size.h}`}
           preserveAspectRatio="none"
         >
-          <path d={barPath(size.w, size.h)} className="fill-white" />
+          <path d={barPath(size.w, size.h)} className="fill-white stroke-slate-200" strokeWidth={1} />
         </svg>
       )}
       <div className="relative mx-auto flex h-16 max-w-md items-stretch px-1">

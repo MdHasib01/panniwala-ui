@@ -47,7 +47,6 @@ export const Footer: React.FC = () => {
   return (
     <footer className="relative hidden overflow-hidden border-t border-slate-800 bg-slate-950 text-slate-400 md:block">
       <div aria-hidden="true" className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-400/70 to-transparent" />
-      <div aria-hidden="true" className="pointer-events-none absolute -left-24 -top-40 h-80 w-80 rounded-full bg-cyan-500/5 blur-3xl" />
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-[1.4fr_0.8fr_1fr] gap-8 py-10 lg:gap-16 lg:py-12">
           <div>

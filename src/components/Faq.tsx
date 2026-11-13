@@ -51,7 +51,7 @@ export const Faq: React.FC = () => {
             return (
               <div
                 key={idx}
-                className="bg-white rounded-2xl border border-slate-200 overflow-hidden transition-all shadow-xs"
+                className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs"
               >
                 <button
                   onClick={() => setOpenIndex(isOpen ? null : idx)}
@@ -59,7 +59,7 @@ export const Faq: React.FC = () => {
                 >
                   <span>{faq.q}</span>
                   <ChevronDown
-                    className={`w-5 h-5 text-slate-400 shrink-0 transition-transform duration-200 ${
+                    className={`w-5 h-5 text-slate-400 shrink-0 transition-transform duration-150 motion-reduce:transition-none ${
                       isOpen ? 'transform rotate-180 text-cyan-600' : ''
                     }`}
                   />

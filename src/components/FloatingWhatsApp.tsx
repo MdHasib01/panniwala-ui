@@ -6,7 +6,14 @@ export const FloatingWhatsApp: React.FC = () => {
   const [showTop, setShowTop] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setShowTop(window.scrollY > 400);
+    let visible = false;
+    const onScroll = () => {
+      const next = window.scrollY > 400;
+      if (next !== visible) {
+        visible = next;
+        setShowTop(next);
+      }
+    };
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
@@ -23,12 +30,12 @@ export const FloatingWhatsApp: React.FC = () => {
     >
       <button
         type="button"
-        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        onClick={() => window.scrollTo({ top: 0, behavior: 'auto' })}
         aria-label="Go to top"
         title="উপরে যান"
         tabIndex={showTop ? 0 : -1}
-        className={`flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/90 backdrop-blur-md text-slate-700 border border-slate-200 shadow-md hover:bg-white hover:text-slate-900 hover:scale-105 active:scale-95 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-slate-300/50 ${
-          showTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 pointer-events-none'
+        className={`flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white text-slate-700 border border-slate-200 shadow-sm hover:text-slate-900 transition-opacity duration-150 motion-reduce:transition-none focus:outline-none focus:ring-4 focus:ring-slate-300/50 ${
+          showTop ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`}
       >
         <ArrowUp className="w-4 h-4" aria-hidden="true" />
@@ -40,26 +47,19 @@ export const FloatingWhatsApp: React.FC = () => {
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chat with Pani Wala on WhatsApp"
-        className="group relative flex items-center justify-center w-11 h-11 sm:w-12 sm:h-12 md:w-13 md:h-13 rounded-full bg-[#25D366] hover:bg-[#20ba5a] text-white shadow-md shadow-emerald-600/30 hover:shadow-xl hover:shadow-emerald-600/50 hover:scale-105 active:scale-95 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-emerald-400/40"
+        className="group relative flex items-center justify-center w-11 h-11 sm:w-12 sm:h-12 md:w-13 md:h-13 rounded-full bg-[#25D366] hover:bg-[#20ba5a] text-white shadow-sm transition-colors focus:outline-none focus:ring-4 focus:ring-emerald-400/40"
       >
-        {/* Breathing animated pulse wave */}
-        <span
-          className="absolute -inset-1 rounded-full bg-[#25D366] opacity-35 animate-ping pointer-events-none"
-          aria-hidden="true"
-        />
-
         {/* Online Indicator Badge */}
         <span
           className="absolute top-0 right-0 flex h-3.5 w-3.5"
           title="সরাসরি অনলাইনে আছি"
         >
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-300 opacity-75"></span>
           <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-400 border-2 border-white shadow-xs"></span>
         </span>
 
         {/* WhatsApp Vector Icon */}
         <svg
-          className="w-5.5 h-5.5 sm:w-6 sm:h-6 md:w-6.5 md:h-6.5 text-white fill-current drop-shadow-xs"
+          className="w-5.5 h-5.5 sm:w-6 sm:h-6 md:w-6.5 md:h-6.5 text-white fill-current"
           viewBox="0 0 24 24"
           xmlns="http://www.w3.org/2000/svg"
           aria-hidden="true"
@@ -69,9 +69,9 @@ export const FloatingWhatsApp: React.FC = () => {
 
         {/* Hover Tooltip (shows on left side of the bottom-right icon on desktop) */}
         <span
-          className="pointer-events-none absolute right-full mr-3 hidden md:inline-flex items-center gap-2 px-3 py-1.5 bg-slate-900/90 backdrop-blur-md text-white text-xs font-semibold rounded-2xl shadow-xl whitespace-nowrap opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 transition-all duration-200 border border-slate-700/50"
+          className="pointer-events-none absolute right-full mr-3 hidden md:inline-flex items-center gap-2 px-3 py-1.5 bg-slate-900 text-white text-xs font-semibold rounded-2xl whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-150 border border-slate-700/50"
         >
-          <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span className="inline-block w-2 h-2 rounded-full bg-emerald-400"></span>
           <span>হোয়াটসঅ্যাপে সরাসরি চ্যাট করুন</span>
         </span>
       </a>

@@ -27,7 +27,7 @@ function ScrollManager() {
     let frame = 0;
     const tick = () => {
       const el = document.getElementById(decodeURIComponent(hash.slice(1)));
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (el) el.scrollIntoView({ behavior: 'auto', block: 'start' });
       else if (tries++ < 20) frame = requestAnimationFrame(tick);
     };
     tick();

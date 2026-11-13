@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 import { useCarousel } from '@/src/lib/use-carousel';
 import { toBengaliNumber } from '@/src/data/packages';
 import { usePackages } from '@/src/lib/packages-api';
@@ -90,10 +91,13 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
 
                 {/* Image panel */}
                 <div className={`relative rounded-t-[23px] bg-gradient-to-br ${theme.panel} h-[190px] md:h-[230px] flex items-center justify-center overflow-hidden`}>
-                  <img
+                  <Image
                     src={pkg.image}
                     alt={pkg.title}
-                    className="max-h-[165px] md:max-h-[205px] w-auto object-contain select-none"
+                    fill
+                    sizes="(min-width: 1280px) 365px, (min-width: 768px) 31vw, 340px"
+                    unoptimized={!pkg.image.startsWith('/_next/static/media/')}
+                    className="object-contain p-3 select-none"
                     loading="lazy"
                     decoding="async"
                   />
