@@ -35,7 +35,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenOrder }) => {
               নিরাপদ ও বিশুদ্ধ পানির বিশ্বস্ত সরবরাহ, খুলনা শহরে{' '}
               <span className="relative inline-block mx-1 -rotate-6 text-xl sm:text-2xl font-extrabold text-slate-900 leading-none align-middle">
                 ফ্রি
-                {/* Static hand-drawn underline */}
+                {/* Animated hand-drawn underline */}
                 <svg
                   aria-hidden="true"
                   viewBox="0 0 120 22"
@@ -44,6 +44,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenOrder }) => {
                   fill="none"
                 >
                   <path
+                    className="scribble-draw"
                     pathLength={1}
                     d="M4 13 C 26 6, 56 4, 84 8 S 112 12, 116 6 M 14 17 C 40 12, 72 11, 106 15"
                     stroke="currentColor"
@@ -69,7 +70,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenOrder }) => {
                 id="hero-order-cta"
                 size="lg"
                 onClick={onOpenOrder}
-                className="flex-1 sm:flex-none bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-sm sm:text-base shadow-sm px-3 sm:px-8 py-3.5 rounded-xl transition-colors"
+                className="btn-shine flex-1 sm:flex-none bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-sm sm:text-base shadow-sm px-3 sm:px-8 py-3.5 rounded-xl transition-colors"
               >
                 <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5 sm:mr-1 shrink-0" />
                 <span>অর্ডার করুন</span>

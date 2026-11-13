@@ -129,7 +129,7 @@ export const Packages: React.FC<PackagesProps> = ({ onSelectPackage }) => {
                   <Button
                     id={`order-package-${pkg.id}`}
                     onClick={() => onSelectPackage(pkg)}
-                    className="mt-auto w-full h-12 rounded-2xl font-bold text-sm transition-colors flex items-center justify-between pl-5 pr-1.5 bg-sky-600 hover:bg-sky-700 text-white shadow-sm"
+                    className="btn-shine mt-auto w-full h-12 rounded-2xl font-bold text-sm transition-colors flex items-center justify-between pl-5 pr-1.5 bg-sky-600 hover:bg-sky-700 text-white shadow-sm"
                   >
                     <span>অর্ডার নিশ্চিত করুন</span>
                     <span className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center">

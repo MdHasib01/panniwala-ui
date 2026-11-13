@@ -159,16 +159,58 @@ html.admin ::selection {
   color: inherit;
 }
 
-/* Legacy CTA class: keep buttons static with no repeating paint effects. */
+/* Lightweight CTA shine: animate only the small overlay's transform. */
 .btn-shine {
   position: relative;
   overflow: hidden;
+}
+
+.btn-shine::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 45%;
+  background: linear-gradient(100deg, transparent, rgb(255 255 255 / 0.45), transparent);
+  transform: translateX(-160%) skewX(-20deg);
+  animation: ctaShine 4.8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.btn-shine:disabled::after {
+  display: none;
+}
+
+@keyframes ctaShine {
+  0%, 60% { transform: translateX(-160%) skewX(-20deg); }
+  100% { transform: translateX(360%) skewX(-20deg); }
+}
+
+.scribble-draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  animation: scribbleDraw 3.2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@keyframes scribbleDraw {
+  0% { stroke-dashoffset: 1; }
+  40%, 78% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -1; }
 }
 
 /* Native anchor scrolling, with immediate movement for reduced motion. */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+
+  .btn-shine::after {
+    display: none;
+    animation: none;
+  }
+
+  .scribble-draw {
+    animation: none;
+    stroke-dashoffset: 0;
   }
 }
 
