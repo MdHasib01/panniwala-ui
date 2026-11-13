@@ -1,6 +1,8 @@
 import Image from 'next/image';
 import mugdhoPortrait from '@/src/assets/mir-mugdho-face-art.webp';
 import paniwalaLogo from '@/src/assets/logo.png';
+import fallingDrops from '@/src/assets/mugdho-falling-drops.webp';
+import redSplash from '@/src/assets/mugdho-red-splash.webp';
 
 export function MugdhoTribute() {
   return (
@@ -10,8 +12,20 @@ export function MugdhoTribute() {
       aria-labelledby="mugdho-heading"
       className="relative isolate overflow-hidden border-t border-stone-200/80 bg-[#f7f7f2] py-7 sm:py-9"
     >
-      <div aria-hidden="true" className="pointer-events-none absolute -right-48 bottom-0 -z-10 h-[32rem] w-[32rem] rounded-full border border-cyan-900/[0.04]" />
-      <div aria-hidden="true" className="pointer-events-none absolute -right-32 bottom-16 -z-10 h-96 w-96 rounded-full border border-cyan-900/[0.04]" />
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 select-none">
+        <Image
+          src={fallingDrops}
+          alt=""
+          sizes="(min-width: 1024px) 300px, (min-width: 640px) 220px, 144px"
+          className="absolute right-0 top-0 h-auto w-36 opacity-70 sm:w-[220px] sm:opacity-80 lg:w-[300px]"
+        />
+        <Image
+          src={redSplash}
+          alt=""
+          sizes="(min-width: 1024px) 380px, (min-width: 640px) 280px, 176px"
+          className="absolute bottom-0 left-0 h-auto w-44 opacity-40 sm:w-[280px] sm:opacity-50 lg:w-[380px]"
+        />
+      </div>
 
       <div className="mx-auto max-w-6xl px-5 sm:px-8 lg:px-12">
         <div className="grid grid-cols-[104px_minmax(0,1fr)] items-center gap-x-5 gap-y-4 sm:grid-cols-[144px_minmax(0,1fr)] sm:gap-x-7 md:grid-cols-[220px_minmax(0,1fr)] md:gap-x-10 md:gap-y-3">
